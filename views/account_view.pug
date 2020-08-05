@@ -1,0 +1,54 @@
+extends layout
+
+block content
+    .outer_wrapper.color
+        .content
+            .content_header
+                h2= user.username
+                .content_options_wrapper
+                    .content_option
+            .content_sidebar
+                a.sidebar_item(href=`/users/user/${user.username}`) Cuenta
+                if !user.isDM
+                    a.sidebar_item(href=`/users/user/${user.username}/hero/0`) Heroe
+                else
+                    a.sidebar_item(href=`/users/user/${user.username}/manageheroes`) Administrar Heroes
+                a.sidebar_item(href=`/users/user/${user.username}/story`) Historia
+                a.sidebar_item(href=`/users/user/${user.username}/characters`) Personajes
+                if user.isDM || user.isAdmin
+                    a.sidebar_item(href=`/users/user/${user.username}/announcements`) Anuncios
+                if user.isAdmin
+                    hr
+                    h3 Admin
+                    a.sidebar_item(href='') Usuarios
+                    a.sidebar_item(href='') Anuncios
+                    a.sidebar_item(href='') Heroes
+                    a.sidebar_item(href='') Historia
+                    a.sidebar_item(href='') Personajes
+            .content_main
+                if url === `/users/user/${user.username}` || url.endsWith('/changepassword')
+                    h3 Cuenta
+                    hr
+                    p.main_item= `Usuario: ${user.username}`
+                    p.main_item= `Admin: ${user.isAdmin}`
+                    p.main_item= `DM: ${user.isDM}`
+                    if !url.endsWith('/changepassword')
+                        a.button_small(href=`/users/user/${user.username}/changepassword`) Cambiar contraseña
+                    else
+                        form(action="" method="POST")
+                            .form_input
+                                input(type="password" name='password' id='password' placeholder='Nueva Contraseña')
+                            .form_input
+                                input(type="password" name='confirm_password' id='confirm_password' placeholder='Confirmar Contraseña')
+                            .form_input
+                                button.button_small(type='submit') Cambiar contraseña
+                else if url.endsWith('/hero')
+
+                else if url.endsWith('/manageheroes')
+                    h3 Administrar Heroes
+                    hr
+                    a.button_small(href='addhero') Agregar Heroe
+                    each hero in heroes
+                        a(href=`edithero/${hero.name}`)
+                            p.main_item #{hero.name}: #{hero.player_name}
+                else

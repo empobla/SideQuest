@@ -1,0 +1,28 @@
+extends layout
+include mixins/_text_editor
+
+block content
+    .outer_wrapper.color
+        .content
+            .content_header
+                h2 Historia
+            .content_sidebar
+                each story in stories
+                    a.sidebar_item(href=`/story/${story._id}`) #{story.name}
+            .content_main
+                if url.endsWith('/story')
+                    h3 Intro to Story page
+                    hr
+                else
+                    h3= story.name
+                    hr
+                    +textEditor('view', story.summary)
+                    if story.notes != '' && story.notes != undefined
+                        h3 Notas:
+                        each note in story.notes
+                            .note
+                                div
+                                    h4= note.character
+                                    - const lines = note.text.split(/(\r\n|\r|\n)/g);
+                                    each line in lines
+                                        p= line

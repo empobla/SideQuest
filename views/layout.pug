@@ -1,0 +1,32 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    - const tmpImg = 'https://lunawood.com/wp-content/uploads/2018/02/placeholder-image.png'
+    header
+      nav
+        img.logo(src='/images/logos/sidequestlogo.png', alt="SideQuest DnD logo")
+        h1 SideQuest DnD
+
+        ul
+          li
+            a(href="/") Inicio
+          li
+            a(href="/heroes") Heroes
+          li
+            a(href="/story") Historia
+          li
+            a(href="/characters") Personajes
+          if !user
+            li
+              a(href="/users/login") Ingresar
+          else
+            li
+              a(href=`/users/user/${user.username}`) #{user.username}
+            li
+              a(href="/users/logout")
+                img.icon(src='/images/icons/logout.png' alt="logout")
+          
+    block content

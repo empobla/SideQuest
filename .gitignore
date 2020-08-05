@@ -1,0 +1,8 @@
+.env
+.DS_Store
+node_modules/
+controllers/_learning
+public/images/test
+public/javascripts/test.js
+views/test
+setup.txt

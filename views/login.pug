@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    .outer_wrapper
+        .form_wrapper
+            form.credentials(action="" method="POST")
+                h2 Ingreso
+                .form_input
+                    label(for="username") Usuario:
+                    input(type="text" name="username" id="username" placeholder="Ingresa tu usuario..." required)
+                .form_input
+                    label(for="username") Contraseña:
+                    input(type="password" name="password" id="password" placeholder="Ingresa tu contraseña..." required)
+                .form_input
+                    button.button_small(type="submit") Ingresar

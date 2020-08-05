@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    .outer_wrapper
+        if errors
+            ul
+                for error in errors
+                    li= error.msg
+        .form_wrapper
+            form.credentials(action="" method="POST")
+                h2 Crear Cuenta
+                .form_input
+                    label(for="username") Usuario:
+                    input(type="text" name="username" id="username" placeholder="Ingresa tu usuario..." required)
+                .form_input
+                    label(for="username") Contraseña:
+                    input(type="password" name="password" id="password" placeholder="Ingresa tu contraseña..." required)
+                .form_input
+                    label(for="username") Verificar Contraseña:
+                    input(type="password" name="confirm_password" id="confirm_password" placeholder="Confirma tu contraseña..." required)
+                .form_input
+                    button.button_small(type="submit") Crear Cuenta

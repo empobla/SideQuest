@@ -1,0 +1,44 @@
+extends layout
+include mixins/_text_editor
+
+block content
+    .outer_wrapper.color
+        .content
+            .content_header
+                h2 Anuncios
+            .content_sidebar
+                a.sidebar_item(href=`/users/user/${username}/announcements/addAnnouncement`) Anuncio Nuevo
+                each announcement in announcements
+                    a.sidebar_item(href=`/users/user/${username}/announcements/${announcement._id}`) #{announcement.name}
+            .content_main
+                if url.endsWith('/announcements')
+                    h3 Editar Anuncios
+                    hr
+                    p Mini guide/tutorial on how to use page or how it works
+                else if url.endsWith('/addAnnouncement')
+                    h3 Anuncio Nuevo
+                    hr
+                    form.content_form(action='' method='post')
+                        input(type='hidden' name='user' value=username)
+                        .form_input
+                            label(for='name') *Nombre del Anuncio:
+                            input(type='text' name='name' id='name' placeholder='Próxima sesión: Martes 4 de agosto, 2020!' required)
+                        .form_input
+                            label(for='summary') Anuncio:
+                            +textEditor('story', '', 'Escribe el anuncio aquí.')
+                        .form_input
+                            button.button_small(type='submit') Crear Anuncio
+                else
+                    h3 #{announcement.name}
+                    hr
+                    if url.endsWith('/saved')
+                        p Los cambios han sido guardados
+                    form.content_form(action='' method='post')
+                        .form_input
+                            label(for='name') *Nombre del Anuncio:
+                            input(type='text' name='name' id='name' placeholder='Próxima sesión: Martes 4 de agosto, 2020!' value=announcement.name required)
+                        .form_input
+                            label(for='summary') Anuncio:
+                            +textEditor('story', announcement.summary, 'Escribe el anuncio aquí.')
+                        .form_input
+                            button.button_small(type='submit') Guardar Cambios

@@ -1,0 +1,19 @@
+mixin heroDescription()
+
+    - const tmpDec = 'sheet'
+    //- If summary
+    if tmpDec === 'summary'
+        h3 Kairon
+    //- Else if stats
+    else if tmpDec === 'stats'
+    //- Else if spells
+    else if tmpDec === 'spells'
+    //- Else if sheet
+    else
+        - const urlSheet = '/heroes/kairon/charactersheet/charactersheet';
+        - const urlDetails = '/heroes/kairon/charactersheet/characterdetails';
+        - const urlSpell = '/heroes/kairon/charactersheet/spellcasting';
+        iframe(src=`${urlSheet}#toolbar=0` type="application/pdf" width="33%" height="100%" frameborder="0")
+        iframe(src=`${urlDetails}#toolbar=0` type="application/pdf" width="33%" height="100%" frameborder="0")
+        iframe(src=`${urlSpell}#toolbar=0` type="application/pdf" width="33%" height="100%" frameborder="0")
+        
