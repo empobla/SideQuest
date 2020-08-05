@@ -3,6 +3,7 @@
 node_modules/
 controllers/_learning
 public/images/test
+public/images/characters
 public/javascripts/test.js
 views/test
 setup.txt
