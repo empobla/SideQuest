@@ -313,11 +313,11 @@ exports.detailsFillFields = (pdfDoc, fieldNames, hero, font) => {
     // Basic Info/Header
     PdfEdit.fillInField(pdfDoc, fieldNames.age, `${hero.info.age}`, font);
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.name, hero.name, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.height, `${hero.info.height}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.height, `${hero.info.height || ''}`, font);
     PdfEdit.fillInField(pdfDoc, fieldNames.weight, `${hero.info.weight} lbs`, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.eyes, `${hero.info.eye_color}`, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.skin, `${hero.info.skin_color}`, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.hair, `${hero.info.hair_color}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.eyes, `${hero.info.eye_color || ''}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.skin, `${hero.info.skin_color || ''}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.hair, `${hero.info.hair_color || ''}`, font);
     
     // Backstory
     PdfEdit.fillInField(pdfDoc, fieldNames.backstory, `${hero.story.backstory || ''}`, font, { multiline: true });
@@ -329,7 +329,7 @@ exports.detailsFillFields = (pdfDoc, fieldNames, hero, font) => {
     PdfEdit.fillInField(pdfDoc, fieldNames.allies, `${hero.story.allies_and_organizations.text || ''}`, font, { multiline: true });
     
     // Emblem Name
-    PdfEdit.fillInField(pdfDoc, fieldNames.factionName, `${hero.story.allies_and_organizations.organization_name}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.factionName, `${hero.story.allies_and_organizations.organization_name || ''}`, font);
 
     // Treasure
     PdfEdit.fillInField(pdfDoc, fieldNames.treasure, `${hero.treasure.text || ''}`, font, { multiline: true });
