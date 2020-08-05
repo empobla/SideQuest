@@ -11,7 +11,7 @@ var logger = require('morgan');
 const mongoose = require('mongoose');
 const compression = require('compression');
 const helmet = require('helmet');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 // Dependencies for sessions
 const session = require('express-session');
