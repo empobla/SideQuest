@@ -106,7 +106,7 @@ const { sanitize } = require('express-validator');
 
 // Sign up
 exports.signUpGet = (req, res) => {
-    res.render('signup', { title: 'SideQuest - Crear Usuario' });
+    res.render('users/signup', { title: 'SideQuest - Crear Usuario' });
 };
 
 exports.signUpPost = [
@@ -128,7 +128,7 @@ exports.signUpPost = [
         if(!errors.isEmpty()) {
             // There are errors
             // res.json(req.body);
-            res.render('signup', { title: 'Please fix the following errors:', errors: errors.array() });
+            res.render('users/signup', { title: 'Please fix the following errors:', errors: errors.array() });
             return;
         } else {
             // No errors
@@ -146,7 +146,7 @@ exports.signUpPost = [
 
 // Login/Logout
 exports.loginGet = (req, res) => {
-    res.render('login', { title: 'SideQuest - Ingreso' });
+    res.render('users/login', { title: 'SideQuest - Ingreso' });
 };
 
 exports.loginPost = Passport.authenticate('local', {
@@ -315,7 +315,7 @@ exports.editHeroGet = async (req, res, next) => {
         
         // console.log(heroSpells.racial[8].length)
         // res.json(heroSpells)
-        res.render('edit_hero', { title: 'SideQuest: Editar Heroe', hero, pageNumber, username, spells, heroSpells });
+        res.render('users/edit_hero', { title: 'SideQuest: Editar Heroe', hero, pageNumber, username, spells, heroSpells });
     } catch(error) {
         next(error);
     }
@@ -489,7 +489,7 @@ exports.editStoryGet = async (req, res, next) => {
         const storyQuery = Story.findOne({ _id: req.params.storyId });
         const [hero, stories, story] = await Promise.all([heroQuery, storiesQuery, storyQuery]);
 
-        res.render('edit_story', { title: 'SideQuest - Editar Historia', username, hero, stories, story });
+        res.render('users/edit_story', { title: 'SideQuest - Editar Historia', username, hero, stories, story });
     } catch(error) {
         next(error);
     }
@@ -571,7 +571,7 @@ exports.editCharactersGet = async (req, res, next) => {
         const characterQuery = Character.findOne({ name: req.params.characterName });
         const [hero, characters, character] = await Promise.all([heroQuery, charactersQuery, characterQuery]);
 
-        res.render('edit_characters', { title: 'SideQuest - Editar Personajes', username, hero, characters, character });
+        res.render('users/edit_characters', { title: 'SideQuest - Editar Personajes', username, hero, characters, character });
     } catch(error) {
         next(error);
     }
@@ -669,7 +669,7 @@ exports.editCharactersPost = async (req, res, next) => {
 
 exports.addHeroGet = (req, res) => {
     const username = req.params.username;
-    res.render('add_hero.pug', { title: 'SideQuest - Agregar Heroe' });
+    res.render('users/add_hero.pug', { title: 'SideQuest - Agregar Heroe' });
 };
 
 exports.addHeroPost = async (req, res, next) => {
@@ -688,7 +688,7 @@ exports.dmEditHeroGet = async (req, res, next) => {
     try{
         const heroName = req.params.heroname;
         const hero = await Hero.findOne({ name: heroName });
-        res.render('add_hero', { title: 'SideQuest - Editar Heroe', hero });
+        res.render('users/add_hero', { title: 'SideQuest - Editar Heroe', hero });
     } catch(error) {
         next(error);
     }
@@ -717,7 +717,7 @@ exports.announcementsGet = async (req, res, next) => {
         const announcementQuery = Announcement.findOne({ _id: req.params.announcementId });
         const [announcements, announcement] = await Promise.all([announcementsQuery, announcementQuery]);
         
-        res.render('edit_announcements', { title: 'SideQuest - Editar Anuncios', username, announcements, announcement });
+        res.render('users/edit_announcements', { title: 'SideQuest - Editar Anuncios', username, announcements, announcement });
     } catch(error) {
         next(error);
     }

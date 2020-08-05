@@ -6,13 +6,19 @@ block content
         .content
             .content_header
                 h2 Personajes
+            
             .content_sidebar
+                //- Load all existing characters in sidebar
                 each character in characters
                     a.sidebar_item(href=`/characters/${character.name}`) #{character.name}
+            
             .content_main
+                //- If user is in characters main page
                 if url.endsWith('/characters')
                     h3 Intro to Characters page
                     hr
+                
+                //- If user is viewing an individual character
                 else
                     h3 #{character.name}
                     hr
@@ -45,6 +51,7 @@ block content
                     else
                         p #{character.name} no tiene historia/resumen.
                     
+                    //- If character notes exist, display them with appropriate line breaks
                     if character.notes != '' && character.notes != undefined
                         h4 Notas:
                         hr

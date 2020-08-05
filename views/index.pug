@@ -1,5 +1,4 @@
 extends layout
-include mixins/_text_editor
 
 block content
   script(type="text/javascript" src="/javascripts/pagedown/Markdown.Converter.js")
@@ -9,12 +8,15 @@ block content
   .outer_wrapper.color
     h2 Anuncios
     hr
+
+    //- Load all announcements
     - var count = 0;
     each announcement in announcements
       h3 #{announcement.name}
       - const date = new Date(announcement.date)
       em= `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()} - ${announcement.user}`
       
+      //- Announcements preview
       .wmd-panel
         div(id=`wmd-button-bar-${count}` style='display: none;')
         textarea(class="wmd-input" id=`wmd-input-${count}` style='display: none;')= announcement.summary
@@ -22,11 +24,13 @@ block content
       - count++;
   
   script.
+    //- Get all announcements
     const textAreas = document.querySelectorAll('.wmd-input');
     const previews = document.querySelectorAll('.heroSummary');
     let converter = Array(textAreas.length);
     let editor = Array(textAreas.length);
 
+    //- Run Markdown.Editor (preview) to display announcements in correct format
     for(let i = 0; i < textAreas.length; i++) {
       converter[i] = new Markdown.Converter();
       
