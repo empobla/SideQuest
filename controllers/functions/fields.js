@@ -320,7 +320,7 @@ exports.detailsFillFields = (pdfDoc, fieldNames, hero, font) => {
     PdfEdit.fillInField(pdfDoc, fieldNames.hair, `${hero.info.hair_color}`, font);
     
     // Backstory
-    PdfEdit.fillInField(pdfDoc, fieldNames.backstory, `${hero.story.backstory.trim() || ''}`, font, { multiline: true });
+    PdfEdit.fillInField(pdfDoc, fieldNames.backstory, `${hero.story.backstory || ''}`, font, { multiline: true });
     
     // Features and Traits
     PdfEdit.fillInField(pdfDoc, fieldNames.featuresAndTraits, `${hero.additional_info.additional_features_traits || ''}`, font, { multiline: true });
@@ -329,7 +329,7 @@ exports.detailsFillFields = (pdfDoc, fieldNames, hero, font) => {
     PdfEdit.fillInField(pdfDoc, fieldNames.allies, `${hero.story.allies_and_organizations.text || ''}`, font, { multiline: true });
     
     // Emblem Name
-    PdfEdit.fillInField(pdfDoc, fieldNames.factionName, hero.story.allies_and_organizations.organization_name, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.factionName, `${hero.story.allies_and_organizations.organization_name}`, font);
 
     // Treasure
     PdfEdit.fillInField(pdfDoc, fieldNames.treasure, `${hero.treasure.text || ''}`, font, { multiline: true });
@@ -374,7 +374,7 @@ exports.sheetFillFields = (pdfDoc, fieldNames, hero, font) => {
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.maxHitPoints, `${hero.physical_attributes.max_hp}`, font);
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.currentHitPoints, `${hero.physical_attributes.current_hp}`, font);
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.tempHitPoints, `${hero.physical_attributes.temp_hp}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.totalHitDie, hero.physical_attributes.total_hitdie, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.totalHitDie, `${hero.physical_attributes.total_hitdie}`, font);
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.hitDie, `${hero.physical_attributes.current_hitdie}`, font);
     
     // Death Saving Throws
