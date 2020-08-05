@@ -413,6 +413,12 @@ nav li:hover {
   font-size: 0.8em;
 }
 
+.item {
+  margin: 1em 0;
+  padding: 1em;
+  background: #ffde97;
+}
+
 .main_item {
   display: flex;
   flex-direction: column;

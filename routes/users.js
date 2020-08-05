@@ -59,13 +59,13 @@ router.get('/user/:username/manageheroes',
 );
 
 router.get('/user/:username/addhero', 
-  userController.isDM,
+  userController.isDMorAdmin,
   userController.addHeroGet
 );
 router.post('/user/:username/addhero', userController.addHeroPost);
 
 router.get('/user/:username/edithero/:heroname',
-  userController.isDM,
+  userController.isDMorAdmin,
   userController.dmEditHeroGet
 );
 router.post('/user/:username/edithero/:heroname', userController.dmEditHeroPost);
