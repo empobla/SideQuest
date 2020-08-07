@@ -18,6 +18,7 @@ router.get('/user/:username', userController.accountView);
 router.get('/user/:username/changepassword', userController.accountView); // Must add post for editing password
 
 // Hero
+// router.get('/:username/heroes', userController.heroesGet);
 router.get('/user/:username/hero/:pageNumber', userController.editHeroGet);
 router.get('/user/:username/hero/:pageNumber/:saved', userController.editHeroGet);
 router.post('/user/:username/hero/save/:pageNumber', 
@@ -81,8 +82,6 @@ router.get('/user/:username/announcements/:announcementId', userController.annou
 router.post('/user/:username/announcements/:announcementId', userController.announcementsPost);
 router.get('/user/:username/announcements/:announcementId/saved', userController.announcementsGet);
 router.post('/user/:username/announcements/:announcementId/saved', userController.announcementsPost);
-
-/* Admin */
 
 /* Get log in page */
 router.get('/login', userController.loginGet);

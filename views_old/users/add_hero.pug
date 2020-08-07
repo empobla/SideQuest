@@ -1,0 +1,28 @@
+extends ../layout
+
+block content
+    .outer_wrapper.color
+        .content
+            .content_header
+                h2= title
+        .content_main
+            if url.endsWith('/addhero')
+                form.content_form(action='', method="POST")
+                    .form_input
+                        label(for="name") * Nombre del Heroe:
+                        input(type="text" name="name" id="name" placeholder="Varian Wrynn" required)
+                    .form_input
+                        label(for="player_name") Usuario Dueño:
+                        input(type="text" name="player_name" id="player_name" placeholder="JohnDoe05")
+                    .form_input
+                        button.button_small(type="submit") Crear Heroe
+            else
+                form.content_form(action='', method="POST")
+                    .form_input
+                        label(for="name") * Nombre del Heroe:
+                        input(type="text" name="name" id="name" placeholder="Varian Wrynn" required value=hero.name)
+                    .form_input
+                        label(for="player_name") Usuario Dueño:
+                        input(type="text" name="player_name" id="player_name" placeholder="JohnDoe05" value=hero.player_name)
+                    .form_input
+                        button.button_small(type="submit") Guardar

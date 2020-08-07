@@ -5,23 +5,45 @@ block content
   script(type="text/javascript" src="/javascripts/pagedown/Markdown.Sanitizer.js")
   script(type="text/javascript" src="/javascripts/pagedown/Markdown.Editor.js")
 
-  .outer_wrapper.color
-    h2 Anuncios
-    hr
+  .l-carousel
+    .l-carousel__option
+      img(src="/images/resources/tortle.png", alt="Tortle image")
+      a.c-button(href='/heroes') Heroes
+    .c-carousel__divider
+    .l-carousel__option
+      img(src="/images/resources/group.png", alt="Group image")
+      a.c-button(href='/characters') Personajes
+    .c-carousel__divider--second
+    .l-carousel__option
+      img(src="/images/resources/castle.png", alt="Castle image")
+      a.c-button(href='/story') Historia
 
-    //- Load all announcements
-    - var count = 0;
-    each announcement in announcements
-      h3 #{announcement.name}
-      - const date = new Date(announcement.date)
-      em= `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()} - ${announcement.user}`
-      
-      //- Announcements preview
-      .wmd-panel
-        div(id=`wmd-button-bar-${count}` style='display: none;')
-        textarea(class="wmd-input" id=`wmd-input-${count}` style='display: none;')= announcement.summary
-      div(id=`wmd-preview-${count}` class="wmd-panel wmd-preview heroSummary")
-      - count++;
+  .l-margin--9
+  .l-divider
+    .c-divider__left 
+      h1 Anuncios
+    .c-divider__right
+
+  //- Load all announcements
+  - var count = 0;
+  each announcement in announcements
+    .l-content-box
+      .c-content-box
+        img.c-content-box__image(src='/images/logos/favicon.png' alt='')
+        
+        .l-content-box__content
+          .c-content-box__title
+            h3 #{announcement.name}
+            - const date = new Date(announcement.date)
+            em.l-content-box__title--info= `Posted ${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()} by ${announcement.user}`
+          
+          .l-content-box__text
+            //- Announcements preview
+            .wmd-panel
+              div(id=`wmd-button-bar-${count}` style='display: none;')
+              textarea(class="wmd-input" id=`wmd-input-${count}` style='display: none;')= announcement.summary
+            div(id=`wmd-preview-${count}` class="wmd-panel wmd-preview heroSummary")
+            - count++;
   
   script.
     //- Get all announcements

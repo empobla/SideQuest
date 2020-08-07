@@ -2,35 +2,51 @@ extends layout
 include mixins/_text_editor
 
 block content
-    .outer_wrapper.color
-        .content
-            .content_header
-                h2 Historia
-            
-            .content_sidebar
-                //- Display all existing stories in sidebar
-                each story in stories
-                    a.sidebar_item(href=`/story/${story._id}`) #{story.name}
-            
-            .content_main
-                //- If user is in story main page
-                if url.endsWith('/story')
-                    h3 Intro to Story page
-                    hr
-                
-                //- Else if user is viewing a story
-                else
-                    h3= story.name
-                    hr
-                    +textEditor('view', story.summary)
 
-                    //- If story notes exist, display them with appropriate line breaks
-                    if story.notes != '' && story.notes != undefined
-                        h3 Notas:
-                        each note in story.notes
-                            .note
-                                div
+    .l-margin--7
+    .l-divider
+        .c-divider__left
+            h1 Historia
+        .c-divider__right
+    
+    if url.endsWith('/story')
+        .l-main-content
+            .l-search
+                form.c-search(action='')
+                    .c-search__input
+                        label(for='name') Nombre de la sesión
+                        input(type='text' name='name' id='name' placeholder='Buscar sesión por nombre' disabled)
+                    .c-search__input--button
+                        button.c-button--large.m-background-lightgray(type='' disabled) Buscar
+        
+        .l-margin--3
+        .l-main-content
+            table.l-spells
+                each story in stories
+                    tr.c-spell
+                        td.m-align-left
+                            a.m-color-black(href=`/story/${story._id}`) #{story.name}
+    
+    else
+        .l-main-content
+            h2= story.name
+            hr
+            +textEditor('view', story.summary)
+
+        //- If story notes exist, display them with appropriate line breaks
+        if story.notes != '' && story.notes != undefined
+            .l-main-content.l-clearleft
+                h3 Notas:
+                each note in story.notes
+                    .l-content-box--full-width
+                        .c-content-box
+                            img.c-content-box__image(src='/images/logos/favicon.png' alt='')
+
+                            .l-content-box__content
+                                .c-content-box__title
                                     h4= note.character
+
+                                .l-content-box__text
                                     - const lines = note.text.split(/(\r\n|\r|\n)/g);
                                     each line in lines
                                         p= line

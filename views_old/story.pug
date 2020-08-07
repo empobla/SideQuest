@@ -1,0 +1,36 @@
+extends layout
+include mixins/_text_editor
+
+block content
+    .outer_wrapper.color
+        .content
+            .content_header
+                h2 Historia
+            
+            .content_sidebar
+                //- Display all existing stories in sidebar
+                each story in stories
+                    a.sidebar_item(href=`/story/${story._id}`) #{story.name}
+            
+            .content_main
+                //- If user is in story main page
+                if url.endsWith('/story')
+                    h3 Intro to Story page
+                    hr
+                
+                //- Else if user is viewing a story
+                else
+                    h3= story.name
+                    hr
+                    +textEditor('view', story.summary)
+
+                    //- If story notes exist, display them with appropriate line breaks
+                    if story.notes != '' && story.notes != undefined
+                        h3 Notas:
+                        each note in story.notes
+                            .note
+                                div
+                                    h4= note.character
+                                    - const lines = note.text.split(/(\r\n|\r|\n)/g);
+                                    each line in lines
+                                        p= line

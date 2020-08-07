@@ -1,0 +1,182 @@
+extends ../layout
+include ../mixins/_text_editor
+
+block content
+    .outer_wrapper.color
+        .content
+            .content_header
+                h2 Editar Personajes
+            .content_sidebar
+                a.sidebar_item(href=`/users/user/${username}/characters/addCharacter`) Agregar Personaje
+                each character in characters
+                    a.sidebar_item(href=`/users/user/${username}/characters/${character.name}`) #{character.name}
+            .content_main
+                if url.endsWith('/characters')
+                    h3 Editar Personajes
+                    hr
+                    p Mini guide/tutorial on how to use page or how it works
+                else if url.endsWith('/addCharacter')
+                    h3 Agregar Personaje
+                    hr
+                    form.content_form(action='' method='post' enctype='multipart/form-data')
+                        input(type='hidden' name='character_id' value=(hero != undefined ? hero._id : ''))
+                        input(type='hidden' name='character' value=(hero != undefined ? hero.name : username))
+                        .form_input
+                            label(for='name') *Nombre:
+                            input(type='text' name='name' id='name' placeholder='Onorim' required)
+                        .form_input
+                            label(for='image') Imagen:
+                            input(type='file' name='image' id='image')
+                        .form_input
+                            label(for='title') Título:
+                            input(type='text' name='title' id='title' placeholder='Mago de Orzov')
+                        .form_input
+                            label(for='affiliation') Afiliación:
+                            input(type='text' name='affiliation' id='affiliation' placeholder='Convento de Magos')
+                        .form_input
+                            label(for='place') Lugar de Origen/Lugar Donde Fué Encontrado:
+                            input(type='text' name='place' id='place' placeholder='Orzov')
+                        .form_input
+                            label(for='race') Raza:
+                            input(type='text' name='race' id='race' placeholder='Enano')
+                        .form_input
+                            label(for='class') Clase:
+                            input(type='text' name='class' id='class' placeholder='Wizard/Mago')
+                        .form_input
+                            label(for='age') Edad:
+                            input(type='number' name='age' id='age' min='0' placeholder='72')
+                        .form_input
+                            label(for='size') Tamaño:
+                            input(type='text' name='size' id='size' placeholder='Small/Chico')
+                        .form_input
+                            label(for='appearance') Apariencia:
+                            textarea(name='appearance' id='appearance' rows='5' placeholder='Enano sin ropa, tiene una barba metálica larga que le cubre el cuerpo.')
+                        .form_input
+                            label(for='summary') Resumen/Historia:
+                            +textEditor('story', '', 'Escribe el resumen o la historia de este personaje aquí.')
+                        .form_input
+                            label(for='text') Agregar Notas:
+                        .form_input.areaButton
+                            textarea(name='text' id='text' rows='5' placeholder='Escribe notas sobre este personaje aquí.')
+                            button.button_small(type='submit') +
+                        .form_input
+                            button.button_small(type='submit') Agregar Personaje
+                else
+                    h3= character.name
+                    hr
+                    form.content_form(action='' method='post' enctype='multipart/form-data')
+                        input(type='hidden' name='character_id' value=(hero != undefined ? hero._id : ''))
+                        input(type='hidden' name='character' value=(hero != undefined ? hero.name : username))
+                        .form_input
+                            label(for='name') *Nombre:
+                            input(type='text' name='name' id='name' placeholder='Onorim' value=character.name required)
+                        .form_input
+                            label(for='image') Imagen:
+                            if character.image != '' && character.image != undefined
+                                img(src=`http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png`, alt=`${character.name}'s Image`)
+                                input(type='file' name='image' id='image')
+                                .form_input.radio
+                                    p Borrar Imagen
+                                    label(for="remove_image.true") Si
+                                    input(type="radio" name='remove_image' id='remove_image.true' value='true')
+                                    label(for="remove_image.false") No
+                                    input(type="radio" name='remove_image' id='remove_image.false' value='false' checked)
+                            else
+                                input(type='file' name='image' id='image')
+                        .form_input
+                            label(for='title') Título:
+                            input(type='text' name='title' id='title' placeholder='Mago de Orzov' value=character.title)
+                        .form_input
+                            label(for='affiliation') Afiliación:
+                            input(type='text' name='affiliation' id='affiliation' placeholder='Convento de Magos' value=character.affiliation)
+                        .form_input
+                            label(for='place') Lugar de Origen/Lugar Donde Fué Encontrado:
+                            input(type='text' name='place' id='place' placeholder='Orzov' value=character.place)
+                        .form_input
+                            label(for='race') Raza:
+                            input(type='text' name='race' id='race' placeholder='Enano' value=character.race)
+                        .form_input
+                            label(for='class') Clase:
+                            input(type='text' name='class' id='class' placeholder='Wizard/Mago' value=character.class)
+                        .form_input
+                            label(for='age') Edad:
+                            input(type='number' name='age' id='age' min='0' placeholder='72' value=character.age)
+                        .form_input
+                            label(for='size') Tamaño:
+                            input(type='text' name='size' id='size' placeholder='Small/Chico' value=character.size)
+                        .form_input
+                            label(for='appearance') Apariencia:
+                            textarea(name='appearance' id='appearance' rows='5' placeholder='Enano sin ropa, tiene una barba metálica larga que le cubre el cuerpo.')= character.appearance || null
+                        .form_input
+                            label(for='summary') Resumen/Historia:
+                            +textEditor('story', character.summary, 'Escribe el resumen o la historia de este personaje aquí.')
+                        .form_input
+                            label(for='text') Agregar Notas:
+                        .form_input.areaButton
+                            textarea(name='text' id='text' rows='5' placeholder='Escribe notas sobre este personaje aquí.')
+                            button.button_small(type='submit') +
+                        .form_input
+                            if hero != undefined
+                                p Notas de tu personaje:
+                            else
+                                p Notas tuyas (DM):
+                            each note in character.notes
+                                if hero != undefined
+                                    if note.character_id.toString() == hero._id
+                                        - const lines = note.text.split(/(\r\n|\r|\n)/g);
+                                        .note
+                                            div
+                                                each line in lines
+                                                    p= line
+                                            p.dropdown_button.clickable.smaller_font &nabla;
+                                        .inline_modal.color
+                                                //- input(type='hidden' name='note_id' value=note._id)
+                                                .form_input
+                                                    textarea(name=`note_text[${note._id}]` id='note_text' rows='5' placeholder='Escribe notas de la sesión aquí.')= note.text
+                                                .form_input.radio
+                                                    p Borrar Nota
+                                                    label(for="delete_note.true") Si
+                                                    input(type="radio" name=`delete_note[${note._id}]` id='delete_note.true' value='true')
+                                                    label(for="delete_note.false") No
+                                                    input(type="radio" name=`delete_note[${note._id}]` id='delete_note.false' value='false' checked)
+                                                .form_input
+                                                    p Los cambios seran guardados cuando oprimas 'Guardar Cambios' al final de la página
+                                else
+                                    if note.character == username
+                                        - const lines = note.text.split(/(\r\n|\r|\n)/g);
+                                        .note
+                                            div
+                                                each line in lines
+                                                    p= line
+                                            p.dropdown_button.clickable.smaller_font &nabla;
+                                        .inline_modal.color
+                                                //- input(type='hidden' name='note_id' value=note._id)
+                                                .form_input
+                                                    textarea(name=`note_text[${note._id}]` id='note_text' rows='5' placeholder='Escribe notas de la sesión aquí.')= note.text
+                                                .form_input.radio
+                                                    p Borrar Nota
+                                                    label(for="delete_note.true") Si
+                                                    input(type="radio" name=`delete_note[${note._id}]` id='delete_note.true' value='true')
+                                                    label(for="delete_note.false") No
+                                                    input(type="radio" name=`delete_note[${note._id}]` id='delete_note.false' value='false' checked)
+                                                .form_input
+                                                    p Los cambios seran guardados cuando oprimas 'Guardar Cambios' al final de la página
+                        .margin
+                        .form_input
+                            button.button_small(type='submit') Guardar Cambios
+    
+    script.
+        const dropdownButtons = document.querySelectorAll('.dropdown_button');
+        const inlineModals = document.querySelectorAll('.inline_modal');
+
+        dropdownButtons.forEach((element, index) => {
+            element.addEventListener('click', () => {
+                inlineModals[index].style.display === '' || inlineModals[index].style.display === 'none'
+                    ? inlineModals[index].style.display = 'block'
+                    : inlineModals[index].style.display = 'none'
+                
+                element.innerHTML === '∇'
+                    ? element.innerHTML = '&Delta;'
+                    : element.innerHTML = '&nabla;';
+            });
+        });

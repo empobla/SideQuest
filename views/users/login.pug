@@ -1,15 +1,36 @@
 extends ../layout
 
 block content
-    .outer_wrapper
-        .form_wrapper
-            form.credentials(action="" method="POST")
-                h2 Ingreso
-                .form_input
+
+    .l-margin--7
+    .l-divider
+        .c-divider__left
+            h1 Ingreso
+        .c-divider__right
+
+    .l-main-content
+        .l-margin--7
+        .l-login
+            form.c-login-form(action='' method='post')
+                .c-login-form__input
                     label(for="username") Usuario:
                     input(type="text" name="username" id="username" placeholder="Ingresa tu usuario..." required)
-                .form_input
-                    label(for="username") Contraseña:
+                .c-login-form__input
+                    label(for="password") Contraseña:
                     input(type="password" name="password" id="password" placeholder="Ingresa tu contraseña..." required)
-                .form_input
-                    button.button_small(type="submit") Ingresar
+                .c-login-form__input
+                    button.c-button--white(type="submit") Ingresar
+            img#login__logo(src='/images/logos/sidequestlogo.png' alt='SideQuest logo')
+
+    //- .outer_wrapper
+    //-     .form_wrapper
+    //-         form.credentials(action="" method="POST")
+    //-             h2 Ingreso
+    //-             .form_input
+    //-                 label(for="username") Usuario:
+    //-                 input(type="text" name="username" id="username" placeholder="Ingresa tu usuario..." required)
+    //-             .form_input
+    //-                 label(for="username") Contraseña:
+    //-                 input(type="password" name="password" id="password" placeholder="Ingresa tu contraseña..." required)
+    //-             .form_input
+    //-                 button.button_small(type="submit") Ingresar

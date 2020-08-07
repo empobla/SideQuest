@@ -146,6 +146,7 @@ exports.signUpPost = [
 
 // Login/Logout
 exports.loginGet = (req, res) => {
+    console.log('gothere')
     res.render('users/login', { title: 'SideQuest - Ingreso' });
 };
 
@@ -201,6 +202,15 @@ exports.accountView = async (req, res, next) => {
         const user = req.user;
         const heroes = await Hero.find()
         res.render('account_view', { title: `SideQuest - ${user.username}` , user, heroes });
+    } catch(error) {
+        next(error);
+    }
+};
+
+// Heroes
+exports.heroesGet = async (req, res, next) => {
+    try {
+
     } catch(error) {
         next(error);
     }

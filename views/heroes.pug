@@ -1,253 +1,279 @@
 extends layout
 include mixins/_text_editor
-include mixins/_spell_modal.pug
+include mixins/_spell_dropdown
 
 block content
-    .outer_wrapper.color
-        .content
-            .content_header
-                a(href="/heroes")
-                    h2 Heroes
-                //- If user is not in 'Heroes' main page, display options
-                if !url.endsWith('/heroes')
-                    .content_options_wrapper
-                        .content_option
-                            a(href=`/heroes/${hero.name}/summary`)
-                                h4 Resumen
-                        .content_option
-                            a(href=`/heroes/${hero.name}/stats`)
-                                h4 Stats
-                        .content_option
-                            a(href=`/heroes/${hero.name}/spells`)
-                                h4 Poderes
-                        .content_option
-                            a(href=`/heroes/${hero.name}/sheets`)
-                                h4 Sheets
-            
-            //- Load all heroes on sidebar
-            .content_sidebar
+    
+    .l-margin--7
+    .l-divider
+        .c-divider__left
+            h1 Héroes
+        .c-divider__right
+    
+    if url.endsWith('/heroes')
+        .l-main-content
+            .l-cards
                 each hero in heroes
-                    a.sidebar_item(href=`/heroes/${hero.name}`) #{hero.name}
+                    a.c-card(href=`/heroes/${hero.name}`)
+                        .c-card__header
+                            .c-card__header-left
+                                h2 #{hero.name}
+                            .c-card__header-right
+                        if hero.image != '' && hero.image != undefined
+                            img.c-card__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${hero.image}.png` alt=`${hero.name}'s Image`)
+                        else
+                            img.c-card__image(src=tmpImg)
+    else
+        .l-main-content
+            .l-text-wrap
+                if hero.image != '' && hero.image != undefined
+                    img.l-text-wrap__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${hero.image}.png` alt=`${hero.name}'s Image`)
+                .c-basic-info
+                    h3 Resumen
+                    p= `Lugar de Origen: ${hero.info.place_of_origin || '???'}`
+                    p= `Edad: ${hero.info.age || '???'}`
+                    p= `Raza: ${hero.info.race || '???'}`
+                    p= `Clase: ${hero.info.class || '???'}`
+                    p= `Background: ${hero.info.background || '???'}`
+                    p= `Alineamiento: ${hero.info.alignment || '???'}`
+                .c-basic-info
+                    h3 Características Físicas
+                    p= `Estatura: ${hero.info.height || '???'}`
+                    p= `Peso: ${hero.info.weight || '???'}`
+                    p= `Piel (Color): ${hero.info.skin_color || '???'}`
+                    p= `Ojos (Color): ${hero.info.eye_color || '???'}`
+                    p= `Pelo (Color): ${hero.info.hair_color || '???'}`
+            
+            h2= `${hero.name} `
+                span#hero__classandlevel= `(${hero.info.class} nivel ${hero.info.level})`
+            
+            //- If hero has a backstory in DB, display it
+            if hero.story.backstory != '' && hero.story.backstory != undefined
+                +textEditor('view', hero.story.backstory)
+            //- Else if no hero backstory is found, tell user
+            else
+                p #{hero.name} no tiene backstory.
+            
+            h3 Personalidad
+            p.m-color-gray <strong>Rasgos:</strong>
+                em= ` ${hero.personality.personality_traits || '???'}`
+            p.m-color-gray <strong>Ideales:</strong>
+                em= ` ${hero.personality.ideals || '???'}`
+            p.m-color-gray <strong>Lazos:</strong>
+                em= ` ${hero.personality.bonds || '???'}`
+            p.m-color-gray <strong>Fallas:</strong>
+                em= ` ${hero.personality.personality_traits || '???'}`
+            
+            h3 Aliados y Organizaciones
+            //- If there is an emblem image on DB, display it
+            - const alliesOrgs = hero.story.allies_and_organizations;
+            if alliesOrgs.emblem_image != '' && alliesOrgs.emblem_image != undefined
+                .l-text-wrap--right
+                    img.l-text-wrap__image#hero__organization-banner(src=`http://res.cloudinary.com/duezou4td/image/upload/${alliesOrgs.emblem_image}.png`, alt=`${hero.name}'s organization's emblem`)
+            //- If hero isn't in an organization, tell user. Else, display its name.
+            if alliesOrgs.organization_name === '' || alliesOrgs.organization_name === undefined
+                p #{hero.name} no forma parte de ninguna organización hasta ahora.
+            else
+                p #{hero.name} forma parte de #{alliesOrgs.organization_name}.
+            //- Display hero.allies_and_organizations text with line breaks where they're supposed to go
+            - const parts = (alliesOrgs.text != undefined) ? alliesOrgs.text.split(/(\r\n)/g) : [];
+            each part in parts
+                p= part
 
-            .content_main
-                //- If user on 'Heroes' main page
-                if url.endsWith('/heroes')
-                    h3 Intro to Heroes page
-                    hr
-                //- Else if user is viewing a hero
-                else
-                    //- Write HeroName(level) on main content display
-                    h3= `${hero.name} `
-                        span(style='font-size: 0.7em;')= `(nivel ${hero.info.level})`
-                    hr
-                    //- If user on hero summary page
-                    if url.endsWith('/summary')
-                        //- Wrap text and other elements around image and basic hero info
-                        .text_wrap
-                            if hero.image === '' || hero.image === undefined
-                                img(src=tmpImg, alt=`${hero.name} image`)
+        .l-main-content.l-clearleft
+            h2 Statistics
+            hr
+            .l-stat-cards
+                - const att = hero.attributes;
+                - const physAtt = hero.physical_attributes;
+                .c-stat-card
+                    img.c-stat-card__image(src='/images/icons/shield.png' alt='Shield icon')
+                    h3 Armor Class
+                    p #{physAtt.ac}
+                .c-stat-card
+                    img.c-stat-card__image(src='/images/icons/d20.png' alt='d20 icon')
+                    h3 Initiative
+                    p= physAtt.initiative > 0 ? `+${physAtt.initiative}` : physAtt.initiative
+                .c-stat-card
+                    img.c-stat-card__image(src='/images/icons/d20.png' alt='d20 icon')
+                    h3 Proficiency Bonus
+                    if att.proficiency_bonus > 0
+                        p +#{att.proficiency_bonus}
+                    else
+                        p #{att.proficiency_bonus}
+                .c-stat-card
+                    img.c-stat-card__image(src='/images/icons/eye.png' alt='Eye icon')
+                    h3 Passive Perception
+                    p #{att.passive_perception}
+                .c-stat-card
+                    if att.inspiration
+                        img.c-stat-card__image(src='/images/icons/checkmark.png' alt='Checkmark icon')
+                    else
+                        img.c-stat-card__image(src='/images/icons/cross.png' alt='Cross icon')
+                    h3 Inspiration
+                    p
+                .c-stat-card
+                    img.c-stat-card__image(src='/images/icons/heart.png' alt='Heart icon')
+                    h3 Max HP
+                    p #{physAtt.max_hp}
+                .c-stat-card
+                    img.c-stat-card__image(src='/images/icons/d20.png' alt='d20 icon')
+                    h3 Total HitDie
+                    p #{physAtt.total_hitdie}
+                .c-stat-card
+                    img.c-stat-card__image(src='/images/icons/running.png' alt='Running icon')
+                    h3 Speed
+                    p #{physAtt.speed} ft
+            
+            h3 Ability Scores
+            - const st = hero.saving_throws;
+            - const attNameArr = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'];
+            - const attArr = [att.strength, att.dexterity, att.constitution, att.intelligence, att.wisdom, att.charisma];
+            - const attModArr = [att.strengthMod, att.dexterityMod, att.constitutionMod, att.intelligenceMod, att.wisdomMod, att.charismaMod];
+            - const stArr = [st.strength, st.dexterity, st.constitution, st.intelligence, st.wisdom, st.charisma];
+            table#hero__ability-scores
+                thead
+                    tr
+                        th Score
+                        th Ability
+                        th Ability Modifier
+                        th Saving Throw
+                tbody
+                    - for(let i = 0; i < 6; i++)
+                        tr
+                            td= attArr[i]
+                            td= attNameArr[i]
+                            if (attModArr[i] > 0)
+                                td= `+${attModArr[i]}`
                             else
-                                img(src=`http://res.cloudinary.com/duezou4td/image/upload/${hero.image}.png`, alt=`${hero.name} image`)
-                            .basic_info
-                                h4 Resumen
-                                p= `Lugar de Origen: ${hero.info.place_of_origin || '???'}`
-                                p= `Edad: ${hero.info.age || '???'}`
-                                p= `Raza: ${hero.info.race || '???'}`
-                                p= `Clase: ${hero.info.class || '???'}`
-                                p= `Background: ${hero.info.background || '???'}`
-                                p= `Alineamiento: ${hero.info.alignment || '???'}`
-                            .basic_info
-                                h4 Características Físicas
-                                p= `Estatura: ${hero.info.height || '???'}`
-                                p= `Peso: ${hero.info.weight || '???'}`
-                                p= `Piel (Color): ${hero.info.skin_color || '???'}`
-                                p= `Ojos (Color): ${hero.info.eye_color || '???'}`
-                                p= `Pelo (Color): ${hero.info.hair_color || '???'}`
-                        
-                        h4 Personalidad
-                        .main_item.margin.smaller_font_9
-                            p <strong>Rasgos:</strong>
-                                em= ` ${hero.personality.personality_traits || '???'}`
-                        .main_item.margin.smaller_font_9
-                            p <strong>Ideales:</strong>
-                                em= ` ${hero.personality.ideals || '???'}`
-                        .main_item.margin.smaller_font_9
-                            p <strong>Lazos:</strong>
-                                em= ` ${hero.personality.bonds || '???'}`
-                        .main_item.margin.smaller_font_9
-                            p <strong>Fallas:</strong>
-                                em= ` ${hero.personality.personality_traits || '???'}`
-                        
-                        h4 Backstory
-                        hr
-                        //- If hero has a backstory in DB, display it
-                        if hero.story.backstory != '' && hero.story.backstory != undefined
-                            +textEditor('view', hero.story.backstory)
-                        //- Else if no hero backstory is found, tell user
-                        else
-                            p #{hero.name} no tiene backstory.
-                        
-                        h4 Aliados y Organizaciones
-                        hr
-                        //- If there is an emblem image on DB, display it
-                        - const alliesOrgs = hero.story.allies_and_organizations;
-                        if alliesOrgs.emblem_image != '' && alliesOrgs.emblem_image != undefined
-                            .text_wrap
-                                img(src=`http://res.cloudinary.com/duezou4td/image/upload/${alliesOrgs.emblem_image}.png`, alt=`${hero.name}'s organization's emblem`)
-                        //- If hero isn't in an organization, tell user. Else, display its name.
-                        if alliesOrgs.organization_name === '' || alliesOrgs.organization_name === undefined
-                            p #{hero.name} no forma parte de ninguna organización hasta ahora.
-                        else
-                            p #{hero.name} forma parte de #{alliesOrgs.organization_name}.
-                        //- Display hero.allies_and_organizations text with line breaks where they're supposed to go
-                        - const parts = (alliesOrgs.text != undefined) ? alliesOrgs.text.split(/(\r\n)/g) : [];
-                        each part in parts
-                            p= part
-                    
-                    //- If user in hero stats page
-                    else if url.endsWith('/stats')
-                        - const att = hero.attributes;
-                        .stat_grid
-                            //- Basic Attributes
-                            .stat_block
-                                strong Inspiration
-                                p #{att.inspiration}
-                            .stat_block
-                                strong Proficiency Bonus
-                                if att.proficiency_bonus > 0
-                                    p +#{att.proficiency_bonus}
+                                td= attModArr[i]
+                            if (stArr[i].value > 0)
+                                td= `+${stArr[i].value}`
+                            else
+                                td= stArr[i].value
+            
+            .l-margin--3
+            h3 Skills
+            - const sk = hero.skills;
+            - const skNameArr = ['Acrobatics', 'Animal Handling', 'Arcana', 'Athletics', 'Deception', 'History', 'Insight', 'Intimidation', 'Investigation', 'Medicine', 'Nature', 'Perception', 'Performance', 'Persuasion', 'Religion', 'Sleight of Hand', 'Stealth', 'Survival'];
+            - const skArr = [sk.acrobatics, sk.animal_handling, sk.arcana, sk.athletics, sk.deception, sk.history, sk.insight, sk.intimidation, sk.investigation, sk.medicine, sk.nature, sk.perception, sk.performance, sk.persuasion, sk.religion, sk.sleight_of_hand, sk.stealth, sk.survival];
+                table#hero__skills
+                    thead
+                        tr
+                            th Proficient
+                            th Bonus
+                            th Skill Name
+                    tbody
+                        - for(let i = 0; i < skArr.length; i++)
+                            tr
+                                if (skArr[i].proficient)
+                                    td
+                                        img(src='/images/icons/checkmark.png')
                                 else
-                                    p #{att.proficiency_bonus}
-                            .stat_block
-                                strong Passive Perception
-                                p #{att.passive_perception}
+                                    td
+                                if (skArr[i].value > 0)
+                                    td= `+${skArr[i].value}`
+                                else
+                                    td= `${skArr[i].value}`
+                                td= skNameArr[i]
 
-                        h4 Atributos Físicos
-                        hr
-                        - const physAtt = hero.physical_attributes;
-                        .stat_grid
-                            .stat_block
-                                strong AC
-                                p #{physAtt.ac}
-                            .stat_block
-                                strong Initiative
-                                p= physAtt.initiative > 0 ? `+${physAtt.initiative}` : physAtt.initiative
-                            .stat_block
-                                strong Speed
-                                p #{physAtt.speed} ft
-                            .stat_block
-                                strong Max HP
-                                p #{physAtt.max_hp}
-                            .stat_block
-                                strong Total HitDie
-                                p #{physAtt.total_hitdie}
-                        
-                        h4 Atributos
-                        hr
-                        - const attNameArr = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'];
-                        - const attArr = [att.strength, att.dexterity, att.constitution, att.intelligence, att.wisdom, att.charisma];
-                        - const attModArr = [att.strengthMod, att.dexterityMod, att.constitutionMod, att.intelligenceMod, att.wisdomMod, att.charismaMod];
-                        .stat_grid
-                            - for(let i = 0; i < 6; i++)
-                                .stat_block
-                                    if (attModArr[i] > 0)
-                                        strong= `${attNameArr[i]} (+${attModArr[i]})`
-                                    else
-                                        strong= `${attNameArr[i]} (${attModArr[i]})`
-                                    p= attArr[i]
-                        
-                        h4 Saving Throws
-                        hr
-                        - const st = hero.saving_throws;
-                        - const stArr = [st.strength, st.dexterity, st.constitution, st.intelligence, st.wisdom, st.charisma];
-                        .stat_grid
-                            - for(let i = 0; i < 6; i++)
-                                .stat_block
-                                    if (stArr[i].proficient)
-                                        strong= `${attNameArr[i]} (proficient)`
-                                    else
-                                        strong= `${attNameArr[i]}`
-                                    if (stArr[i].value > 0)
-                                        p= `+${stArr[i].value}`
-                                    else
-                                        p= `${stArr[i].value}`
-                        
-                        h4 Skills
-                        hr
-                        - const sk = hero.skills;
-                        - const skNameArr = ['Acrobatics', 'Animal Handling', 'Arcana', 'Athletics', 'Deception', 'History', 'Insight', 'Intimidation', 'Investigation', 'Medicine', 'Nature', 'Perception', 'Performance', 'Persuasion', 'Religion', 'Sleight of Hand', 'Stealth', 'Survival'];
-                        - const skArr = [sk.acrobatics, sk.animal_handling, sk.arcana, sk.athletics, sk.deception, sk.history, sk.insight, sk.intimidation, sk.investigation, sk.medicine, sk.nature, sk.perception, sk.performance, sk.persuasion, sk.religion, sk.sleight_of_hand, sk.stealth, sk.survival];
-                        .stat_grid
-                            - for(let i = 0; i < skArr.length; i++)
-                                .stat_block
-                                    if (skArr[i].proficient)
-                                        strong= `${skNameArr[i]} (proficient)`
-                                    else
-                                        strong= `${skNameArr[i]}`
-                                    if (skArr[i].value > 0)
-                                        p= `+${skArr[i].value}`
-                                    else
-                                        p= `${skArr[i].value}`
-                    
-                    //- If user is in hero spell page
-                    else if url.endsWith('/spells')
-                        h4 #{hero.info.race || 'Racial'} spells:
-                        each level in heroSpells.racial
-                            //- If there is more than one spell in array, display level
-                            //- Writes all spells of said level
-                            if (level.length > 1)
-                                h5= `${level[0]}`
-                                each spell in level
-                                    if (spell instanceof Object)
-                                        .spell_item
-                                            p= `${spell.name}`
-                                            p.dropdown_button.clickable &nabla;
-                                        +spellModal(spell)
-                        hr
-                        
-                        h4 #{hero.info.class || 'Class'} spells:
-                        each level in heroSpells.class
-                            //- If there is more than one spell in array, display level
-                            //- Writes all spells of said level
-                            if (level.length > 1)
-                                h5= `${level[0]}`
-                                each spell in level
-                                    if (spell instanceof Object)
-                                        .spell_item
-                                            p= `${spell.name}`
-                                            p.dropdown_button.clickable &nabla;
-                                        +spellModal(spell)
-                        
-                        //- Script that adds functionality to spell dropdown description
-                        script.
-                            const dropdownButtons = document.querySelectorAll('.dropdown_button');
-                            const inlineModals = document.querySelectorAll('.inline_modal');
+            h2 Poderes
+            hr
+            h3 #{hero.info.race || 'Racial'} spells:
+            each level in heroSpells.racial
+                //- If there is more than one spell in array, display level
+                //- Writes all spells of said level
+                if (level.length > 1)
+                    h4.l-margin-bottom--0= `${level[0]}`
+                    table.l-spells
+                        each spell in level
+                            if (spell instanceof Object)
+                                tr.c-spell.m-clickable
+                                    td
+                                        img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
+                                    td= spell.name
+                                        - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
+                                        p.m-color-lightgray= `${spell.school} • ${components}`
+                                    td= spell.casting_time
+                                    td= spell.duration
+                                    td= spell.range
+                                    td.c-dropdown-button &nabla;
+                                tr
+                                    +spellDropdown(spell)
 
-                            dropdownButtons.forEach((element, index) => {
-                                element.addEventListener('click', () => {
-                                    inlineModals[index].style.display === '' || inlineModals[index].style.display === 'none'
-                                        ? inlineModals[index].style.display = 'block'
-                                        : inlineModals[index].style.display = 'none'
-                                    
-                                    element.innerHTML === '∇'
-                                        ? element.innerHTML = '&Delta;'
-                                        : element.innerHTML = '&nabla;';
-                                });
-                            });
+            h3 #{hero.info.class || 'Class'} spells:
+            each level in heroSpells.class
+                //- If there is more than one spell in array, display level
+                //- Writes all spells of said level
+                if (level.length > 1)
+                    h4.l-margin-bottom--0= `${level[0]}`
+                    table.l-spells
+                        each spell in level
+                            if (spell instanceof Object)
+                                tr.c-spell.m-clickable
+                                    td
+                                        img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
+                                    td= spell.name
+                                        - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
+                                        p.m-color-lightgray= `${spell.school} • ${components}`
+                                    td= spell.casting_time
+                                    td= spell.duration
+                                    td= spell.range
+                                    td.c-dropdown-button &nabla;
+                                tr
+                                    +spellDropdown(spell)
+            
+            h2 Sheets
+            hr
+            - const urlSheet = `/heroes/${hero.name}/charactersheet/charactersheet`;
+            - const urlDetails = `/heroes/${hero.name}/charactersheet/characterdetails`;
+            - const urlSpell = `/heroes/${hero.name}/charactersheet/spellcasting`;
+            object(data=`${urlSheet}#toolbar=0` type="application/pdf")
+            object(data=`${urlDetails}#toolbar=0` type="application/pdf")
+            object(data=`${urlSpell}#toolbar=0` type="application/pdf")
+            //- iframe(src=`${urlSheet}#toolbar=0` type="application/pdf" frameborder="0")
+            //- iframe(src=`${urlDetails}#toolbar=0` type="application/pdf" frameborder="0")
+            //- iframe(src=`${urlSpell}#toolbar=0` type="application/pdf" frameborder="0")
+            #hero__sheetbuttons
+                div
+                    a.c-button(href=urlSheet target='_blank') See Character Sheet
+                div
+                    a.c-button(href=urlDetails target='_blank') See Details Sheet
+                div
+                    a.c-button(href=urlSpell target='_blank') See Spell Sheet
 
-                    //- If user is on hero sheets page
-                    else if url.endsWith('/sheets')
-                        - const urlSheet = `/heroes/${hero.name}/charactersheet/charactersheet`;
-                        - const urlDetails = `/heroes/${hero.name}/charactersheet/characterdetails`;
-                        - const urlSpell = `/heroes/${hero.name}/charactersheet/spellcasting`;
-                        iframe(src=`${urlSheet}#toolbar=0` type="application/pdf" frameborder="0")
-                        iframe(src=`${urlDetails}#toolbar=0` type="application/pdf" frameborder="0")
-                        iframe(src=`${urlSpell}#toolbar=0` type="application/pdf" frameborder="0")
-                        hr
-                        .stat_grid
-                            .stat_block
-                                a.button_small(href=urlSheet target='_blank') See Character Sheet
-                            .stat_block
-                                a.button_small(href=urlDetails target='_blank') See Details Sheet
-                            .stat_block
-                                a.button_small(href=urlSpell target='_blank') See Spell Sheet
+    script.
+        const spellBar = document.querySelectorAll('.c-spell');
+        const dropdownButton = document.querySelectorAll('.c-dropdown-button');
+        const spellDescription = document.querySelectorAll('.c-spell-description');
+
+        spellBar.forEach((element, index) => {
+            element.addEventListener('click', () => {
+                
+                spellDescription[index].style.display === '' || spellDescription[index].style.display === 'none'
+                    ? spellDescription[index].style.display = 'table-cell'
+                    : spellDescription[index].style.display = 'none';
+                
+                
+                dropdownButton[index].innerHTML === '∇'
+                    ? dropdownButton[index].innerHTML = '&Delta;'
+                    : dropdownButton[index].innerHTML = '&nabla;';
+            });
+        });
+
+    //-      -->        //- If user is on hero sheets page
+    //-                 else if url.endsWith('/sheets')
+    //-                     - const urlSheet = `/heroes/${hero.name}/charactersheet/charactersheet`;
+    //-                     - const urlDetails = `/heroes/${hero.name}/charactersheet/characterdetails`;
+    //-                     - const urlSpell = `/heroes/${hero.name}/charactersheet/spellcasting`;
+    //-                     iframe(src=`${urlSheet}#toolbar=0` type="application/pdf" frameborder="0")
+    //-                     iframe(src=`${urlDetails}#toolbar=0` type="application/pdf" frameborder="0")
+    //-                     iframe(src=`${urlSpell}#toolbar=0` type="application/pdf" frameborder="0")
+    //-                     hr
+    //-                     .stat_grid
+    //-                         .stat_block
+    //-                             a.button_small(href=urlSheet target='_blank') See Character Sheet
+    //-                         .stat_block
+    //-                             a.button_small(href=urlDetails target='_blank') See Details Sheet
+    //-                         .stat_block
+    //-                             a.button_small(href=urlSpell target='_blank') See Spell Sheet

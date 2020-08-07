@@ -1,0 +1,26 @@
+mixin spellModal(spell)
+    .inline_modal.color
+        h4= spell.name
+        if spell.level === 'cantrip'
+            em= `${spell.school} ${spell.level} ${spell.ritual ? '(ritual)' : ''}`
+        else if spell.level === 'level1'
+            em=`${spell.level.substring(5)}st-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''}`
+        else if spell.level === 'level2'
+            em=`${spell.level.substring(5)}nd-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''}`
+        else if spell.level === 'level3'
+            em=`${spell.level.substring(5)}st-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''}`
+        else
+            em=`${spell.level.substring(5)}th-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''}`
+        p.margin <strong>Casting Time: </strong> #{spell.casting_time}
+        p <strong>Range: </strong> #{spell.range}
+        p <strong>Components: </strong>
+            - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
+            span= `${components}`
+            span= `${spell.materials != '' && spell.materials != undefined ? ` (${spell.materials})` : ''}`
+        p <strong>Duration: </strong> #{spell.duration}
+        .margin
+        if spell.description != '' && spell.description != undefined
+            - let spellDescLines = spell.description.split(/(\r\n|\r|\n)/g);
+            each line in spellDescLines
+                p= `${line}`
+

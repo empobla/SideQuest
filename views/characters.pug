@@ -2,63 +2,151 @@ extends layout
 include mixins/_text_editor
 
 block content
-    .outer_wrapper.color
-        .content
-            .content_header
-                h2 Personajes
+
+    .l-margin--7
+    .l-divider
+        .c-divider__left
+            h1 Personajes
+        .c-divider__right
+
+    if url.endsWith('/characters')
+        .l-main-content
+            .l-search
+                form.c-search(action='')
+                    .c-search__input
+                        label(for='name') Nombre
+                        input(type='text' name='name' id='name' placeholder='Buscar personaje por nombre' disabled)
+                    .c-search__input
+                        label(for='relationship') Relacion
+                        input(type='text' name='relationship' id='relationship' placeholder='Buscar personaje por relacion' disabled)
+                    .c-search__input
+                        label(for='place') Lugar
+                        input(type='text' name='place' id='place' placeholder='Buscar personaje por lugar' disabled)
+                    .c-search__input
+                        label(for='race') Raza
+                        input(type='text' name='race' id='race' placeholder='Buscar personaje por raza' disabled)
+                    .c-search__input
+                        button.c-button--large.m-background-lightgray(type='' disabled) Buscar
             
-            .content_sidebar
-                //- Load all existing characters in sidebar
+            .l-margin--3
+            .l-cards--4
                 each character in characters
-                    a.sidebar_item(href=`/characters/${character.name}`) #{character.name}
-            
-            .content_main
-                //- If user is in characters main page
-                if url.endsWith('/characters')
-                    h3 Intro to Characters page
-                    hr
-                
-                //- If user is viewing an individual character
-                else
-                    h3 #{character.name}
-                    hr
-                    .text_wrap
+                    a.c-card(href=`/characters/${character.name}`)
+                        .c-card__header
+                            .c-card__header-left
+                                h2 #{character.name}
+                            .c-card__header-right
                         if character.image != '' && character.image != undefined
-                            img(src=`http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png` alt=`${character.name} image`)
+                            img.c-card__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png` alt=`${character.name}'s Image`)
                         else
-                            img(src=tmpImg alt=`${character.name} image`)
-                        .basic_info
-                            h4 Resumen
-                            p= `Lugar de Origen o donde fué conocido: ${character.place || '???'}`
-                            p= `Edad: ${character.age || '???'}`
-                            p= `Raza: ${character.race || '???'}`
-                            p= `Clase: ${character.class || '???'}`
-                            p= `Tamaño: ${character.size || '???'}`
-                    
-                    h4 Apariencia:
+                            img.c-card__image(src=tmpImg)
+    
+    else
+        .l-main-content
+            .l-text-wrap
+                if character.image != '' && character.image != undefined
+                    img.l-text-wrap__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png` alt=`${character.name}'s Image`)
+                .c-basic-info
+                    h3 Resumen
+                    p= `Lugar de Origen o donde fué conocido: ${character.place || '???'}`
+                    p= `Edad: ${character.age || '???'}`
+                    p= `Raza: ${character.race || '???'}`
+                    p= `Clase: ${character.class || '???'}`
+                    p= `Tamaño: ${character.size || '???'}`
+                .c-basic-info
+                    h3 Apariencia
                     if character.appearance != '' && character.appearance != undefined
-                        .main_item.margin.smaller_font_9
-                            - const lines = character.appearance.split(/(\r\n|\r|\n)/g)
-                            each line in lines
-                                p= line
+                        - const lines = character.appearance.split(/(\r\n|\r|\n)/g)
+                        each line in lines
+                            p= line
                     else
                         p ???
-                    
-                    h4 Resumen/Historia:
-                    hr
-                    if character.summary != '' && character.summary != undefined
-                            +textEditor('view', character.summary)
-                    else
-                        p #{character.name} no tiene historia/resumen.
-                    
-                    //- If character notes exist, display them with appropriate line breaks
-                    if character.notes != '' && character.notes != undefined
-                        h4 Notas:
-                        hr
-                        each note in character.notes
-                            .note
-                                div
-                                    h4= note.character
+
+            h2= `${character.name}`
+
+            if character.summary != '' && character.summary != undefined
+                    +textEditor('view', character.summary)
+            else
+                p #{character.name} no tiene historia/resumen.
+
+        //- If character notes exist, display them with appropriate line breaks
+        if character.notes != '' && character.notes != undefined
+            .l-main-content.l-clearleft
+                h2 Notas
+                each note in character.notes
+                    .l-content-box--full-width
+                        .c-content-box
+                            img.c-content-box__image(src='/images/logos/favicon.png' alt='')
+
+                            .l-content-box__content
+                                .c-content-box__title
+                                    h4 #{note.character}
+                                
+                                .l-content-box__text
                                     - const lines = note.text.split(/(\r\n|\r|\n)/g);
                                     each line in lines
                                         p= line
+        
+        //-
+            //- Load all announcements
+            - var count = 0;
+            each announcement in announcements
+                .l-content-box
+                    .c-content-box
+                        img.c-content-box__image(src='/images/logos/favicon.png' alt='')
+                        
+                        .l-content-box__content
+                            .c-content-box__title
+                                h3 #{announcement.name}
+                                - const date = new Date(announcement.date)
+                                em.l-content-box__title--info= `Posted ${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()} by ${announcement.user}`
+                            
+                            .l-content-box__text
+                                //- Announcements preview
+                                .wmd-panel
+            
+                
+    //-             //- If user is viewing an individual character
+    //-             else
+    //-                 h3 #{character.name}
+    //-                 hr
+    //-                 .text_wrap
+    //-                     if character.image != '' && character.image != undefined
+    //-                         img(src=`http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png` alt=`${character.name} image`)
+    //-                     else
+    //-                         img(src=tmpImg alt=`${character.name} image`)
+    //-                     .basic_info
+    //-                         h4 Resumen
+    //-                         p= `Lugar de Origen o donde fué conocido: ${character.place || '???'}`
+    //-                         p= `Edad: ${character.age || '???'}`
+    //-                         p= `Raza: ${character.race || '???'}`
+    //-                         p= `Clase: ${character.class || '???'}`
+    //-                         p= `Tamaño: ${character.size || '???'}`
+                    
+    //-                 h4 Apariencia:
+    //-                 if character.appearance != '' && character.appearance != undefined
+    //-                     .main_item.margin.smaller_font_9
+    //-                         - const lines = character.appearance.split(/(\r\n|\r|\n)/g)
+    //-                         each line in lines
+    //-                             p= line
+    //-                 else
+    //-                     p ???
+                    
+    //-                 h4 Resumen/Historia:
+    //-                 hr
+    //-                 if character.summary != '' && character.summary != undefined
+    //-                         +textEditor('view', character.summary)
+    //-                 else
+    //-                     p #{character.name} no tiene historia/resumen.
+                    
+    //-                 //- If character notes exist, display them with appropriate line breaks
+    //-                 if character.notes != '' && character.notes != undefined
+    //-                     h4 Notas:
+    //-                     hr
+    //-                     each note in character.notes
+    //-                         .note
+    //-                             div
+    //-                                 h4= note.character
+    //-                                 - const lines = note.text.split(/(\r\n|\r|\n)/g);
+    //-                                 each line in lines
+    //-                                     p= line

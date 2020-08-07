@@ -7,7 +7,7 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     
     //- Favicon
-    link(rel="icon" type="image/png" href="/images/logos/sidequestlogo1.png")
+    link(rel="icon" type="image/png" href="/images/logos/favicon.png")
   body
     //- Global Variables
     - const tmpImg = 'https://lunawood.com/wp-content/uploads/2018/02/placeholder-image.png'
@@ -15,28 +15,45 @@ html
     //- Header/Nav
     header
       nav
-        img.logo(src='/images/logos/sidequestlogo.png', alt="SideQuest DnD logo")
-        h1 SideQuest DnD
+        img.nav__logo(src='/images/logos/sidequestlogo.png', alt="SideQuest DnD logo")
 
         ul
           li
             a(href="/") Inicio
           li
-            a(href="/heroes") Heroes
+            a(href="/heroes") Héroes
+          li
+            a(href="/characters") Personajes
           li
             a(href="/story") Historia
           li
-            a(href="/characters") Personajes
+            a(href="/maps") Mapas
           //- If user is not logged in
           if !user
             li
               a(href="/users/login") Ingresar
           //- Else if user is logged in
           else
-            li
-              a(href=`/users/user/${user.username}`) #{user.username}
+            li.l-dropdown
+              a.m-cursor-normal #{user.username}
+              ul.c-dropdown
+                li 
+                  a(href=`/users/user/${user.username}`) Cuenta
+                li 
+                  a(href='') Héroes
+                li 
+                  a(href='') Personajes
+                li
+                  a(href='') Historias
+                if user.isAdmin
+                  li
+                    a(href='') Admin
+                else if user.isDM
+                  li
+                    a(href='') DM
             li
               a(href="/users/logout")
-                img.icon(src='/images/icons/logout.png' alt="logout")
+                img#nav__icon(src='/images/icons/logout.png' alt="logout")
           
-    block content
+    main
+      block content

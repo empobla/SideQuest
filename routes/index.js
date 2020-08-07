@@ -10,25 +10,21 @@ router.get('/', sideQuestController.index);
 
 /* Heroes */
 router.get('/heroes', sideQuestController.heroes);
-router.get('/heroes/:heroName', (req, res) => {
-  const heroName = req.params.heroName;
-  res.redirect(`/heroes/${heroName}/summary`)
-});
-router.get('/heroes/:heroName/summary', sideQuestController.heroSummary);
-router.get('/heroes/:heroName/stats', sideQuestController.heroSummary);
-router.get('/heroes/:heroName/spells', sideQuestController.heroSummary);
-router.get('/heroes/:heroName/sheets', sideQuestController.heroSummary);
+router.get('/heroes/:heroName', sideQuestController.heroSummary);
 
 /* Character Sheets Routes */
 router.get('/heroes/:hero/charactersheet/:selector', characterSheet.fillPdf);
+
+/* Characters */
+router.get('/characters', sideQuestController.characters);
+router.get('/characters/:characterName', sideQuestController.characters);
 
 /* Story */
 router.get('/story', sideQuestController.story);
 router.get('/story/:storyId', sideQuestController.story);
 
-/* Characters */
-router.get('/characters', sideQuestController.characters);
-router.get('/characters/:characterName', sideQuestController.characters);
+/* Maps */
+router.get('/maps', sideQuestController.maps);
 
 /* TEST */
 // router.get('/test/pagedown', (req, res) => res.render('test/testpagedown'));
