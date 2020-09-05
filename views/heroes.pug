@@ -32,8 +32,14 @@ block content
                     h3 Resumen
                     p= `Lugar de Origen: ${hero.description.place_of_origin || '???'}`
                     p= `Edad: ${hero.description.physical.age || '???'}`
-                    p= `Raza: ${hero.race.name || '???'}`
-                    p= `Clase: ${hero.class.name || '???'}`
+                    if hero.race
+                        p= `Raza: ${hero.race.name || '???'}`
+                    else
+                        p= `Raza: ???`
+                    if hero.class
+                        p= `Clase: ${hero.class.name || '???'}`
+                    else
+                        p= `Clase: ???`
                     p= `Background: ${hero.description.background || '???'}`
                     p= `Alineamiento: ${hero.description.alignment || '???'}`
                 .c-basic-info
@@ -45,7 +51,10 @@ block content
                     p= `Pelo (Color): ${hero.description.physical.hair_color || '???'}`
             
             h2= `${hero.name} `
-                span#hero__classandlevel= `(${hero.class.name} nivel ${hero.level})`
+                if hero.class
+                    span#hero__classandlevel= `(${hero.class.name} nivel ${hero.level})`
+                else
+                    span#hero__classandlevel= `(Nivel ${hero.level})`
             
             //- If hero has a backstory in DB, display it
             if hero.description.notes.backstory != '' && hero.description.notes.backstory != undefined
@@ -115,17 +124,19 @@ block content
                 .c-stat-card
                     img.c-stat-card__image(src='/images/icons/heart.png' alt='Heart icon')
                     h3 Max HP
-                    - const startHPNum = parseInt(hero.class.hitpoints_start.substring(0, 1));
-                    - const maxHPString = hero.class.hitpoints_higherlvls.split(')')[0];
-                    - const classHPNum = parseInt(maxHPString.substring(maxHPString.length-1));
-                    if (hero.level == 1)
-                        p= startHPNum + hero.abilities.constitution.modifier
-                    else
-                        p= (hero.level-1) * (classHPNum + hero.abilities.constitution.modifier) + startHPNum + hero.abilities.constitution.modifier
+                    if hero.class
+                        - const startHPNum = parseInt(hero.class.hitpoints_start.substring(0, 1));
+                        - const maxHPString = hero.class.hitpoints_higherlvls.split(')')[0];
+                        - const classHPNum = parseInt(maxHPString.substring(maxHPString.length-1));
+                        if (hero.level == 1)
+                            p= startHPNum + hero.abilities.constitution.modifier
+                        else
+                            p= (hero.level-1) * (classHPNum + hero.abilities.constitution.modifier) + startHPNum + hero.abilities.constitution.modifier
                 .c-stat-card
                     img.c-stat-card__image(src='/images/icons/d20.png' alt='d20 icon')
                     h3 Total HitDie
-                    p #{hero.level}#{hero.class.hit_die}
+                    if hero.class
+                        p #{hero.level}#{hero.class.hit_die}
                 .c-stat-card
                     img.c-stat-card__image(src='/images/icons/running.png' alt='Running icon')
                     h3 Speed
@@ -184,7 +195,10 @@ block content
 
             h2 Poderes
             hr
-            h3 #{hero.race.name || 'Racial'} spells:
+            if hero.race
+                h3 #{hero.race.name || 'Racial'} spells:
+            else
+                h3 Racial spells:
             each level in heroSpells.racial
                 //- If there is more than one spell in array, display level
                 //- Writes all spells of said level
@@ -206,7 +220,10 @@ block content
                                 tr
                                     +spellDropdown(spell)
 
-            h3 #{hero.class.name || 'Class'} spells:
+            if hero.class
+                h3 #{hero.class.name || 'Class'} spells:
+            else
+                h3 Class spells:
             each level in heroSpells.class
                 //- If there is more than one spell in array, display level
                 //- Writes all spells of said level
