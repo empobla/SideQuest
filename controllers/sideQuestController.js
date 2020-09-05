@@ -27,7 +27,6 @@ exports.index = async (req, res, next) => {
 exports.heroes = async (req, res, next) => {
     try{
         const heroes = await Hero.find();
-        console.log(heroes)
         res.render('heroes', { title: 'SideQuest - Heroes', heroes });
     } catch(error) {
         next(error);
@@ -38,7 +37,23 @@ exports.heroSummary = async (req, res, next) => {
     try{
         const heroName = req.params.heroName;
         const heroes = await Hero.find();
-        const hero = await Hero.findOne({ name: heroName });
+        const hero = await Hero.aggregate([
+            { $match: { name: heroName } },
+            { $lookup: {
+                from: 'races',
+                localField: 'race',
+                foreignField: '_id',
+                as: 'race'
+            } },
+            { $lookup: {
+                from: 'classes',
+                localField: 'class',
+                foreignField: '_id',
+                as: 'class'
+            } }
+        ]).then(res => res[0]);
+        hero.race = hero.race[0];
+        hero.class = hero.class[0];
 
         const getHeroSpells = await Hero.aggregate([
             { $match: { name: heroName } },

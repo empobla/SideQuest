@@ -5,6 +5,8 @@ const Spell = require('../models/spell');
 const Story = require('../models/story');
 const Character = require('../models/character');
 const Announcement = require('../models/announcement');
+const Race = require('../models/race');
+const Class = require('../models/class');
 
 // Require middleware
 const Passport = require('passport');
@@ -27,41 +29,55 @@ const storage = Multer.diskStorage({}); // Tells multer no disk storage will be 
 const upload = Multer({ storage }); // Passes storage onto Multer and saves in upload const
 // exports.upload = upload.single('image');    // Tells multer to only handle single-file uploads
 exports.upload = upload.fields([
-    { name: 'image', maxCount: 1 },
-    { name: 'emblem_image', maxCount: 1 }
+    { name: 'image', maxCount: 2 },
+    { name: 'emblem_image', maxCount: 2 }
 ]);
 
-exports.pushToCloudinary = (req, res, next) => {
-    if(req.files && (req.files.image != undefined || req.files.emblem_image != undefined)) {
-        if(res.locals.url.endsWith('/hero/save/0')) {
-            Cloudinary.v2.uploader.upload(req.files.image[0].path, {
-                folder: 'sideQuest/heroImages'
-            })
-            .then((result) => {
-                req.body.image = result.public_id;
-                next();
-            })
-            .catch(() => {
-                // req.flash('error', 'Sorry, there was a problem uploading your image. Please try again');
-                const username = req.params.username;
-                res.redirect(`/users/user/${username}/hero/0`);
-            });
+exports.pushToCloudinary = async (req, res, next) => {
+    if(req.files) {
+        if(res.locals.url.includes('/heroes/')) {
+            if(req.files.image != undefined){
+                await Cloudinary.v2.uploader.upload(req.files.image[0].path, {
+                    folder: 'sideQuest/heroImages'
+                })
+                .then((result) => {
+                    req.body.image = result.public_id;
+                    // next();
+                })
+                .catch(() => {
+                    // req.flash('error', 'Sorry, there was a problem uploading your image. Please try again');
+                    const username = req.params.username;
+                    const heroId = req.params.heroId;
+                    res.locals.url.endsWith('/heroes/newHero')
+                        ? res.redirect(`/users/${username}/heroes/newHero`)
+                        : res.redirect(`/users/${username}/heroes/${heroId}`);
+                    console.log('Error: Hero Image');
+                });
+            }
+            
+            if(req.files.emblem_image != undefined) {
+                await Cloudinary.v2.uploader.upload(req.files.emblem_image[0].path || null, {
+                    folder: 'sideQuest/heroOrganizationEmblems'
+                })
+                .then((result) => {
+                    req.body.emblem_image = result.public_id;
+                    // next();
+                })
+                .catch(() => {
+                    // req.flash('error', 'Sorry, there was a problem uploading your image. Please try again');
+                    const username = req.params.username;
+                    const heroId = req.params.heroId;
+                    res.locals.url.endsWith('/heroes/newHero')
+                        ? res.redirect(`/users/${username}/heroes/newHero`)
+                        : res.redirect(`/users/${username}/heroes/${heroId}`);
+                    console.log('Error: Emblem Image');
+                });
+            }
 
-        } else if(res.locals.url.endsWith('/hero/save/9')) {
-            Cloudinary.v2.uploader.upload(req.files.emblem_image[0].path || null, {
-                folder: 'sideQuest/heroOrganizationEmblems'
-            })
-            .then((result) => {
-                req.body.emblem_image = result.public_id;
-                next();
-            })
-            .catch(() => {
-                // req.flash('error', 'Sorry, there was a problem uploading your image. Please try again');
-                const username = req.params.username;
-                res.redirect(`/users/user/${username}/hero/9`);
-            });
+            next();
 
         } else if(res.locals.url.includes('/characters/')) {
+            if(req.files.image == undefined) next();
             Cloudinary.v2.uploader.upload(req.files.image[0].path || null, {
                 folder: 'sideQuest/characterImages'
             })
@@ -72,10 +88,10 @@ exports.pushToCloudinary = (req, res, next) => {
             .catch(() => {
                 // req.flash('error', 'Sorry, there was a problem uploading your image. Please try again');
                 const username = req.params.username;
-                const characterName0 = req.params.characterName;
-                (characterName0 != undefined && characterName0 != '')
-                    ? res.redirect(`/users/user/${username}/characters/${characterName0}`)
-                    : res.redirect(`/users/user/${username}/characters/addCharacter`);
+                const characterId = req.params.characterId;
+                (characterId != undefined && characterId != '')
+                    ? res.redirect(`/users/${username}/characters/edit/${characterId}`)
+                    : res.redirect(`/users/${username}/characters/newcharacter`);
             });
         } else {
             Cloudinary.v2.uploader.upload(req.file.path, {
@@ -146,14 +162,13 @@ exports.signUpPost = [
 
 // Login/Logout
 exports.loginGet = (req, res) => {
-    console.log('gothere')
     res.render('users/login', { title: 'SideQuest - Ingreso' });
 };
 
 exports.loginPost = Passport.authenticate('local', {
     successRedirect: '/users',
     // successFlash: 'You are now logged in',
-    failureRedirect: '/users/login'
+    failureRedirect: '/login'
     // failureFlash: 'Login failed, please try again'
 });
 
@@ -167,7 +182,7 @@ exports.logout = (req, res) => {
 exports.isAuth = (req, res, next) => {
     req.isAuthenticated()
         ? next()
-        : res.redirect('/users/login');
+        : res.redirect('/login');
 };
 
 exports.isAdmin = (req, res, next) => {
@@ -208,124 +223,138 @@ exports.accountView = async (req, res, next) => {
 };
 
 // Heroes
-exports.heroesGet = async (req, res, next) => {
+exports.heroes = async (req, res, next) => {
     try {
+        const username = req.params.username;
+        const user = await User.findOne({ username: username });
 
+        const userHeroes = await User.aggregate([
+            { $match: { username: username } },
+            { $lookup: {
+                from: 'heros',
+                localField: 'characters',
+                foreignField: '_id',
+                as: 'characters'
+            } }
+        ]).then(result => result[0].characters);
+
+        res.render('users/heroes', { title: 'SideQuest - Mis Héroes', username, userHeroes });
     } catch(error) {
         next(error);
     }
 };
 
-// Edit Hero
-exports.editHeroGet = async (req, res, next) => {
+// Create/Edit Hero
+/* SECURITY: Must check if owner user or admin user is editing. Else, deny access. */
+exports.newHeroGet = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const pageNumber = req.params.pageNumber;
-        const hero = await Hero.findOne({ player_name: username });
+        const heroId = req.params.heroId;
 
+        const heroQuery = Hero.findOne({ _id: heroId });
+        const racesQuery = Race.find();
+        const classesQuery = Class.find();
+
+        const spellLevels = ['cantrip', 'level1', 'level2', 'level3', 'level4', 'level5', 'level6', 'level7', 'level8', 'level9'];
+        const spellsQuery = [];
+
+        for(let i = 0; i < spellLevels.length; i++) {
+            const level = Spell.aggregate([
+                { $match: { level: spellLevels[i] } },
+                { $sort: { name: 1 } }
+            ]);
+            spellsQuery.push(level);
+        }
+
+        const [hero, races, classes] = await Promise.all([heroQuery, racesQuery, classesQuery]);
+        const spells = await Promise.all(spellsQuery.map(level => level));
+
+        let heroSpells = {};
         
-        // const cantrips = Spell.find({ level: 'cantrip' });
-        const cantrips = Spell.aggregate([
-            { $match: { level: 'cantrip' } },
-            { $sort: { name: 1 } },
-        ]);
-        const level1 = Spell.aggregate([
-            { $match: { level: 'level1' } },
-            { $sort: { name: 1 } }
-        ]);
-        const level2 = Spell.aggregate([
-            { $match: { level: 'level2' } },
-            { $sort: { name: 1 } }
-        ]);
-        const level3 = Spell.aggregate([
-            { $match: { level: 'level3' } },
-            { $sort: { name: 1 } }
-        ]);
-        const level4 = Spell.aggregate([
-            { $match: { level: 'level4' } },
-            { $sort: { name: 1 } }
-        ]);
-        const level5 = Spell.aggregate([
-            { $match: { level: 'level5' } },
-            { $sort: { name: 1 } }
-        ]);
-        const level6 = Spell.aggregate([
-            { $match: { level: 'level6' } },
-            { $sort: { name: 1 } }
-        ]);
-        const level7 = Spell.aggregate([
-            { $match: { level: 'level7' } },
-            { $sort: { name: 1 } }
-        ]);
-        const level8 = Spell.aggregate([
-            { $match: { level: 'level8' } },
-            { $sort: { name: 1 } }
-        ]);
-        const level9 = Spell.aggregate([
-            { $match: { level: 'level9' } },
-            { $sort: { name: 1 } }
-        ]);
+        if(!res.locals.url.endsWith('/newHero')) {
+            // Hero spells (can be 'slimmed-down')
+            const getHeroSpells = await Hero.aggregate([
+                { $match: { name: hero.name } },
+                { $lookup: {
+                    from: 'spells',
+                    localField: 'spells.racial',
+                    foreignField: '_id',
+                    as: 'spells.racial'
+                } },
+                { $lookup: {
+                    from: 'spells',
+                    localField: 'spells.class',
+                    foreignField: '_id',
+                    as: 'spells.class'
+                } }
+            ]).then(res => res[0].spells);
 
-        const spells = await Promise.all([cantrips, level1, level2, level3, level4, level5, level6, level7, level8, level9]);
-        const getHeroSpells = await Hero.aggregate([
-            { $match: { player_name: username } },
-            { $lookup: {
-                from: 'spells',
-                localField: 'spells.racial',
-                foreignField: '_id',
-                as: 'spells.racial'
-            } },
-            { $lookup: {
-                from: 'spells',
-                localField: 'spells.class',
-                foreignField: '_id',
-                as: 'spells.class'
-            } }
-        ]).then(res => res[0].spells);
+            const racialSpells = [
+                getHeroSpells.racial.map(spell => { if(spell.level === 'cantrip') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.racial.map(spell => { if(spell.level === 'level1') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.racial.map(spell => { if(spell.level === 'level2') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.racial.map(spell => { if(spell.level === 'level3') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.racial.map(spell => { if(spell.level === 'level4') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.racial.map(spell => { if(spell.level === 'level5') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.racial.map(spell => { if(spell.level === 'level6') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.racial.map(spell => { if(spell.level === 'level7') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.racial.map(spell => { if(spell.level === 'level8') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.racial.map(spell => { if(spell.level === 'level9') return spell; }).filter(el => { return el != null; })
+            ];
 
-        const racialSpells = [
-            getHeroSpells.racial.map(spell => { if(spell.level === 'cantrip') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level1') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level2') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level3') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level4') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level5') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level6') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level7') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level8') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level9') return spell; }).filter(el => { return el != null; })
-        ];
+            const classSpells = [
+                getHeroSpells.class.map(spell => { if(spell.level === 'cantrip') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.class.map(spell => { if(spell.level === 'level1') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.class.map(spell => { if(spell.level === 'level2') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.class.map(spell => { if(spell.level === 'level3') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.class.map(spell => { if(spell.level === 'level4') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.class.map(spell => { if(spell.level === 'level5') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.class.map(spell => { if(spell.level === 'level6') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.class.map(spell => { if(spell.level === 'level7') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.class.map(spell => { if(spell.level === 'level8') return spell; }).filter(el => { return el != null; }),
+                getHeroSpells.class.map(spell => { if(spell.level === 'level9') return spell; }).filter(el => { return el != null; })
+            ];
 
-        const classSpells = [
-            getHeroSpells.class.map(spell => { if(spell.level === 'cantrip') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level1') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level2') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level3') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level4') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level5') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level6') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level7') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level8') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level9') return spell; }).filter(el => { return el != null; })
-        ];
+            heroSpells = {racial: racialSpells, class: classSpells};
+        }
 
-        for(let i = 0; i < 10; i++) {
-            if(i == 0) {
-                spells[i].unshift('Cantrips');
-                racialSpells[i].unshift('Cantrips');
-                classSpells[i].unshift('Cantrips');
-            } else {
-                spells[i].unshift('Level ' + i);
-                racialSpells[i].unshift('Level ' + i);
-                classSpells[i].unshift('Level ' + i);
-            }
-        };
-
-        const heroSpells = {racial: racialSpells, class: classSpells};
-        
-        // console.log(heroSpells.racial[8].length)
         // res.json(heroSpells)
-        res.render('users/edit_hero', { title: 'SideQuest: Editar Heroe', hero, pageNumber, username, spells, heroSpells });
+
+        res.locals.url.endsWith('/newHero')
+            ? res.render('users/heroes', { title: 'SideQuest - Crear Héroe', username, races, classes, spells })
+            : res.render('users/heroes', { title: 'SideQuest - Editar Héroe', username, races, classes, spells, hero, heroSpells });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.newHeroPost = async (req, res, next) => {
+    try {
+        const hero = new Hero(req.body);
+        const userQuery = User.findOne({ username: req.params.username });
+        const heroClassQuery = Class.findOne({ _id: req.body.class.split(',')[1] });
+        const [user, heroClass] = await Promise.all([userQuery, heroClassQuery]);
+        
+        user.characters.push(hero._id);
+        
+        hero.race = req.body.race.split(',')[1];
+        hero.class = req.body.class.split(',')[1];
+
+        hero.class_proficiencies = req.body.proficiency;
+        
+        if(req.body.class != -1){
+            heroClass.st_proficiencies.forEach(st => hero['saving_throws'][`${st}`] = true);
+            if ('proficiency' in req.body) req.body.proficiency.forEach(skill => (skill != -1) ? hero['skills'][`${skill}`] = true : []);
+        }
+
+        req.body.emblem_image == undefined
+            ? hero.description.notes.organization.emblem = ''
+            : hero.description.notes.organization.emblem = req.body.emblem_image;
+
+        // res.json(hero)
+        await hero.save();
+        await User.findByIdAndUpdate(user._id, user, { new: true });
+        res.redirect(`/users/${user.username}/heroes`);
     } catch(error) {
         next(error);
     }
@@ -334,104 +363,46 @@ exports.editHeroGet = async (req, res, next) => {
 exports.editHeroPost = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const pageNumber = req.params.pageNumber;
-        const hero = await Hero.findOne({ player_name: username });
-        switch(pageNumber) {
-            case '0':
-                const tmpHero0 = new Hero(hero);
-                hero.image = req.body.image;
-                hero.info = req.body;
-                req.body.image === undefined ? hero.image = tmpHero0.image : hero.image = req.body.image;
-                (hero.image === '') ? hero.image = tmpHero0.image : '';
-                (req.body.remove_image == 'true') ? hero.image = '' : '';
-                await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-                res.redirect(`/users/user/${username}/hero/${pageNumber}/saved`);
-                break;
-            case '1':
-                hero.personality = req.body;
-                await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-                res.redirect(`/users/user/${username}/hero/${pageNumber}/saved`);
-                break;
-            // UPDATE: Calc values
-            case '2':   // Missing racial and class modifiers (must also lookup if something adds modifiers)
-                hero.attributes = req.body;
-                // hero.attributes.strengthMod = Math.floor((hero.attributes.strength-10)/2);
-                // hero.attributes.dexterityMod = Math.floor((hero.attributes.dexterity-10)/2);
-                // hero.attributes.constitutionMod = Math.floor((hero.attributes.constitution-10)/2);
-                // hero.attributes.intelligenceMod = Math.floor((hero.attributes.intelligence-10)/2);
-                // hero.attributes.wisdomMod = Math.floor((hero.attributes.wisdom-10)/2);
-                // hero.attributes.charismaMod = Math.floor((hero.attributes.charisma-10)/2);
-                await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-                res.redirect(`/users/user/${username}/hero/${pageNumber}/saved`);
-                break;
-            // UPDATE: Calc values
-            case '3':
-                hero.physical_attributes = req.body;
-                await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-                res.redirect(`/users/user/${username}/hero/${pageNumber}/saved`);
-                break;
-            // UPDATE: Calc proficiency values
-            case '4':
-                hero.saving_throws = req.body;
-                await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-                res.redirect(`/users/user/${username}/hero/${pageNumber}/saved`);
-                break;
-            // UPDATE: Calc proficiency values
-            case '5':
-                hero.skills = req.body;
-                await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-                res.redirect(`/users/user/${username}/hero/${pageNumber}/saved`);
-                break;
-            case '6':
-                hero.attacksAndSpellCasting = req.body;
-                await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-                res.redirect(`/users/user/${username}/hero/${pageNumber}/saved`);
-                break;
-            case '7':
-                hero.equipment = req.body;
-                await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-                res.redirect(`/users/user/${username}/hero/${pageNumber}/saved`);
-                break;
-            case '8':
-                hero.additional_info = req.body;
-                await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-                res.redirect(`/users/user/${username}/hero/${pageNumber}/saved`);
-                break;
-            case '9':
-                const tmpHero9 = new Hero(hero);
-                hero.story = req.body;
-                req.body.emblem_image === undefined ? hero.story.allies_and_organizations.emblem_image = tmpHero9.story.allies_and_organizations.emblem_image : hero.story.allies_and_organizations.emblem_image = req.body.emblem_image;
-                (hero.story.allies_and_organizations.emblem_image === '') ? hero.story.allies_and_organizations.emblem_image = tmpHero9.story.allies_and_organizations.emblem_image : '';
-                (req.body.remove_emblem == 'true') ? hero.story.allies_and_organizations.emblem_image = '' : '';
-                await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-                res.redirect(`/users/user/${username}/hero/${pageNumber}/saved`);
-                break;
-            case '10':
-                hero.treasure = req.body;
-                await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-                res.redirect(`/users/user/${username}/hero/${pageNumber}/saved`);
-                break;
-            case '11':
-                const racialSpell = req.body.racial_spell;
-                const classSpell = req.body.class_spell;
+        const heroId = req.params.heroId;
+        const oldHeroQuery = Hero.findOne({ _id: heroId });
+        const hero = new Hero(req.body);
+        const heroClassQuery = Class.findOne({ _id: req.body.class.split(',')[1] });
+        const [oldHero, heroClass] = await Promise.all([oldHeroQuery, heroClassQuery]);
 
-                let flagRacial = false, flagClass = false;
-                for(let i = 0; i < hero.spells.racial.length; i++) {
-                    if(hero.spells.racial[i].toString() == racialSpell) flagRacial = true;
-                }
+        hero._id = oldHero._id;
+        hero.image = oldHero.image;
+        hero.description.notes.organization.emblem = oldHero.description.notes.organization.emblem;
 
-                for(let i = 0; i < hero.spells.class.length; i++) {
-                    if(hero.spells.class[i].toString() == classSpell) flagClass = true;
-                }
+        hero.race = req.body.race.split(',')[1];
+        hero.class = req.body.class.split(',')[1];
 
-                if(racialSpell != '- select -' && !flagRacial) hero.spells.racial.push(racialSpell);
-                if(classSpell != '- select -' && !flagClass) hero.spells.class.push(classSpell);
+        hero.class_proficiencies = req.body.proficiency;
+        
+        if(req.body.class != -1){
+            heroClass.st_proficiencies.forEach(st => hero['saving_throws'][`${st}`] = true);
+            if ('proficiency' in req.body) req.body.proficiency.forEach(skill => (skill != -1) ? hero['skills'][`${skill}`] = true : []);
+        }
 
-                await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-                res.redirect(`/users/user/${username}/hero/${pageNumber}/saved`);
-                break;
-            default:
-                break;
+        const tmpHero = new Hero(hero);
+        hero.image = req.body.image;
+        req.body.image === undefined ? hero.image = tmpHero.image : hero.image = req.body.image;
+        (hero.image === '') ? hero.image = tmpHero.image : '';
+        (req.body.remove_image == 'true') ? hero.image = '' : '';
+
+        req.body.emblem_image === undefined ? hero.description.notes.organization.emblem = tmpHero.description.notes.organization.emblem : hero.description.notes.organization.emblem = req.body.emblem_image;
+        (hero.description.notes.organization.emblem === '') ? hero.description.notes.organization.emblem = tmpHero.description.notes.organization.emblem : '';
+        (req.body.remove_emblem == 'true') ? hero.description.notes.organization.emblem = '' : '';
+
+        if(req.body.deletecharacter) {
+            const user = await User.findOne({ username: username });
+            user.characters.forEach((character, idx) => {
+                if(character.toString() == heroId) user.characters.splice(idx, 1);
+            });
+            await Promise.all([User.findByIdAndUpdate(user._id, user, { new: true }), Hero.findByIdAndRemove(heroId)]);
+            res.redirect(`/users/${username}/heroes`);
+        } else {
+            await Hero.findByIdAndUpdate(oldHero._id, hero, { new: true });
+            res.redirect(`/users/${username}/heroes`);
         }
     } catch(error) {
         next(error);
@@ -439,87 +410,89 @@ exports.editHeroPost = async (req, res, next) => {
 };
 
 // Spells
+exports.spells = async (req, res, next) => {
+    try {
+        const spells = await Spell.find();
+        
+        const spellLevels = ['cantrip', 'level1', 'level2', 'level3', 'level4', 'level5', 'level6', 'level7', 'level8', 'level9'];
+        const spellsQuery = [];
 
-exports.saveSpell = async (req, res, next) => {
+        for(let i = 0; i < spellLevels.length; i++) {
+            const level = Spell.aggregate([
+                { $match: { level: spellLevels[i] } },
+                { $sort: { name: 1 } }
+            ]);
+            spellsQuery.push(level);
+        }
+
+        const sortedSpells = await Promise.all(spellsQuery.map(level => level));
+
+        res.render('users/spells', { title: 'SideQuest - Spell Compendium', spells, sortedSpells });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.saveSpellPost = async (req, res, next) => {
     try {
         const username = req.params.username;
         const spell = new Spell(req.body);
         await spell.save();
-        res.redirect(`/users/user/${username}/hero/11`);
+        res.redirect(`/users/${username}/spells`);
     } catch(error) {
         next(error);
     }
 };
 
-exports.editSpell = async (req, res, next) => {
+exports.editSpellPost = async (req, res, next) => {
     try {
         const username = req.params.username;
         const spell = await Spell.findOne({ _id: req.body.spell_id });
         await Spell.findByIdAndUpdate(spell._id, req.body, { new: true });
-        res.redirect(`/users/user/${username}/hero/11`);
+        res.redirect(`/users/${username}/spells`);
     } catch(error) {
-        next(error);
-    }
-};
-
-exports.removeCharacterSpell = async (req, res, next) => {
-    try {
-        const username = req.params.username;
-        const hero = await Hero.findOne({ player_name: username });
-
-        const racialSpells = req.body.racial;
-        const classSpells = req.body.class;
-
-        for(let i = 0; i < hero.spells.racial.length; i++) {
-            for(let j = 0; j < racialSpells.length; j++) {
-                if (racialSpells[j] == hero.spells.racial[i].toString()) hero.spells.racial.splice(i, 1);
-            }
-        }
-        
-        for(let i = 0; i < hero.spells.class.length; i++) {
-            for(let j = 0; j < classSpells.length; j++) {
-                if (classSpells[j] == hero.spells.class[i].toString()) hero.spells.class.splice(i, 1);
-            }
-        }
-
-        // res.json(req.body);
-        await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-        res.redirect(`/users/user/${username}/hero/11/saved`);
-    } catch (error) {
         next(error);
     }
 };
 
 // Edit Story
-exports.editStoryGet = async (req, res, next) => {
+exports.story = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const heroQuery = Hero.findOne({ player_name: username });
-        const storiesQuery = Story.find();
-        const storyQuery = Story.findOne({ _id: req.params.storyId });
-        const [hero, stories, story] = await Promise.all([heroQuery, storiesQuery, storyQuery]);
-
-        res.render('users/edit_story', { title: 'SideQuest - Editar Historia', username, hero, stories, story });
+        const stories = await Story.find();
+        res.render('users/story', { title: 'SideQuest - Editar Historia', username, stories });
     } catch(error) {
         next(error);
     }
 };
 
-exports.addStory = async (req, res, next) => {
+exports.newStoryGet = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        res.render('users/story', { title: 'SideQuest: Nueva Historia', username });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.newStoryPost = async (req, res, next) => {
     try {
         const username = req.params.username;
         const story = new Story(req.body);
-        
-        if(req.body.text != '' && req.body.text != undefined){
-            const note = {
-                character_id: req.body.character_id || null,
-                character: req.body.character,
-                text: req.body.text
-            };
-            story.notes.push(note);
-        }
+
         await story.save();
-        res.redirect(`/users/user/${username}/story/${story._id}`);
+        res.redirect(`/users/${username}/story`);
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.editStoryGet = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        const story = await Story.findOne({ _id: req.params.storyId });
+
+        res.render('users/story', { title: 'SideQuest - Editar Historia', username, story });
     } catch(error) {
         next(error);
     }
@@ -529,145 +502,74 @@ exports.editStoryPost = async (req, res, next) => {
     try {
         const username = req.params.username;
         const storyId = req.params.storyId;
-        const story = await Story.findOne({ _id: storyId });
 
-        story.name = req.body.name;
-        story.summary = req.body.summary;
-        if(req.body.text != '' && req.body.text != undefined){
-            const note = {
-                character_id: req.body.character_id,
-                character: req.body.character,
-                text: req.body.text
-            };
-            story.notes.push(note);
+        if(req.body.deletestory != 'true') {
+            await Story.findByIdAndUpdate(storyId, req.body, { new: true });
+            res.redirect(`/users/${username}/story/edit/${storyId}`);
+        } else {
+            await Story.findByIdAndRemove(storyId);
+            res.redirect(`/users/${username}/story`)
         }
-
-        if(req.body.note_text != undefined && Object.keys(req.body.note_text).length != 0){
-            // Find notes in story.notes that match reqNotes, and updates their text
-            const noteTxt = Object.entries(req.body.note_text);
-            story.notes.forEach(note => {
-                for(let i = 0; i < noteTxt.length; i++) {
-                    if(note._id.toString() == noteTxt[i][0]) {
-                        note.text = noteTxt[i][1];
-                    }
-                }
-            });
-
-            // Find notes in req.body.delete_note that have been flagged for deletion and output them in an array
-            const deleteFlags = Object.entries(req.body.delete_note).filter(note => note[1] != 'false');
-
-            // Delete notes in story.notes that match deleteFlags
-            for(let i = 0; i < story.notes.length; i++) {
-                for(let j = 0; j < deleteFlags.length; j++) {
-                    if(story.notes[i]._id.toString() == deleteFlags[j][0]) story.notes.splice(i, 1);
-                }
-            }
-        }
-
-        // res.json(req.body);
-        await Story.findByIdAndUpdate(storyId, story, { new: true });
-        res.redirect(`/users/user/${username}/story/${storyId}`);
     } catch(error) {
         next(error);
     }
 };
 
 // Edit Characters
-exports.editCharactersGet = async (req, res, next) => {
+exports.characters = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const heroQuery = Hero.findOne({ player_name: username })
-        const charactersQuery = Character.find();
-        const characterQuery = Character.findOne({ name: req.params.characterName });
-        const [hero, characters, character] = await Promise.all([heroQuery, charactersQuery, characterQuery]);
+        const characters = await Character.find();
 
-        res.render('users/edit_characters', { title: 'SideQuest - Editar Personajes', username, hero, characters, character });
+        res.render('users/characters', { title: 'SideQuest - Editar Personajes', username, characters });
     } catch(error) {
         next(error);
     }
 };
 
-exports.addCharacter = async (req, res, next) => {
+exports.newCharacterGet = async (req, res, next) => {
+    try {
+        res.render('users/characters', { title: 'SideQuest - Personaje Nuevo' })
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.newCharacterPost = async (req, res, next) => {
     try {
         const username = req.params.username;
         const character = new Character(req.body);
-        
-        if(req.body.text != '' && req.body.text != undefined){
-            const note = {
-                character_id: req.body.character_id || null,
-                character: req.body.character,
-                text: req.body.text
-            };
-            character.notes.push(note);
-        }
 
         await character.save();
-        res.redirect(`/users/user/${username}/characters/${character.name}`)
+        res.redirect(`/users/${username}/characters`);
     } catch(error) {
         next(error);
     }
 };
 
-exports.editCharactersPost = async (req, res, next) => {
+exports.editCharacterGet = async (req, res, next) => {
+    try {
+        const characterId = req.params.characterId;
+        const character = await Character.findOne({ _id: characterId });
+
+        res.render('users/characters', { title: `SideQuest - Editar a ${character.name}`, character });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.editCharacterPost = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const characterName = req.params.characterName;
-        const character = await Character.findOne({ name: characterName });
+        const characterId = req.params.characterId;
 
-        // Update Character Fields
-        character.name = req.body.name;
-        character.title = req.body.title;
-        character.affiliation = req.body.affiliation;
-        character.place = req.body.place;
-        character.race = req.body.race;
-        character.class = req.body.class;
-        character.age = req.body.age;
-        character.size = req.body.size;
-        character.appearance = req.body.appearance;
-        character.summary = req.body.summary;
-
-        // Add note if a new note was added
-        if(req.body.text != '' && req.body.text != undefined){
-            const note = {
-                character_id: req.body.character_id,
-                character: req.body.character,
-                text: req.body.text
-            };
-            character.notes.push(note);
+        if(req.body.deletecharacter == 'true') {
+            await Character.findByIdAndRemove(characterId);
+            res.redirect(`/users/${username}/characters`);
+        } else {
+            await Character.findByIdAndUpdate(characterId, req.body, { new: true });
+            res.redirect(`/users/${username}/characters/edit/${characterId}`);
         }
-
-        // Manage image deletion and modification
-        const tmpChar = new Character(character);
-        character.image = req.body.image;
-        req.body.image === undefined ? character.image = tmpChar.image : character.image = req.body.image;
-        (character.image === '') ? character.image = tmpChar.image : '';
-        (req.body.remove_image == 'true') ? character.image = '' : '';
-
-        // Manage note deletion and modification
-        if(req.body.note_text != undefined && Object.keys(req.body.note_text).length != 0){
-            // Find notes in story.notes that match reqNotes, and updates their text
-            const noteTxt = Object.entries(req.body.note_text);
-            character.notes.forEach(note => {
-                for(let i = 0; i < noteTxt.length; i++) {
-                    if(note._id.toString() == noteTxt[i][0]) {
-                        note.text = noteTxt[i][1];
-                    }
-                }
-            });
-
-            // Find notes in req.body.delete_note that have been flagged for deletion and output them in an array
-            const deleteFlags = Object.entries(req.body.delete_note).filter(note => note[1] != 'false');
-
-            // Delete notes in story.notes that match deleteFlags
-            for(let i = 0; i < character.notes.length; i++) {
-                for(let j = 0; j < deleteFlags.length; j++) {
-                    if(character.notes[i]._id.toString() == deleteFlags[j][0]) character.notes.splice(i, 1);
-                }
-            }
-        }
-
-        await Character.findByIdAndUpdate(character._id, character, { new: true });
-        res.redirect(`/users/user/${username}/characters/${character.name}`);
     } catch(error) {
         next(error);
     }

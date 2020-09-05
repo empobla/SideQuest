@@ -31,28 +31,30 @@ html
           //- If user is not logged in
           if !user
             li
-              a(href="/users/login") Ingresar
+              a(href="/login") Ingresar
           //- Else if user is logged in
           else
             li.l-dropdown
               a.m-cursor-normal #{user.username}
               ul.c-dropdown
                 li 
-                  a(href=`/users/user/${user.username}`) Cuenta
+                  a(href=`/users/${user.username}`) Cuenta
                 li 
-                  a(href='') Héroes
-                li 
-                  a(href='') Personajes
+                  a(href=`/users/${user.username}/heroes`) Héroes
                 li
-                  a(href='') Historias
+                  a(href=`/users/${user.username}/spells`) Spells
+                li 
+                  a(href=`/users/${user.username}/characters`) Personajes
+                li
+                  a(href=`/users/${user.username}/story`) Historias
                 if user.isAdmin
                   li
-                    a(href='') Admin
+                    a(href=`/users/${user.username}/temprace`) Admin
                 else if user.isDM
                   li
                     a(href='') DM
             li
-              a(href="/users/logout")
+              a(href="/logout")
                 img#nav__icon(src='/images/icons/logout.png' alt="logout")
           
     main

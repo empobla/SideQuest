@@ -22,7 +22,8 @@ const userSchema = new mongoose.Schema({
     isDM: {
         type: Boolean,
         default: false
-    }
+    },
+    characters: [mongoose.Schema.Types.ObjectId]
 });
 
 userSchema.plugin(mongooseBcrypt);

@@ -48,6 +48,8 @@ block content
                     img.l-text-wrap__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png` alt=`${character.name}'s Image`)
                 .c-basic-info
                     h3 Resumen
+                    p= `Título: ${character.title || '???'}`
+                    p= `Afiliación: ${character.affiliation || '???'}`
                     p= `Lugar de Origen o donde fué conocido: ${character.place || '???'}`
                     p= `Edad: ${character.age || '???'}`
                     p= `Raza: ${character.race || '???'}`
@@ -65,7 +67,7 @@ block content
             h2= `${character.name}`
 
             if character.summary != '' && character.summary != undefined
-                    +textEditor('view', character.summary)
+                +textEditor('view', character.summary)
             else
                 p #{character.name} no tiene historia/resumen.
 

@@ -1,5 +1,7 @@
-mixin spellDropdown(spell)
-    td.c-spell-description(colspan='6')
+mixin spellDropdown(spell, options='', type='')
+    - let dropdownClass = options != 'edit' ? 'c-spell-description' : 'c-spell-description js-spell-description-loaded'
+    - let dropdownColspan = options != 'display' ? '6' : '7';
+    td(class=`${dropdownClass}` colspan=`${dropdownColspan}`)
         h4= spell.name
         if spell.level === 'cantrip'
             em= `${spell.school} ${spell.level} ${spell.ritual ? '(ritual)' : ''}`
@@ -8,7 +10,7 @@ mixin spellDropdown(spell)
         else if spell.level === 'level2'
             em=`${spell.level.substring(5)}nd-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''}`
         else if spell.level === 'level3'
-            em=`${spell.level.substring(5)}st-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''}`
+            em=`${spell.level.substring(5)}rd-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''}`
         else
             em=`${spell.level.substring(5)}th-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''}`
         
@@ -26,4 +28,9 @@ mixin spellDropdown(spell)
             - let spellDescLines = spell.description.split(/(\r\n|\r|\n)/g);
             each line in spellDescLines
                 p= `${line}`
+        if options == 'edit'
+            - let inputName = type == 'racial' ? 'spells.racial[]' : 'spells.class[]';
+            input(type='hidden' class='js-hiddenracialspells' name=`${inputName}` id=`js-inputracial_${spell._id},${spell.level}` value=`${spell._id}`)
+            .l-margin--2
+            button(type='button' class='c-button m-clickable js-removebutton-loaded') Remove Spell
 

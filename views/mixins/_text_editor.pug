@@ -1,20 +1,26 @@
-mixin textEditor(type='', text='', placeholderText= '')
+mixin textEditor(type='', text='', placeholderText='', formName='')
 
     script(type="text/javascript" src="/javascripts/pagedown/Markdown.Converter.js")
     script(type="text/javascript" src="/javascripts/pagedown/Markdown.Sanitizer.js")
     script(type="text/javascript" src="/javascripts/pagedown/Markdown.Editor.js")
 
-    if type === 'backstory'
+    if type === 'editor'
         .wmd-panel
             #wmd-button-bar
-            textarea(name='backstory' class='wmd-input' id='wmd-input' style='height: 300px;' placeholder="Write your character's backstory here.")=(story.backstory || null)
-        div(id="wmd-preview" class="wmd-panel wmd-preview-backstory")
+            textarea(name=`${formName}` class='wmd-input' id='wmd-input' placeholder=`${placeholderText}`)= text
+        div(id='wmd-preview' class='wmd-panel')
 
-    else if type === 'story'
-        .wmd-panel
-            #wmd-button-bar
-            textarea(name='summary' class='wmd-input' id='wmd-input' style='height: 300px;' placeholder=`${placeholderText}`)=(text || null)
-        div(id='wmd-preview' class='wmd-panel wmd-preview-backstory')
+    //- if type === 'backstory'
+    //-     .wmd-panel
+    //-         #wmd-button-bar
+    //-         textarea(name='backstory' class='wmd-input' id='wmd-input' style='height: 300px;' placeholder="Write your character's backstory here.")=(story.backstory || null)
+    //-     div(id="wmd-preview" class="wmd-panel wmd-preview-backstory")
+
+    //- else if type === 'story'
+    //-     .wmd-panel
+    //-         #wmd-button-bar
+    //-         textarea(name='summary' class='wmd-input' id='wmd-input' style='height: 300px;' placeholder=`${placeholderText}`)=(text || null)
+    //-     div(id='wmd-preview' class='wmd-panel wmd-preview-backstory')
     
     //- else if type === 'notes'
     //-     .wmd-panel

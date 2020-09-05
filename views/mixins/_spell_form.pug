@@ -1,59 +1,66 @@
-mixin spellForm(spell={})
-    .form_hider
-        .form_input
-            label(for='name') *Name:
-            input(type='text' name='name' id='name' placeholder='Wingardium Leviosa' required)
-        .form_input.form_grid
-            .form_grid_input
-                label(for='level') Level:
-                select(name='level' id='level')
-                    option(value='cantrip') Cantrip
-                    option(value='level1') Level 1
-                    option(value='level2') Level 2
-                    option(value='level3') Level 3
-                    option(value='level4') Level 4
-                    option(value='level5') Level 5
-                    option(value='level6') Level 6
-                    option(value='level7') Level 7
-                    option(value='level8') Level 8
-                    option(value='level9') Level 9
-            .form_grid_input
-                label(for='school') School:
-                select(name='school' id='school')
-                    option(value='none') None
-                    option(value='Abjuration') Abjuration
-                    option(value='Conjuration') Conjuration
-                    option(value='Divination') Divination
-                    option(value='Enchantment') Enchantment
-                    option(value='Evocation') Evocation
-                    option(value='Illusion') Illusion
-                    option(value='Necromancy') Necromancy
-                    option(value='Transmutation') Transmutation
-            .form_grid_input
-                label(for='ritual') Ritual:
-                select(name='ritual' id='ritual')
-                    option(value='false') No
-                    option(value='true') Yes
-        .form_input
-            label(for='casting_time') Casting Time:
-            input(type='text' name='casting_time' id='casting_time' placeholder='1 action')
-        .form_input
-            label(for='range') Range:
-            input(type='text' name='range' id='range' placeholder='60ft')
-        .form_input.radio
-            p Components:
+mixin spellForm()
+
+    .c-edithero-form__input
+        label(for='name') *Name:
+        input(type='text' name='name' id='name' placeholder='Wingardium Leviosa' required)
+    .l-margin--2
+    .l-ability-points-grid.grid--3
+        .c-ability-points
+            label(for='level') Level:
+            select(name='level' id='level')
+                option(value='cantrip') Cantrip
+                option(value='level1') Level 1
+                option(value='level2') Level 2
+                option(value='level3') Level 3
+                option(value='level4') Level 4
+                option(value='level5') Level 5
+                option(value='level6') Level 6
+                option(value='level7') Level 7
+                option(value='level8') Level 8
+                option(value='level9') Level 9
+        .c-ability-points
+            label(for='school') School:
+            select(name='school' id='school')
+                option(value='none') None
+                option(value='Abjuration') Abjuration
+                option(value='Conjuration') Conjuration
+                option(value='Divination') Divination
+                option(value='Enchantment') Enchantment
+                option(value='Evocation') Evocation
+                option(value='Illusion') Illusion
+                option(value='Necromancy') Necromancy
+                option(value='Transmutation') Transmutation
+        .c-ability-points
+            label(for='ritual') Ritual:
+            select(name='ritual' id='ritual')
+                option(value='false') No
+                option(value='true') Yes
+    .l-margin--2
+    .c-edithero-form__input
+        label(for='casting_time') Casting Time:
+        input(type='text' name='casting_time' id='casting_time' placeholder='1 action')
+
+        label(for='range') Range:
+        input(type='text' name='range' id='range' placeholder='60ft')
+    .l-margin--2
+    .l-ability-points-grid.grid--3
+        .c-ability-points
             label(for='components.verbal') Verbal
             input(type='checkbox' name='components[]' id='components.verbal' value='verbal')
+        .c-ability-points
             label(for='components.somatic') Somatic
             input(type='checkbox' name='components[]' id='components.somatic' value='somatic')
+        .c-ability-points
             label(for='components.material') Material
             input(type='checkbox' name='components[]' id='components.material' value='material')
-        .form_input
-            label(for='materials') Materials:
-            textarea(name='materials' id='materials' rows="3" placeholder='A sturdy wooden stick, a handful of powdered bones from a small bird')
-        .form_input
-            label(for='duration') Duration:
-            input(type='text' name='duration' id='duration' placeholder='Instantaneous')
-        .form_input
-            label(for='description') Description:
-            textarea(name='description' id='description' rows='10' placeholder='You point your finger at a creature and shout \'Wingardium Leviosa!\' The creature levitates off the ground and you may use your action to move it telepathically at a speed of 30ft. The creature is disabled, and may use its action to end the spell on a successful Strength check against your spell save DC.\n\nUpon reaching 5th level, you may target another creature.')
+    .l-margin--2
+    .c-edithero-form__input.c-edithero-form__input--stack
+        label(for='materials') Materials:
+        textarea(name='materials' id='materials' rows="3" placeholder='A sturdy wooden stick, a handful of powdered bones from a small bird')
+    .l-margin--2
+    .c-edithero-form__input
+        label(for='duration') Duration:
+        input(type='text' name='duration' id='duration' placeholder='Instantaneous')
+    .c-edithero-form__input.c-edithero-form__input--stack
+        label(for='description') Description:
+        textarea(name='description' id='description' rows='10' placeholder='You point your finger at a creature and shout \'Wingardium Leviosa!\' The creature levitates off the ground and you may use your action to move it telepathically at a speed of 30ft. The creature is disabled, and may use its action to end the spell on a successful Strength check against your spell save DC.\n\nUpon reaching 5th level, you may target another creature.')

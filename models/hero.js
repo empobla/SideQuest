@@ -1,6 +1,35 @@
 const mongoose = require('mongoose');
 const Spell = require('./spell');
 
+const abilitySubSchema = new mongoose.Schema({
+    base_score: {
+        type: Number,
+        default: 0
+    },
+    racial_bonus: {
+        type: Number,
+        default: 0
+    },
+    improvements: {
+        type: Number,
+        default: 0
+    },
+    misc_bonus: {
+        type: Number,
+        default: 0
+    },
+    total_score: {
+        type: Number,
+        default: 0
+    },
+    modifier: {
+        type: Number,
+        default: 0
+    },
+    other: Number,
+    override: Number
+}, { _id: false });
+
 const weaponSubSchema = new mongoose.Schema({
     name: String,
     attackBonus: Number,
@@ -13,27 +42,13 @@ const heroSchema = new mongoose.Schema({
         required: 'Hero name is required.',
         trim: true,
     },
-    player_name: {
-        type: String,
-        trim: true
-    },
     image: String,
-    info: {
-        age: { type: Number, required: false, default: 0 },
-        height: String,
-        weight: { type: Number, required: false, default: 0 },
-        eye_color: String,
-        skin_color: String,
-        hair_color: String,
-        place_of_origin: String,
-        race: String,
-        class: String,
-        background: String,
-        alignment: String,
-        level: { type: Number, required: false, default: 0 },
-        xp: { type: Number, required: false, default: 0 }
-    },
-    attributes: {
+    race: mongoose.Schema.Types.ObjectId,
+    class: mongoose.Schema.Types.ObjectId,
+    class_proficiencies: [String],
+    level: { type: Number, required: false, default: 0 },
+    xp: { type: Number, required: false, default: 0 },  // Not used in website
+    abilities: {
         inspiration: {
             type: Boolean,
             required: false,
@@ -42,72 +57,142 @@ const heroSchema = new mongoose.Schema({
         proficiency_bonus: {
             type: Number,
             required: false,
-            default: 0
+            default: 2
         },
         passive_perception: {
             type: Number,
             required: false,
-            default: 0
+            default: 10
         },
+        strength: abilitySubSchema,
+        dexterity: abilitySubSchema,
+        constitution: abilitySubSchema,
+        intelligence: abilitySubSchema,
+        wisdom: abilitySubSchema,
+        charisma: abilitySubSchema
+    },
+    saving_throws: {
         strength: {
-            type: Number,
+            type: Boolean,
             required: false,
-            default: 0
-        },
-        strengthMod: {
-            type: Number,
-            required: false,
-            default: 0
+            default: false
         },
         dexterity: {
-            type: Number,
+            type: Boolean,
             required: false,
-            default: 0
-        },
-        dexterityMod: {
-            type: Number,
-            required: false,
-            default: 0
+            default: false
         },
         constitution: {
-            type: Number,
+            type: Boolean,
             required: false,
-            default: 0
-        },
-        constitutionMod: {
-            type: Number,
-            required: false,
-            default: 0
+            default: false
         },
         intelligence: {
-            type: Number,
+            type: Boolean,
             required: false,
-            default: 0
-        },
-        intelligenceMod: {
-            type: Number,
-            required: false,
-            default: 0
+            default: false
         },
         wisdom: {
-            type: Number,
+            type: Boolean,
             required: false,
-            default: 0
-        },
-        wisdomMod: {
-            type: Number,
-            required: false,
-            default: 0
+            default: false
         },
         charisma: {
-            type: Number,
+            type: Boolean,
             required: false,
-            default: 0
+            default: false
+        }
+    },
+    skills: {
+        acrobatics: {
+            type: Boolean,
+            required: false,
+            default: false
         },
-        charismaMod: {
-            type: Number,
+        animal_handling: {
+            type: Boolean,
             required: false,
-            default: 0
+            default: false
+        },
+        arcana: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        athletics: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        deception: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        history: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        insight: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        intimidation: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        investigation: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        medicine: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        nature: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        perception: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        performance: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        persuasion: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        religion: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        sleight_of_hand: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        stealth: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        survival: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     physical_attributes: {
@@ -126,11 +211,7 @@ const heroSchema = new mongoose.Schema({
             required: false,
             default: 0
         },
-        max_hp: {
-            type: Number,
-            required: false,
-            default: 0
-        },
+        // Not used in page from here till bottom of physical_attributes[]
         current_hp: {
             type: Number,
             required: false,
@@ -141,7 +222,6 @@ const heroSchema = new mongoose.Schema({
             required: false,
             default: 0
         },
-        total_hitdie: String,
         current_hitdie: {
             type: Number,
             required: false,
@@ -160,324 +240,77 @@ const heroSchema = new mongoose.Schema({
             max: 3
         }
     },
-    saving_throws: {
-        strength: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
+    description: {
+        background: String,
+        alignment: String,
+        faith: String,
+        place_of_origin: String,
+        physical: {
+            age: { type: Number, required: false, default: 0 },
+            height: String,
+            weight: { type: Number, required: false, default: 0 },
+            eye_color: String,
+            skin_color: String,
+            hair_color: String,
+            gender: String
+        },
+        personality: {
+            traits: {
+                type: String,
+                trim: true
             },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
+            ideals: {
+                type: String,
+                trim: true
+            },
+            bonds: {
+                type: String,
+                trim: true
+            },
+            flaws: {
+                type: String,
+                trim: true
             }
         },
-        dexterity: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        constitution: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        intelligence: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        wisdom: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        charisma: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        }
-    },
-    skills: {
-        acrobatics: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        animal_handling: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        arcana: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        athletics: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        deception: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        history: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        insight: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        intimidation: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        investigation: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        medicine: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        nature: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        perception: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        performance: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        persuasion: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        religion: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        sleight_of_hand: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        stealth: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        },
-        survival: {
-            value: {
-                type: Number,
-                required: false,
-                default: 0
-            },
-            proficient: {
-                type: Boolean,
-                required: false,
-                default: false
-            }
-        }
-    },
-    personality: {
-        personality_traits: {
-            type: String,
-            trim: true
-        },
-        ideals: {
-            type: String,
-            trim: true
-        },
-        bonds: {
-            type: String,
-            trim: true
-        },
-        flaws: {
-            type: String,
-            trim: true
-        }
-    },
-    attacksAndSpellCasting: {
-        weapons: [weaponSubSchema],
         notes: {
-            type: String,
-            trim: true
+            organization: {
+                text: {
+                    type: String,
+                    trim: true
+                },
+                name: String,
+                emblem: String
+            },
+            allies : {
+                type: String,
+                trim: true
+            },
+            enemies: {
+                type: String,
+                trim: true
+            },
+            backstory: {
+                type: String,
+                trim: true
+            },
+            other: {
+                type: String,
+                trim: true
+            }
         }
     },
     equipment: {
+        starting: {
+            type: String,
+            trim: true
+        },
+        weapons: {
+            list: [weaponSubSchema],
+            notes: {
+                type: String,
+                trim: true
+            }
+        },
         money: {
             copper: Number,
             silver: Number,
@@ -485,7 +318,15 @@ const heroSchema = new mongoose.Schema({
             gold: Number,
             platinum: Number
         },
-        equipment: {
+        active: {
+            type: String,
+            trim: true
+        },
+        inventory: {
+            type: String,
+            trim: true
+        },
+        treasure: {
             type: String,
             trim: true
         }
@@ -503,26 +344,6 @@ const heroSchema = new mongoose.Schema({
             type: String,
             trim: true
         }
-    },
-    story: {
-        allies_and_organizations: {
-            text: {
-                type: String,
-                trim: false
-            },
-            organization_name: String,
-            emblem_image: String
-        },
-        backstory: {
-            type: String,
-            trim: true
-        }
-    },
-    treasure: {
-        text: {
-            type: String,
-            trim: true
-        }  
     },
     spells: {
         racial: [mongoose.Schema.Types.ObjectId],

@@ -3,6 +3,7 @@ var router = express.Router();
 
 // Require controller modules
 const sideQuestController = require('../controllers/sideQuestController');
+const userController = require('../controllers/userController');
 const characterSheet = require('../controllers/characterSheet');
 
 /* GET home page. */
@@ -25,6 +26,19 @@ router.get('/story/:storyId', sideQuestController.story);
 
 /* Maps */
 router.get('/maps', sideQuestController.maps);
+
+/* Login */
+router.get('/login', userController.loginGet);
+router.post('/login', userController.loginPost);
+
+/* Signup */
+router.get('/signup', userController.signUpGet);
+router.post('/signup', 
+    userController.signUpPost,
+    userController.loginPost
+);
+
+router.get('/logout', userController.logout);
 
 /* TEST */
 // router.get('/test/pagedown', (req, res) => res.render('test/testpagedown'));

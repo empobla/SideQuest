@@ -30,51 +30,51 @@ block content
                     img.l-text-wrap__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${hero.image}.png` alt=`${hero.name}'s Image`)
                 .c-basic-info
                     h3 Resumen
-                    p= `Lugar de Origen: ${hero.info.place_of_origin || '???'}`
-                    p= `Edad: ${hero.info.age || '???'}`
-                    p= `Raza: ${hero.info.race || '???'}`
-                    p= `Clase: ${hero.info.class || '???'}`
-                    p= `Background: ${hero.info.background || '???'}`
-                    p= `Alineamiento: ${hero.info.alignment || '???'}`
+                    p= `Lugar de Origen: ${hero.description.place_of_origin || '???'}`
+                    p= `Edad: ${hero.description.physical.age || '???'}`
+                    p= `Raza: ${hero.race.name || '???'}`
+                    p= `Clase: ${hero.class.name || '???'}`
+                    p= `Background: ${hero.description.background || '???'}`
+                    p= `Alineamiento: ${hero.description.alignment || '???'}`
                 .c-basic-info
                     h3 Características Físicas
-                    p= `Estatura: ${hero.info.height || '???'}`
-                    p= `Peso: ${hero.info.weight || '???'}`
-                    p= `Piel (Color): ${hero.info.skin_color || '???'}`
-                    p= `Ojos (Color): ${hero.info.eye_color || '???'}`
-                    p= `Pelo (Color): ${hero.info.hair_color || '???'}`
+                    p= `Estatura: ${hero.description.physical.height || '???'}`
+                    p= `Peso: ${hero.description.physical.weight || '???'}`
+                    p= `Piel (Color): ${hero.description.physical.skin_color || '???'}`
+                    p= `Ojos (Color): ${hero.description.physical.eye_color || '???'}`
+                    p= `Pelo (Color): ${hero.description.physical.hair_color || '???'}`
             
             h2= `${hero.name} `
-                span#hero__classandlevel= `(${hero.info.class} nivel ${hero.info.level})`
+                span#hero__classandlevel= `(${hero.class.name} nivel ${hero.level})`
             
             //- If hero has a backstory in DB, display it
-            if hero.story.backstory != '' && hero.story.backstory != undefined
-                +textEditor('view', hero.story.backstory)
+            if hero.description.notes.backstory != '' && hero.description.notes.backstory != undefined
+                +textEditor('view', hero.description.notes.backstory)
             //- Else if no hero backstory is found, tell user
             else
                 p #{hero.name} no tiene backstory.
             
             h3 Personalidad
             p.m-color-gray <strong>Rasgos:</strong>
-                em= ` ${hero.personality.personality_traits || '???'}`
+                em= ` ${hero.description.personality.traits || '???'}`
             p.m-color-gray <strong>Ideales:</strong>
-                em= ` ${hero.personality.ideals || '???'}`
+                em= ` ${hero.description.personality.ideals || '???'}`
             p.m-color-gray <strong>Lazos:</strong>
-                em= ` ${hero.personality.bonds || '???'}`
+                em= ` ${hero.description.personality.bonds || '???'}`
             p.m-color-gray <strong>Fallas:</strong>
-                em= ` ${hero.personality.personality_traits || '???'}`
+                em= ` ${hero.description.personality.flaws || '???'}`
             
             h3 Aliados y Organizaciones
             //- If there is an emblem image on DB, display it
-            - const alliesOrgs = hero.story.allies_and_organizations;
-            if alliesOrgs.emblem_image != '' && alliesOrgs.emblem_image != undefined
+            - const alliesOrgs = hero.description.notes.organization;
+            if alliesOrgs.emblem != '' && alliesOrgs.emblem != undefined
                 .l-text-wrap--right
-                    img.l-text-wrap__image#hero__organization-banner(src=`http://res.cloudinary.com/duezou4td/image/upload/${alliesOrgs.emblem_image}.png`, alt=`${hero.name}'s organization's emblem`)
+                    img.l-text-wrap__image#hero__organization-banner(src=`http://res.cloudinary.com/duezou4td/image/upload/${alliesOrgs.emblem}.png`, alt=`${hero.name}'s organization's emblem`)
             //- If hero isn't in an organization, tell user. Else, display its name.
-            if alliesOrgs.organization_name === '' || alliesOrgs.organization_name === undefined
+            if alliesOrgs.name === '' || alliesOrgs.name === undefined
                 p #{hero.name} no forma parte de ninguna organización hasta ahora.
             else
-                p #{hero.name} forma parte de #{alliesOrgs.organization_name}.
+                p #{hero.name} forma parte de #{alliesOrgs.name}.
             //- Display hero.allies_and_organizations text with line breaks where they're supposed to go
             - const parts = (alliesOrgs.text != undefined) ? alliesOrgs.text.split(/(\r\n)/g) : [];
             each part in parts
@@ -84,7 +84,7 @@ block content
             h2 Statistics
             hr
             .l-stat-cards
-                - const att = hero.attributes;
+                - const ab = hero.abilities;
                 - const physAtt = hero.physical_attributes;
                 .c-stat-card
                     img.c-stat-card__image(src='/images/icons/shield.png' alt='Shield icon')
@@ -97,16 +97,16 @@ block content
                 .c-stat-card
                     img.c-stat-card__image(src='/images/icons/d20.png' alt='d20 icon')
                     h3 Proficiency Bonus
-                    if att.proficiency_bonus > 0
-                        p +#{att.proficiency_bonus}
+                    if ab.proficiency_bonus > 0
+                        p +#{ab.proficiency_bonus}
                     else
-                        p #{att.proficiency_bonus}
+                        p #{ab.proficiency_bonus}
                 .c-stat-card
                     img.c-stat-card__image(src='/images/icons/eye.png' alt='Eye icon')
                     h3 Passive Perception
-                    p #{att.passive_perception}
+                    p #{ab.passive_perception}
                 .c-stat-card
-                    if att.inspiration
+                    if ab.inspiration
                         img.c-stat-card__image(src='/images/icons/checkmark.png' alt='Checkmark icon')
                     else
                         img.c-stat-card__image(src='/images/icons/cross.png' alt='Cross icon')
@@ -115,21 +115,27 @@ block content
                 .c-stat-card
                     img.c-stat-card__image(src='/images/icons/heart.png' alt='Heart icon')
                     h3 Max HP
-                    p #{physAtt.max_hp}
+                    - const startHPNum = parseInt(hero.class.hitpoints_start.substring(0, 1));
+                    - const maxHPString = hero.class.hitpoints_higherlvls.split(')')[0];
+                    - const classHPNum = parseInt(maxHPString.substring(maxHPString.length-1));
+                    if (hero.level == 1)
+                        p= startHPNum + hero.abilities.constitution.modifier
+                    else
+                        p= (hero.level-1) * (classHPNum + hero.abilities.constitution.modifier) + startHPNum + hero.abilities.constitution.modifier
                 .c-stat-card
                     img.c-stat-card__image(src='/images/icons/d20.png' alt='d20 icon')
                     h3 Total HitDie
-                    p #{physAtt.total_hitdie}
+                    p #{hero.level}#{hero.class.hit_die}
                 .c-stat-card
                     img.c-stat-card__image(src='/images/icons/running.png' alt='Running icon')
                     h3 Speed
-                    p #{physAtt.speed} ft
+                    p #{hero.physical_attributes.speed} ft
             
             h3 Ability Scores
             - const st = hero.saving_throws;
-            - const attNameArr = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'];
-            - const attArr = [att.strength, att.dexterity, att.constitution, att.intelligence, att.wisdom, att.charisma];
-            - const attModArr = [att.strengthMod, att.dexterityMod, att.constitutionMod, att.intelligenceMod, att.wisdomMod, att.charismaMod];
+            - const abNameArr = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'];
+            - const abArr = [ ab.strength.total_score, ab.dexterity.total_score, ab.constitution.total_score, ab.intelligence.total_score, ab.wisdom.total_score, ab.charisma.total_score];
+            - const abModArr = [ab.strength.modifier, ab.dexterity.modifier, ab.constitution.modifier, ab.intelligence.modifier, ab.wisdom.modifier, ab.charisma.modifier];
             - const stArr = [st.strength, st.dexterity, st.constitution, st.intelligence, st.wisdom, st.charisma];
             table#hero__ability-scores
                 thead
@@ -141,22 +147,23 @@ block content
                 tbody
                     - for(let i = 0; i < 6; i++)
                         tr
-                            td= attArr[i]
-                            td= attNameArr[i]
-                            if (attModArr[i] > 0)
-                                td= `+${attModArr[i]}`
+                            td= abArr[i]
+                            td= abNameArr[i]
+                            if (abModArr[i] > 0)
+                                td= `+${abModArr[i]}`
                             else
-                                td= attModArr[i]
-                            if (stArr[i].value > 0)
-                                td= `+${stArr[i].value}`
+                                td= abModArr[i]
+                            if (stArr[i])
+                                td= abModArr[i]+ab.proficiency_bonus > 0 ? `+${abModArr[i]+ab.proficiency_bonus}` : abModArr[i]+ab.proficiency_bonus
                             else
-                                td= stArr[i].value
-            
+                                td= abModArr[i] > 0 ? `+${abModArr[i]}` : abModArr[i]
+
             .l-margin--3
             h3 Skills
             - const sk = hero.skills;
             - const skNameArr = ['Acrobatics', 'Animal Handling', 'Arcana', 'Athletics', 'Deception', 'History', 'Insight', 'Intimidation', 'Investigation', 'Medicine', 'Nature', 'Perception', 'Performance', 'Persuasion', 'Religion', 'Sleight of Hand', 'Stealth', 'Survival'];
             - const skArr = [sk.acrobatics, sk.animal_handling, sk.arcana, sk.athletics, sk.deception, sk.history, sk.insight, sk.intimidation, sk.investigation, sk.medicine, sk.nature, sk.perception, sk.performance, sk.persuasion, sk.religion, sk.sleight_of_hand, sk.stealth, sk.survival];
+            - const skDict = {'Acrobatics': abModArr[1], 'Animal Handling': abModArr[4], 'Arcana': abModArr[3], 'Athletics': abModArr[0], 'Deception': abModArr[5], 'History': abModArr[3], 'Insight': abModArr[4], 'Intimidation': abModArr[5], 'Investigation': abModArr[3], 'Medicine': abModArr[4], 'Nature': abModArr[3], 'Perception': abModArr[4], 'Performance': abModArr[5], 'Persuasion': abModArr[5], 'Religion': abModArr[3], 'Sleight of Hand': abModArr[1], 'Stealth': abModArr[1], 'Survival': abModArr[4]}
                 table#hero__skills
                     thead
                         tr
@@ -166,20 +173,18 @@ block content
                     tbody
                         - for(let i = 0; i < skArr.length; i++)
                             tr
-                                if (skArr[i].proficient)
+                                if (skArr[i])
                                     td
                                         img(src='/images/icons/checkmark.png')
+                                    td= skDict[skNameArr[i]]+ab.proficiency_bonus > 0 ? `+${skDict[skNameArr[i]]+ab.proficiency_bonus}` : skDict[skNameArr[i]]+ab.proficiency_bonus
                                 else
                                     td
-                                if (skArr[i].value > 0)
-                                    td= `+${skArr[i].value}`
-                                else
-                                    td= `${skArr[i].value}`
+                                    td= skDict[skNameArr[i]] > 0 ? `+${skDict[skNameArr[i]]}` : skDict[skNameArr[i]]
                                 td= skNameArr[i]
 
             h2 Poderes
             hr
-            h3 #{hero.info.race || 'Racial'} spells:
+            h3 #{hero.race.name || 'Racial'} spells:
             each level in heroSpells.racial
                 //- If there is more than one spell in array, display level
                 //- Writes all spells of said level
@@ -201,7 +206,7 @@ block content
                                 tr
                                     +spellDropdown(spell)
 
-            h3 #{hero.info.class || 'Class'} spells:
+            h3 #{hero.class.name || 'Class'} spells:
             each level in heroSpells.class
                 //- If there is more than one spell in array, display level
                 //- Writes all spells of said level
@@ -222,7 +227,7 @@ block content
                                     td.c-dropdown-button &nabla;
                                 tr
                                     +spellDropdown(spell)
-            
+
             h2 Sheets
             hr
             - const urlSheet = `/heroes/${hero.name}/charactersheet/charactersheet`;
@@ -231,9 +236,11 @@ block content
             object(data=`${urlSheet}#toolbar=0` type="application/pdf")
             object(data=`${urlDetails}#toolbar=0` type="application/pdf")
             object(data=`${urlSpell}#toolbar=0` type="application/pdf")
-            //- iframe(src=`${urlSheet}#toolbar=0` type="application/pdf" frameborder="0")
-            //- iframe(src=`${urlDetails}#toolbar=0` type="application/pdf" frameborder="0")
-            //- iframe(src=`${urlSpell}#toolbar=0` type="application/pdf" frameborder="0")
+
+            //- //- iframe(src=`${urlSheet}#toolbar=0` type="application/pdf" frameborder="0")
+            //- //- iframe(src=`${urlDetails}#toolbar=0` type="application/pdf" frameborder="0")
+            //- //- iframe(src=`${urlSpell}#toolbar=0` type="application/pdf" frameborder="0")
+            
             #hero__sheetbuttons
                 div
                     a.c-button(href=urlSheet target='_blank') See Character Sheet

@@ -67,8 +67,8 @@ exports.sheetFieldNames = {
     skills: {
         acrobatics: 'Acrobatics',
         acrobaticsRadio: 'Check Box 23',
-        animalHandling: 'Animal',
-        animalHandlingRadio: 'Check Box 24',
+        animal_handling: 'Animal',
+        animal_handlingRadio: 'Check Box 24',
         arcana: 'Arcana',
         arcanaRadio: 'Check Box 25',
         athletics: 'Athletics',
@@ -95,8 +95,8 @@ exports.sheetFieldNames = {
         persuasionRadio: 'Check Box 36',
         religion: 'Religion',
         religionRadio: 'Check Box 37',
-        sleightOfHand: 'SleightofHand',
-        sleightOfHandRadio: 'Check Box 38',
+        sleight_of_hand: 'SleightofHand',
+        sleight_of_handRadio: 'Check Box 38',
         stealth: 'Stealth ',
         stealthRadio: 'Check Box 39',
         survival: 'Survival',
@@ -311,71 +311,83 @@ exports.spellFieldNames = {
 // Fills in CharacterDetails PDF fields
 exports.detailsFillFields = (pdfDoc, fieldNames, hero, font) => {
     // Basic Info/Header
-    PdfEdit.fillInField(pdfDoc, fieldNames.age, `${hero.info.age}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.age, `${hero.description.physical.age}`, font);
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.name, hero.name, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.height, `${hero.info.height || ''}`, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.weight, `${hero.info.weight} lbs`, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.eyes, `${hero.info.eye_color || ''}`, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.skin, `${hero.info.skin_color || ''}`, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.hair, `${hero.info.hair_color || ''}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.height, `${hero.description.physical.height || ''}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.weight, `${hero.description.physical.weight} lbs`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.eyes, `${hero.description.physical.eye_color || ''}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.skin, `${hero.description.physical.skin_color || ''}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.hair, `${hero.description.physical.hair_color || ''}`, font);
     
     // Backstory
-    PdfEdit.fillInField(pdfDoc, fieldNames.backstory, `${hero.story.backstory || ''}`, font, { multiline: true });
+    PdfEdit.fillInField(pdfDoc, fieldNames.backstory, `${hero.description.notes.backstory || ''}`, font, { multiline: true });
     
     // Features and Traits
     PdfEdit.fillInField(pdfDoc, fieldNames.featuresAndTraits, `${hero.additional_info.additional_features_traits || ''}`, font, { multiline: true });
     
     // Allies and Organizations
-    PdfEdit.fillInField(pdfDoc, fieldNames.allies, `${hero.story.allies_and_organizations.text || ''}`, font, { multiline: true });
+    PdfEdit.fillInField(pdfDoc, fieldNames.allies, `${hero.description.notes.organization.text+'\nAllies:\n'+hero.description.notes.allies || ''}`, font, { multiline: true });
     
     // Emblem Name
-    PdfEdit.fillInField(pdfDoc, fieldNames.factionName, `${hero.story.allies_and_organizations.organization_name || ''}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.factionName, `${hero.description.notes.organization.name || ''}`, font);
 
     // Treasure
-    PdfEdit.fillInField(pdfDoc, fieldNames.treasure, `${hero.treasure.text || ''}`, font, { multiline: true });
+    PdfEdit.fillInField(pdfDoc, fieldNames.treasure, `${hero.equipment.treasure || ''}`, font, { multiline: true });
 
     // PdfEdit.logAcroFieldNames(pdfDoc);
 };
 
 // Fills in CharacterSheet PDF fields
-exports.sheetFillFields = (pdfDoc, fieldNames, hero, font) => {
+exports.sheetFillFields = (pdfDoc, fieldNames, hero, user, font) => {
     // Basic Info/Header
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.header.name, hero.name, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.header.classAndLevel, `${hero.info.class || '???'}, ${hero.info.level}`, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.header.background, `${hero.info.background || ''}`, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.header.playerName, hero.player_name, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.header.race, `${hero.info.race || ''}`, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.header.alignment, `${hero.info.alignment || ''}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.header.classAndLevel, `${hero.class.name || '???'}, ${hero.level}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.header.background, `${hero.description.background || ''}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.header.playerName, user.username, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.header.race, `${hero.race.name || ''}`, font);
+    PdfEdit.fillInField(pdfDoc, fieldNames.header.alignment, `${hero.description.alignment || ''}`, font);
     PdfEdit.fillInField(pdfDoc, fieldNames.header.xp, 'N/A', font);
 
     // Floating Stats
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.inspiration, `${hero.attributes.inspiration ? 'Y': ''}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.proficiencyBonus, `${hero.attributes.proficiency_bonus > 0 ? '+' + hero.attributes.proficiency_bonus : hero.attributes.proficiency_bonus}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.passivePerception, `${hero.attributes.passive_perception}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.inspiration, `${hero.abilities.inspiration ? 'Y': ''}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.proficiencyBonus, `${hero.abilities.proficiency_bonus > 0 ? '+' + hero.abilities.proficiency_bonus : hero.abilities.proficiency_bonus}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.passivePerception, `${hero.abilities.passive_perception}`, font);
 
     // Attributes
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.strength, `${hero.attributes.strength}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.strengthMod, `${hero.attributes.strengthMod > 0 ? '+' + hero.attributes.strengthMod : hero.attributes.strengthMod}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.dexterity, `${hero.attributes.dexterity}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.dexterityMod, `${hero.attributes.dexterityMod > 0 ? '+' + hero.attributes.dexterityMod : hero.attributes.dexterityMod}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.constitution, `${hero.attributes.constitution}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.constitutionMod, `${hero.attributes.constitutionMod > 0 ? '+' + hero.attributes.constitutionMod : hero.attributes.constitutionMod}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.intelligence, `${hero.attributes.intelligence}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.intelligenceMod, `${hero.attributes.intelligenceMod > 0 ? '+' + hero.attributes.intelligenceMod : hero.attributes.intelligenceMod}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.wisdom, `${hero.attributes.wisdom}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.wisdomMod, `${hero.attributes.wisdomMod > 0 ? '+' + hero.attributes.wisdomMod : hero.attributes.wisdomMod}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.charisma, `${hero.attributes.charisma}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.charismaMod, `${hero.attributes.charismaMod > 0 ? '+' + hero.attributes.charismaMod : hero.attributes.charismaMod}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.strength, `${hero.abilities.strength.total_score}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.strengthMod, `${hero.abilities.strength.modifier > 0 ? '+' + hero.abilities.strength.modifier : hero.abilities.strength.modifier}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.dexterity, `${hero.abilities.dexterity.total_score}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.dexterityMod, `${hero.abilities.dexterity.modifier > 0 ? '+' + hero.abilities.dexterity.modifier : hero.abilities.dexterity.modifier}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.constitution, `${hero.abilities.constitution.total_score}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.constitutionMod, `${hero.abilities.constitution.modifier > 0 ? '+' + hero.abilities.constitution.modifier : hero.abilities.constitution.modifier}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.intelligence, `${hero.abilities.intelligence.total_score}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.intelligenceMod, `${hero.abilities.intelligence.modifier > 0 ? '+' + hero.abilities.intelligence.modifier : hero.abilities.intelligence.modifier}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.wisdom, `${hero.abilities.wisdom.total_score}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.wisdomMod, `${hero.abilities.wisdom.modifier > 0 ? '+' + hero.abilities.wisdom.modifier : hero.abilities.wisdom.modifier}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.charisma, `${hero.abilities.charisma.total_score}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.charismaMod, `${hero.abilities.charisma.modifier > 0 ? '+' + hero.abilities.charisma.modifier : hero.abilities.charisma.modifier}`, font);
 
     // Physical Attributes
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.armorClass, `${hero.physical_attributes.ac}`, font);
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.initiative, `${hero.physical_attributes.initiative > 0 ? '+' + hero.physical_attributes.initiative : hero.physical_attributes.initiative}`, font);
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.speed, `${hero.physical_attributes.speed}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.maxHitPoints, `${hero.physical_attributes.max_hp}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.currentHitPoints, `${hero.physical_attributes.current_hp}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.tempHitPoints, `${hero.physical_attributes.temp_hp}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.totalHitDie, `${hero.physical_attributes.total_hitdie}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.hitDie, `${hero.physical_attributes.current_hitdie}`, font);
+    
+    const startHPNum = parseInt(hero.class.hitpoints_start.substring(0, 1));
+    const maxHPString = hero.class.hitpoints_higherlvls.split(')')[0];
+    const classHPNum = parseInt(maxHPString.substring(maxHPString.length-1));
+    let finalMaxHPString = '';
+    (hero.level == 1)
+        ? finalMaxHPString = startHPNum + hero.abilities.constitution.modifier
+        : finalMaxHPString = (hero.level-1) * (classHPNum + hero.abilities.constitution.modifier) + startHPNum + hero.abilities.constitution.modifier;
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.maxHitPoints, `${finalMaxHPString}`, font);
+    
+    // PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.currentHitPoints, `${hero.physical_attributes.current_hp}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.currentHitPoints, `${finalMaxHPString}`, font);
+    // PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.tempHitPoints, `${hero.physical_attributes.temp_hp}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.tempHitPoints, '', font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.totalHitDie, `${hero.level}${hero.class.hit_die}`, font);
+    // PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.hitDie, `${hero.physical_attributes.current_hitdie}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.hitDie, `${hero.level}${hero.class.hit_die}`, font);
     
     // Death Saving Throws
     PdfEdit.fillInRadio(pdfDoc, fieldNames.physicalAttributes.savingThrows.success.first, 'No');
@@ -409,82 +421,60 @@ exports.sheetFillFields = (pdfDoc, fieldNames, hero, font) => {
     }
 
     // Saving Throws
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.savingThrows.strength, `${hero.saving_throws.strength.value > 0 ? '+' + hero.saving_throws.strength.value : hero.saving_throws.strength.value}`, font);
-    hero.saving_throws.strength.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows.strengthRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows.strengthRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.savingThrows.dexterity, `${hero.saving_throws.dexterity.value > 0 ? '+' + hero.saving_throws.dexterity.value : hero.saving_throws.dexterity.value}`, font);
-    hero.saving_throws.dexterity.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows.dexterityRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows.dexterityRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.savingThrows.constitution, `${hero.saving_throws.constitution.value > 0 ? '+' + hero.saving_throws.constitution.value : hero.saving_throws.constitution.value}`, font);
-    hero.saving_throws.constitution.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows.constitutionRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows.constitutionRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.savingThrows.intelligence, `${hero.saving_throws.intelligence.value > 0 ? '+' + hero.saving_throws.intelligence.value : hero.saving_throws.intelligence.value}`, font);
-    hero.saving_throws.intelligence.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows.intelligenceRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows.intelligenceRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.savingThrows.wisdom, `${hero.saving_throws.wisdom.value > 0 ? '+' + hero.saving_throws.wisdom.value : hero.saving_throws.wisdom.value}`, font);
-    hero.saving_throws.wisdom.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows.wisdomRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows.wisdomRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.savingThrows.charisma, `${hero.saving_throws.charisma.value > 0 ? '+' + hero.saving_throws.charisma.value : hero.saving_throws.charisma.value}`, font);
-    hero.saving_throws.charisma.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows.charismaRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows.charismaRadio, 'No');
+    const abilityNames = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+    for(const ability of abilityNames) {
+        if(hero.saving_throws[ability]) {
+            const stMod = hero.abilities[ability].modifier + hero.abilities.proficiency_bonus;
+            PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.savingThrows[ability], `${stMod > 0 ? '+' + stMod : stMod}`, font);
+            PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows[`${ability}Radio`], 'Yes');
+        } else {
+            const stMod = hero.abilities[ability].modifier;
+            PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.savingThrows[ability], `${stMod > 0 ? '+' + stMod : stMod}`, font);
+            PdfEdit.fillInRadio(pdfDoc, fieldNames.savingThrows[`${ability}Radio`], 'No');
+        }
+    }
 
     // Skills
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.acrobatics, `${hero.skills.acrobatics.value > 0 ? '+' + hero.skills.acrobatics.value : hero.skills.acrobatics.value}`, font);
-    hero.skills.acrobatics.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.acrobaticsRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.acrobaticsRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.animalHandling, `${hero.skills.animal_handling.value > 0 ? '+' + hero.skills.animal_handling.value : hero.skills.animal_handling.value}`, font);
-    hero.skills.animal_handling.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.animalHandlingRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.animalHandlingRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.arcana, `${hero.skills.arcana.value > 0 ? '+' + hero.skills.arcana.value : hero.skills.arcana.value}`, font);
-    hero.skills.arcana.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.arcanaRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.arcanaRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.athletics, `${hero.skills.athletics.value > 0 ? '+' + hero.skills.athletics.value : hero.skills.athletics.value}`, font);
-    hero.skills.athletics.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.athleticsRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.athleticsRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.deception, `${hero.skills.deception.value > 0 ? '+' + hero.skills.deception.value : hero.skills.deception.value}`, font);
-    hero.skills.deception.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.deceptionRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.deceptionRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.history, `${hero.skills.history.value > 0 ? '+' + hero.skills.history.value : hero.skills.history.value}`, font);
-    hero.skills.history.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.historyRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.historyRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.insight, `${hero.skills.insight.value > 0 ? '+' + hero.skills.insight.value : hero.skills.insight.value}`, font);
-    hero.skills.insight.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.insightRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.insightRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.intimidation, `${hero.skills.intimidation.value > 0 ? '+' + hero.skills.intimidation.value : hero.skills.intimidation.value}`, font);
-    hero.skills.intimidation.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.intimidationRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.intimidationRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.investigation, `${hero.skills.investigation.value > 0 ? '+' + hero.skills.investigation.value : hero.skills.investigation.value}`, font);
-    hero.skills.investigation.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.investigationRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.investigationRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.medicine, `${hero.skills.medicine.value > 0 ? '+' + hero.skills.medicine.value : hero.skills.medicine.value}`, font);
-    hero.skills.medicine.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.medicineRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.medicineRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.nature, `${hero.skills.nature.value > 0 ? '+' + hero.skills.nature.value : hero.skills.nature.value}`, font);
-    hero.skills.nature.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.natureRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.natureRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.perception, `${hero.skills.perception.value > 0 ? '+' + hero.skills.perception.value : hero.skills.perception.value}`, font);
-    hero.skills.perception.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.perceptionRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.perceptionRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.performance, `${hero.skills.performance.value > 0 ? '+' + hero.skills.performance.value : hero.skills.performance.value}`, font);
-    hero.skills.performance.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.performanceRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.performanceRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.persuasion, `${hero.skills.persuasion.value > 0 ? '+' + hero.skills.persuasion.value : hero.skills.persuasion.value}`, font);
-    hero.skills.persuasion.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.persuasionRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.persuasionRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.religion, `${hero.skills.religion.value > 0 ? '+' + hero.skills.religion.value : hero.skills.religion.value}`, font);
-    hero.skills.religion.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.religionRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.religionRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.sleightOfHand, `${hero.skills.sleight_of_hand.value > 0 ? '+' + hero.skills.sleight_of_hand.value : hero.skills.sleight_of_hand.value}`, font);
-    hero.skills.sleight_of_hand.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.sleightOfHandRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.sleightOfHandRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.stealth, `${hero.skills.stealth.value > 0 ? '+' + hero.skills.stealth.value : hero.skills.stealth.value}`, font);
-    hero.skills.stealth.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.stealthRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.stealthRadio, 'No');
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills.survival, `${hero.skills.survival.value > 0 ? '+' + hero.skills.survival.value : hero.skills.survival.value}`, font);
-    hero.skills.survival.proficient ? PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.survivalRadio, 'Yes') : PdfEdit.fillInRadio(pdfDoc, fieldNames.skills.survivalRadio, 'No');
+    const skillNames = ['acrobatics', 'animal_handling', 'arcana', 'athletics', 'deception', 'history', 'insight', 'intimidation', 'investigation', 'medicine', 'nature', 'perception', 'performance', 'persuasion', 'religion', 'sleight_of_hand', 'stealth', 'survival'];
+    const abilityMods= [hero.abilities.strength.modifier, hero.abilities.dexterity.modifier, hero.abilities.constitution.modifier, hero.abilities.intelligence.modifier, hero.abilities.wisdom.modifier, hero.abilities.charisma.modifier];
+    const skillDict = {'acrobatics': abilityMods[1], 'animal_handling': abilityMods[4], 'arcana': abilityMods[3], 'athletics': abilityMods[0], 'deception': abilityMods[5], 'history': abilityMods[3], 'insight': abilityMods[4], 'intimidation': abilityMods[5], 'investigation': abilityMods[3], 'medicine': abilityMods[4], 'nature': abilityMods[3], 'perception': abilityMods[4], 'performance': abilityMods[5], 'persuasion': abilityMods[5], 'religion': abilityMods[3], 'sleight_of_hand': abilityMods[1], 'stealth': abilityMods[1], 'survival': abilityMods[4]};
+    for(const skill of skillNames) {
+        if(hero.skills[skill]) {
+            const skMod = skillDict[skill] + hero.abilities.proficiency_bonus;
+            PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills[skill], `${skMod > 0 ? '+' + skMod : skMod}`, font);
+            PdfEdit.fillInRadio(pdfDoc, fieldNames.skills[`${skill}Radio`], 'Yes');
+        } else {
+            const skMod = skillDict[skill];
+            PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.skills[skill], `${skMod > 0 ? '+' + skMod : skMod}`, font);
+            PdfEdit.fillInRadio(pdfDoc, fieldNames.skills[`${skill}Radio`], 'No');
+        }
+    }
 
     // Personality
-    PdfEdit.fillInField(pdfDoc, fieldNames.personality.personalityTraits, `${hero.personality.personality_traits || ''}`, font, { multiline: true });
-    PdfEdit.fillInField(pdfDoc, fieldNames.personality.ideals, `${hero.personality.ideals || ''}`, font, { multiline: true });
-    PdfEdit.fillInField(pdfDoc, fieldNames.personality.bonds, `${hero.personality.bonds || ''}`, font, { multiline: true });
-    PdfEdit.fillInField(pdfDoc, fieldNames.personality.flaws, `${hero.personality.flaws || ''}`, font, { multiline: true });
+    PdfEdit.fillInField(pdfDoc, fieldNames.personality.personalityTraits, `${hero.description.personality.traits || ''}`, font, { multiline: true });
+    PdfEdit.fillInField(pdfDoc, fieldNames.personality.ideals, `${hero.description.personality.ideals || ''}`, font, { multiline: true });
+    PdfEdit.fillInField(pdfDoc, fieldNames.personality.bonds, `${hero.description.personality.bonds || ''}`, font, { multiline: true });
+    PdfEdit.fillInField(pdfDoc, fieldNames.personality.flaws, `${hero.description.personality.flaws || ''}`, font, { multiline: true });
 
     // Attacks and Spellcasting
-    switch(hero.attacksAndSpellCasting.weapons.length) {
+    switch(hero.equipment.weapons.list.length) {
         case 3:
-            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.thirdWeapon.name, hero.attacksAndSpellCasting.weapons[2].name, font);
-            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.thirdWeapon.attackBonus, `${hero.attacksAndSpellCasting.weapons[2].attackBonus > 0 ? '+' + hero.attacksAndSpellCasting.weapons[2].attackBonus : hero.attacksAndSpellCasting.weapons[2].attackBonus}`, font);
-            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.thirdWeapon.damage, hero.attacksAndSpellCasting.weapons[2].damage, font);
+            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.thirdWeapon.name, hero.equipment.weapons.list[2].name, font);
+            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.thirdWeapon.attackBonus, `${hero.equipment.weapons.list[2].attackBonus > 0 ? '+' + hero.equipment.weapons.list[2].attackBonus : hero.equipment.weapons.list[2].attackBonus}`, font);
+            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.thirdWeapon.damage, hero.equipment.weapons.list[2].damage, font);
         case 2:
-            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.secondWeapon.name, hero.attacksAndSpellCasting.weapons[1].name, font);
-            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.secondWeapon.attackBonus, `${hero.attacksAndSpellCasting.weapons[1].attackBonus > 0 ? '+' + hero.attacksAndSpellCasting.weapons[1].attackBonus : hero.attacksAndSpellCasting.weapons[1].attackBonus}`, font);
-            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.secondWeapon.damage, hero.attacksAndSpellCasting.weapons[1].damage, font);
+            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.secondWeapon.name, hero.equipment.weapons.list[1].name, font);
+            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.secondWeapon.attackBonus, `${hero.equipment.weapons.list[1].attackBonus > 0 ? '+' + hero.equipment.weapons.list[1].attackBonus : hero.equipment.weapons.list[1].attackBonus}`, font);
+            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.secondWeapon.damage, hero.equipment.weapons.list[1].damage, font);
         case 1:
-            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.firstWeapon.name, hero.attacksAndSpellCasting.weapons[0].name, font);
-            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.firstWeapon.attackBonus, `${hero.attacksAndSpellCasting.weapons[0].attackBonus > 0 ? '+' + hero.attacksAndSpellCasting.weapons[0].attackBonus : hero.attacksAndSpellCasting.weapons[0].attackBonus}`, font);
-            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.firstWeapon.damage, hero.attacksAndSpellCasting.weapons[0].damage, font);
+            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.firstWeapon.name, hero.equipment.weapons.list[0].name, font);
+            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.firstWeapon.attackBonus, `${hero.equipment.weapons.list[0].attackBonus > 0 ? '+' + hero.equipment.weapons.list[0].attackBonus : hero.equipment.weapons.list[0].attackBonus}`, font);
+            PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.firstWeapon.damage, hero.equipment.weapons.list[0].damage, font);
             break;
         default:
             break;
     }
-    PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.notes, `${hero.attacksAndSpellCasting.notes || ''}`, font, { multiline: true });
+    PdfEdit.fillInField(pdfDoc, fieldNames.attacksAndSpellcasting.notes, `${hero.equipment.weapons.notes || ''}`, font, { multiline: true });
     
     // Equipment
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.equipment.copperPieces, `${hero.equipment.money.copper || 0}`, font);
@@ -492,7 +482,7 @@ exports.sheetFillFields = (pdfDoc, fieldNames, hero, font) => {
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.equipment.electrumPieces, `${hero.equipment.money.electrum || 0}`, font);
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.equipment.goldPieces, `${hero.equipment.money.gold || 0}`, font);
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.equipment.platinumPieces, `${hero.equipment.money.platinum || 0}`, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.equipment.equipment, `${hero.equipment.equipment || ''}`, font, { multiline: true });
+    PdfEdit.fillInField(pdfDoc, fieldNames.equipment.equipment, `${hero.equipment.starting || ''}`, font, { multiline: true });
 
     // Features and Traits
     PdfEdit.fillInField(pdfDoc, fieldNames.featuresAndTraits, `${hero.additional_info.features_and_traits || ''}`, font, { multiline: true });
@@ -527,20 +517,20 @@ exports.spellFillFields = (pdfDoc, fieldNames, hero, heroSpells, font) => {
     // PdfEdit.fillInField(pdfDoc, fieldNames.test0, '0', font);
 
     // Spell Casting Info/Header
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.spellcastingClass, `${hero.info.class || ''}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.spellcastingClass, `${hero.class.name || ''}`, font);
     let scAbility = '', ssDC = '', saBonus = '';
-    if(hero.info.class != '' && hero.info.class != undefined){
-        switch(hero.info.class.toLowerCase()){
+    if(hero.class.name != '' && hero.class.name != undefined){
+        switch(hero.class.name.toLowerCase()){
             case 'sorcerer':
             case 'paladin':
             case 'warlock':
                 scAbility = 'Charisma';
-                ssDC = '' + (8 + hero.attributes.proficiency_bonus + hero.attributes.charismaMod);
-                saBonus = '+' + (hero.attributes.proficiency_bonus + hero.attributes.charismaMod);
+                ssDC = '' + (8 + hero.abilities.proficiency_bonus + hero.abilities.charisma.modifier);
+                saBonus = '+' + (hero.abilities.proficiency_bonus + hero.abilities.charisma.modifier);
                 break;
             case 'monk':
                 scAbility = 'Ki';
-                ssDC = '' + (8 + hero.attributes.proficiency_bonus + hero.attributes.wisdomMod);
+                ssDC = '' + (8 + hero.abilities.proficiency_bonus + hero.abilities.wisdom.modifier);
                 break;
             default:
                 break;

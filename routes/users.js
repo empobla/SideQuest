@@ -8,48 +8,109 @@ const userController = require('../controllers/userController');
 router.get('/', function(req, res, next) {
   req.isAuthenticated()
     // ? res.send('respond with a resource - '+req.user.username)
-    ? res.redirect(`/users/user/${req.user.username}`)
-    : res.redirect('/users/login');
+    ? res.redirect(`/users/${req.user.username}`)
+    : res.redirect('/login');
 });
 
 /* Account View Routes */
-router.get('/user/*', userController.isAuth);
-router.get('/user/:username', userController.accountView);
-router.get('/user/:username/changepassword', userController.accountView); // Must add post for editing password
+router.get('/*', userController.isAuth);
+router.get('/:username', userController.accountView);
+router.get('/:username/changepassword', userController.accountView); // Must add post for editing password
 
 // Hero
-// router.get('/:username/heroes', userController.heroesGet);
-router.get('/user/:username/hero/:pageNumber', userController.editHeroGet);
-router.get('/user/:username/hero/:pageNumber/:saved', userController.editHeroGet);
-router.post('/user/:username/hero/save/:pageNumber', 
+router.get('/:username/heroes', userController.heroes);
+router.get('/:username/heroes/newHero', userController.newHeroGet);
+router.post('/:username/heroes/newHero', 
+  userController.upload,
+  userController.pushToCloudinary,
+  userController.newHeroPost
+);
+
+router.get('/:username/heroes/:heroId', userController.newHeroGet);
+router.post('/:username/heroes/:heroId', 
   userController.upload,
   userController.pushToCloudinary,
   userController.editHeroPost
 );
-router.post('/user/:username/savespell', userController.saveSpell);
-router.post('/user/:username/removeCharacterSpell', userController.removeCharacterSpell);
-router.post('/user/:username/editSpell', userController.editSpell);
+
+// Spells
+router.get('/:username/spells', userController.spells);
+router.post('/:username/savespell', userController.saveSpellPost);
+router.post('/:username/editSpell', userController.editSpellPost);
+
+// TEMP CREATE RACE AND CLASS
+// const Race = require('../models/race');
+// router.get('/:username/temprace', async (req, res, next) => {
+//   try {
+//     const race = new Race();
+//     race.name = 'Aasimar';
+//     race.description = 'Aasimar are placed in the world to serve as guardians of law and good. Their patrons expect them to strike at evil, lead by example, and further the cause of justice.';
+//     const chaAbilityIncrease = {
+//       name: 'charisma',
+//       increase: 2
+//     };
+//     race.ability_increase.push(chaAbilityIncrease);
+//     race.speed = 30;
+//     race.alignment = 'Lawful Neutral';
+//     race.size = 'Medium';
+//     race.languages = 'Common, Celestial';
+//     race.traits = 'Darkvision - Desc\nCelestial Resistance - Desc\nHealing Hands - Desc\nLight Bearer - Desc';
+
+//     await race.save()
+//     res.json(race);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+// const Class = require('../models/class');
+// router.get('/:username/temprace', async (req, res, next) => {
+//   try {
+//     // const heroClass = new Class();
+//     // heroClass.name = 'Paladin';
+//     // heroClass.description = 'A holy warrior bound to a sacred oath.';
+//     // heroClass.hit_die = 'd10';
+//     // heroClass.abilities.push('strength');
+//     // heroClass.abilities.push('charisma');
+//     // heroClass.st_proficiencies.push('wisdom');
+//     // heroClass.st_proficiencies.push('charisma');
+//     // heroClass.armor_weapon_proficiencies = 'All armor, shields, simple and martial weapons.';
+
+//     const heroclass = await Class.findOne({ name: 'Paladin' });
+//     heroclass.hitpoints_start = '10 + your Constitution modifier';
+//     heroclass.hitpoints_higherlvls = '1d10 (or 6) + your Constitution modifier per Paladin level after 1st'
+//     heroclass.spell_ability = 'charisma';
+//     heroclass.skills.choose = 2;
+//     const skills = ['athletics', 'insight', 'intimidation', 'medicine', 'persuasion', 'religion'];
+//     heroclass.skills.skills = skills;
+
+//     await heroclass.save();
+//     res.json(heroclass);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
 
 // Story
-router.get('/user/:username/story', userController.editStoryGet);
-router.get('/user/:username/story/addStory', userController.editStoryGet);
-router.post('/user/:username/story/addStory', userController.addStory);
-router.get('/user/:username/story/:storyId', userController.editStoryGet);
-router.post('/user/:username/story/:storyId', userController.editStoryPost);
+router.get('/:username/story', userController.story);
+router.get('/:username/story/newstory', userController.newStoryGet);
+router.post('/:username/story/newstory', userController.newStoryPost);
+router.get('/:username/story/edit/:storyId', userController.editStoryGet);
+router.post('/:username/story/edit/:storyId', userController.editStoryPost);
 
 // Characters
-router.get('/user/:username/characters', userController.editCharactersGet);
-router.get('/user/:username/characters/addCharacter', userController.editCharactersGet);
-router.post('/user/:username/characters/addCharacter', 
+router.get('/:username/characters', userController.characters);
+router.get('/:username/characters/newcharacter', userController.newCharacterGet);
+router.post('/:username/characters/newcharacter',
   userController.upload,
   userController.pushToCloudinary,
-  userController.addCharacter
+  userController.newCharacterPost
 );
-router.get('/user/:username/characters/:characterName', userController.editCharactersGet);
-router.post('/user/:username/characters/:characterName', 
+router.get('/:username/characters/edit/:characterId', userController.editCharacterGet);
+router.post('/:username/characters/edit/:characterId',
   userController.upload,
   userController.pushToCloudinary,
-  userController.editCharactersPost
+  userController.editCharacterPost
 );
 
 /* DM */
@@ -82,17 +143,5 @@ router.get('/user/:username/announcements/:announcementId', userController.annou
 router.post('/user/:username/announcements/:announcementId', userController.announcementsPost);
 router.get('/user/:username/announcements/:announcementId/saved', userController.announcementsGet);
 router.post('/user/:username/announcements/:announcementId/saved', userController.announcementsPost);
-
-/* Get log in page */
-router.get('/login', userController.loginGet);
-router.post('/login', userController.loginPost);
-
-router.get('/signup', userController.signUpGet);
-router.post('/signup', 
-    userController.signUpPost,
-    userController.loginPost
-);
-
-router.get('/logout', userController.logout);
 
 module.exports = router;

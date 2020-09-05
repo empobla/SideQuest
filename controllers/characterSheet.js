@@ -1,4 +1,7 @@
+const User = require('../models/user');
 const Hero = require('../models/hero');
+const Class = require('../models/class');
+const Race = require('../models/race');
 const Spell = require('../models/spell');
 
 const PdfEdit = require('./functions/pdfEdit');
@@ -27,7 +30,25 @@ const getPath = (selector) => {
 exports.fillPdf = async (req, res, next) => {
   try{
     const heroName = req.params.hero;
-    const hero = await Hero.findOne({ name: heroName });
+    const hero = await Hero.aggregate([
+      { $match: { name: heroName } },
+      { $lookup: {
+          from: 'races',
+          localField: 'race',
+          foreignField: '_id',
+          as: 'race'
+      } },
+      { $lookup: {
+          from: 'classes',
+          localField: 'class',
+          foreignField: '_id',
+          as: 'class'
+      } }
+    ]).then(res => res[0]);
+    hero.race = hero.race[0];
+    hero.class = hero.class[0];
+    const user = await User.findOne({ characters: hero._id });
+    
     const selector = req.params.selector;
     
     const path = getPath(selector);
@@ -39,7 +60,7 @@ exports.fillPdf = async (req, res, next) => {
     switch(selector) {
       case 'charactersheet':
         const sheetFieldNames = PdfFields.sheetFieldNames;
-        PdfFields.sheetFillFields(pdfDoc, sheetFieldNames, hero, FontHelvetica);
+        PdfFields.sheetFillFields(pdfDoc, sheetFieldNames, hero, user, FontHelvetica);
 
         break;
       case 'characterdetails':
@@ -76,8 +97,8 @@ exports.fillPdf = async (req, res, next) => {
             })
         }
 
-        if(hero.story.allies_and_organizations.emblem_image != '' && hero.story.allies_and_organizations.emblem_image != undefined){
-          const pathEmblem = `http://res.cloudinary.com/duezou4td/image/upload/${hero.story.allies_and_organizations.emblem_image}.png`;
+        if(hero.description.notes.organization.emblem != '' && hero.description.notes.organization.emblem != undefined){
+          const pathEmblem = `http://res.cloudinary.com/duezou4td/image/upload/${hero.description.notes.organization.emblem}.png`;
           const heroEmblemImage = await PdfEdit.loadImageUrl(pathEmblem, pdfDoc);
 
           // Scale down to 90% of max size of character image rectangle
