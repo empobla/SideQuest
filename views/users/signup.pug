@@ -1,22 +1,31 @@
-extends ../../views_old/layout
+extends ../layout
 
 block content
-    .outer_wrapper
-        if errors
-            ul
-                for error in errors
-                    li= error.msg
-        .form_wrapper
-            form.credentials(action="" method="POST")
-                h2 Crear Cuenta
-                .form_input
+
+    .l-margin-start
+    .l-divider
+        .c-divider__left
+            h1 Crear Cuenta
+        .c-divider__right
+
+    if errors
+        ul
+            for error in errors
+                li= error.msg
+    
+    .l-main-content
+        .l-margin--7
+        .l-login
+            form.c-login-form(action="" method="POST")
+                .c-login-form__input
                     label(for="username") Usuario:
                     input(type="text" name="username" id="username" placeholder="Ingresa tu usuario..." required)
-                .form_input
-                    label(for="username") Contraseña:
+                .c-login-form__input
+                    label(for="password") Contraseña:
                     input(type="password" name="password" id="password" placeholder="Ingresa tu contraseña..." required)
-                .form_input
-                    label(for="username") Verificar Contraseña:
+                .c-login-form__input
+                    label(for="confirm_password") Verificar Contraseña:
                     input(type="password" name="confirm_password" id="confirm_password" placeholder="Confirma tu contraseña..." required)
-                .form_input
-                    button.button_small(type="submit") Crear Cuenta
+                .c-login-form__input
+                    button.c-button--white(type="submit") Crear Cuenta
+            img#login__logo(src='/images/logos/sidequestlogo.png' alt='SideQuest logo')
