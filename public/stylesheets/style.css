@@ -295,10 +295,6 @@ main {
     overflow: hidden;
 }
 
-.l-cards--4 .c-card {
-    width: 100%;
-}
-
 .c-card__image {
     height: 110%;
 }
