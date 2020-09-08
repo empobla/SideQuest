@@ -6,7 +6,7 @@ include ../mixins/_spell_dropdown
 block content
     
     if url.endsWith('/heroes')
-        .l-margin--7
+        .l-margin-start
         .l-divider
             .c-divider__left
                 h1 Mis Héroes
@@ -36,7 +36,7 @@ block content
                     img.c-card__image(src='/images/resources/tortle.png' alt='Create Hero Image')
     
     else
-        .l-margin--7
+        .l-margin-start
         .l-divider
             .c-divider__left
                 if url.endsWith('/newHero')
@@ -208,7 +208,7 @@ block content
                     h2 Physical Attributes
                     hr
                     .l-margin--3
-                        .l-ability-points-grid.grid--5
+                        .l-ability-points-grid.grid--5#m-abilities__physical
                             .c-ability-points
                                 label(for='level') Level
                                 input(type='number' name='level' id='js-level' min='1' max='20' placeholder='--' value=(hero ? hero.level : '1'))
@@ -313,7 +313,7 @@ block content
                     //-     .c-ability-points
                     //-         button.c-button.m-clickable.js-modalbutton(type='button' data-for-modal='2') Edit Spell
                     .l-margin--3
-                    .l-select-button.button--2
+                    .l-select-button.button--2#m-spells_selectbuttons
                         select(id='js-spellselect')
                             option(value='-1' selected) - select -
                             each level in spells

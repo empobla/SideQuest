@@ -4,7 +4,7 @@ include mixins/_spell_dropdown
 
 block content
     
-    .l-margin--7
+    .l-margin-start
     .l-divider
         .c-divider__left
             h1 Héroes
@@ -250,21 +250,19 @@ block content
             - const urlSheet = `/heroes/${hero.name}/charactersheet/charactersheet`;
             - const urlDetails = `/heroes/${hero.name}/charactersheet/characterdetails`;
             - const urlSpell = `/heroes/${hero.name}/charactersheet/spellcasting`;
-            object(data=`${urlSheet}#toolbar=0` type="application/pdf")
-            object(data=`${urlDetails}#toolbar=0` type="application/pdf")
-            object(data=`${urlSpell}#toolbar=0` type="application/pdf")
+            .l-sheetcontainer
+                object(data=`${urlSheet}#toolbar=0` type="application/pdf")
+                object(data=`${urlDetails}#toolbar=0` type="application/pdf")
+                object(data=`${urlSpell}#toolbar=0` type="application/pdf")
 
             //- //- iframe(src=`${urlSheet}#toolbar=0` type="application/pdf" frameborder="0")
             //- //- iframe(src=`${urlDetails}#toolbar=0` type="application/pdf" frameborder="0")
             //- //- iframe(src=`${urlSpell}#toolbar=0` type="application/pdf" frameborder="0")
             
             #hero__sheetbuttons
-                div
-                    a.c-button(href=urlSheet target='_blank') See Character Sheet
-                div
-                    a.c-button(href=urlDetails target='_blank') See Details Sheet
-                div
-                    a.c-button(href=urlSpell target='_blank') See Spell Sheet
+                a.c-button(href=urlSheet target='_blank') See Character Sheet
+                a.c-button(href=urlDetails target='_blank') See Details Sheet
+                a.c-button(href=urlSpell target='_blank') See Spell Sheet
 
     script.
         const spellBar = document.querySelectorAll('.c-spell');
