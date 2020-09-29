@@ -1,0 +1,101 @@
+extends ../layout
+
+block content
+
+    .l-margin-start
+    .l-divider
+        .c-divider__left
+            if url.endsWith('/users')
+                h1 Manage Users
+            else
+                h1 Edit #{user.username}
+        .c-divider__right
+
+    if url.endsWith('/users')
+        .l-main-content
+            .l-manageusers-grid
+                div
+                    h2.m-align-center Admins
+                    hr
+                    .l-margin--3
+                    ul.c-manageusers-grid__list
+                        each user in users
+                            if user.isAdmin
+                                li
+                                    a.c-button(href=`/admin/${username}/users/${user._id}`)= user.username
+                div
+                    h2.m-align-center DMs
+                    hr
+                    .l-margin--3
+                    ul.c-manageusers-grid__list
+                        each user in users
+                            if user.isDM
+                                li
+                                    a.c-button(href=`/admin/${username}/users/${user._id}`)= user.username
+                div
+                    h2.m-align-center Users
+                    hr
+                    .l-margin--3
+                    ul.c-manageusers-grid__list
+                        each user in users
+                            if !user.isAdmin && !user.isDM
+                                li
+                                    a.c-button(href=`/admin/${username}/users/${user._id}`)= user.username
+    
+    else
+        .l-main-content
+            form(action='' method='post')
+                .l-manageusers-grid
+                    div
+                        h2.m-align-center Account level
+                        hr
+                        .l-margin--2
+                        //- form.c-adminuser-form(action=`/admin/${username}/users/${user._id}/editPrivilege` method='post')
+                        .c-adminuser-form
+                            .c-adminuser-checkboxes
+                                .c-checkbox
+                                    label(for='isAdmin') Admin
+                                    if user.isAdmin
+                                        input(type='checkbox' name='isAdmin' value='true' checked)
+                                    else
+                                        input(type='checkbox' name='isAdmin' value='true')
+                                .c-checkbox
+                                    label(for='isDM') DM
+                                    if user.isDM
+                                        input(type='checkbox' name='isDM' value='true' checked)
+                                    else
+                                        input(type='checkbox' name='isDM' value='true')
+                    div
+                        h2.m-align-center Edit username / password
+                        hr
+                        .l-margin--2
+                        //- form.c-adminuser-form(action='' method='post')
+                        .c-adminuser-form
+                            .c-adminuser-form__input
+                                label(for="username") Username:
+                                input(type="text" name="username" id="username" placeholder="Input new username..." required value=user.username disabled)
+                            .c-adminuser-form__input
+                                label(for="password") New Password:
+                                input(type="password" name="password" id="password" placeholder="Input new password..." required disabled)
+                            .c-adminuser-form__input
+                                label(for="confirm_password") Confirm Password:
+                                input(type="password" name="confirm_password" id="confirm_password" placeholder="Input new password..." required disabled)
+                    div
+                        h2.m-align-center Heroes
+                        hr
+                        .l-margin--3
+                        //- form.c-adminuser-form(action='' method='post')
+                        .c-adminuser-form
+                            each hero, idx in userHeroes
+                                strong #{hero.name}
+                                .c-adminuser-form__input
+                                    p Transfer to:
+                                    select(name='transfer[]')
+                                        option(value='-1' selected) -----
+                                        each user in users
+                                            option(value=`${hero._id},${user._id}`)= user.username
+                                .l-margin--2
+                        
+                .l-margin--3
+                div.m-align-center
+                    button.c-button--large.m-clickable(type='submit') Save

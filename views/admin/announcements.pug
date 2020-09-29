@@ -1,0 +1,66 @@
+extends ../layout
+include ../mixins/_text_editor
+
+block content
+
+    .l-margin-start
+    .l-divider
+        .c-divider__left
+            if url.endsWith('/announcements')
+                h1 Anuncios
+            else if url.endsWith('/newannouncement')
+                h1 Anuncio Nuevo
+            else
+                h1 Editar Anuncio: #{announcement.name}
+        .c-divider__right
+    
+    if url.endsWith('/announcements')
+        .l-main-content
+            .l-search
+                form.c-search(action='')
+                    .c-search__input
+                        label(for='name') Nombre del anuncio
+                        input(type='text' name='name' id='name' placeholder='Buscar anuncio por nombre' disabled)
+                    .c-search__input--button
+                        button.c-button--large.m-background-lightgray(type='' disabled) Buscar
+        
+            .l-margin--2
+            .l-ability-points-grid.grid--3
+                div
+                a.c-button--large.m-clickable(href=`/admin/${username}/announcements/newannouncement`) Anuncio Nuevo
+                div
+        
+        .l-margin--3
+        .l-main-content
+            table.l-spells
+                each announcement in announcements
+                    tr.c-spell 
+                        td.m-align-left
+                            a.m-color-black(href=`/admin/${username}/announcements/edit/${announcement._id}`) #{announcement.name}
+                        td.m-align-left
+                            - const date = new Date(announcement.date)
+                            a.m-color-black(href=`/admin/${username}/announcements/edit/${announcement._id}`)= `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()}`
+                            
+    else if url.endsWith('/newannouncement')
+        .l-main-content
+            form.c-edithero-form(action='' method='post')
+                .c-edithero-form__input
+                    label(for='name') *Nombre del Anuncio:
+                    input(type='text' name='name' id='name' placeholder='Anuncio 1' required)
+                .c-edithero-form__input.c-edithero-form__input--stack
+                    label(for='summary') Anuncio:
+                    +textEditor('editor', '', 'Escribe el anuncio aquí.', 'summary')
+                .l-margin--2
+                button.c-button--large.m-clickable.l-margin-right--1(type='submit') Crear Anuncio
+    else
+        .l-main-content
+            form.c-edithero-form(action='' method='post')
+                .c-edithero-form__input
+                    label(for='name') *Nombre del Anuncio:
+                    input(type='text' name='name' id='name' placeholder='Anuncio 1' value=announcement.name required)
+                .c-edithero-form__input.c-edithero-form__input--stack
+                    label(for='summary') Anuncio:
+                    +textEditor('editor', announcement.summary || '', 'Escribe el anuncio aquí.', 'summary')
+                .l-margin--2
+                button.c-button--large.m-clickable.l-margin-right--1(type='submit' name='deleteannouncement' value='false') Guardar Cambios
+                button.c-button--large.m-clickable.m-background-red(type='submit' name='deleteannouncement' value='true') Borrar Anuncio

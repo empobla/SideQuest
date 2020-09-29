@@ -1,0 +1,142 @@
+extends ../layout
+include ../mixins/_text_editor
+
+block content
+
+    .l-margin-start
+    .l-divider
+        .c-divider__left
+            if url.endsWith('/races')
+                h1 Races
+            else if url.endsWith('/newrace')
+                h1 New Race
+            else
+                h1 Edit Race: #{race.name}
+        .c-divider__right
+    
+    if url.endsWith('/races')
+        .l-main-content
+            .l-search
+                form.c-search(action='')
+                    .c-search__input
+                        label(for='name') Race name
+                        input(type='text' name='name' id='name' placeholder='Search for race by name' disabled)
+                    .c-search__input--button
+                        button.c-button--large.m-background-lightgray(type='' disabled) Search
+        
+            .l-margin--2
+            .l-ability-points-grid.grid--3
+                div
+                a.c-button--large.m-clickable(href=`/admin/${username}/races/newrace`) New Race
+                div
+        
+        .l-margin--3
+        .l-main-content
+            table.l-spells
+                each race in races
+                    tr.c-spell 
+                        td.m-align-left
+                            a.m-color-black(href=`/admin/${username}/races/edit/${race._id}`) #{race.name}
+
+    else if url.endsWith('/newrace')
+        .l-main-content
+            form.c-edithero-form(action='' method='post')
+                .c-edithero-form__input
+                    label(for='name') *Race Name:
+                    input(type='text' name='name' placeholder='Human' required)
+                .c-edithero-form__input.c-edithero-form__input--stack
+                    label(for='description') Description:
+                    textarea(name='description' placeholder='Write race description here.')
+                .l-margin--2
+                h2 Ability Increase
+                hr
+                .l-margin--3
+                - const abilities = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+                .l-ability-points-grid
+                    each ability in abilities
+                        .c-ability-points
+                            label= ability.toUpperCase()
+                            input(type='checkbox' onclick='toggleInput()')
+                            .l-margin--1
+                            input(type='number' placeholder='--' name=`${ability}Increase` disabled)
+                .l-margin--3
+                hr
+                .l-margin--2
+                .c-edithero-form__input
+                    label(for='speed') Speed (ft):
+                    input(type='number' name='speed' min='0' placeholder='30')
+                
+                    label(for='alignment') Alignment:
+                    input(type='text' name='alignment' placeholder='Lawful Neutral')
+                
+                    label(for='size') Size:
+                    input(type='text' name='size' placeholder='Medium')
+                
+                    label(for='languages') Languages:
+                    input(type='text' name='languages' placeholder='Common, Human')
+                .c-edithero-form__input.c-edithero-form__input--stack
+                    label(for='traits') Traits:
+                    textarea(name='traits' placeholder='Write race traits here.')
+                .l-margin--3
+                button.c-button--large.m-clickable(type='submit') Create Race
+    
+    else
+        .l-main-content
+            form.c-edithero-form(action='' method='post')
+                .c-edithero-form__input
+                    label(for='name') *Race Name:
+                    input(type='text' name='name' placeholder='Human' value=race.name required)
+                .c-edithero-form__input.c-edithero-form__input--stack
+                    label(for='description') Description:
+                    textarea(name='description' placeholder='Write race description here.')=(race.description || null)
+                .l-margin--2
+                h2 Ability Increase
+                hr
+                .l-margin--3
+                - const abilities = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+                .l-ability-points-grid
+                    - const abilityIncreases = [];
+                    each increase in race.ability_increase
+                        - abilityIncreases.push(increase.name)
+                    each ability in abilities
+                        .c-ability-points
+                            label= ability.toUpperCase()
+                            if abilityIncreases.findIndex(increase => increase == ability) != -1
+                                input(type='checkbox' onclick='toggleInput()' checked)
+                                .l-margin--1
+                                input(type='number' placeholder='--' name=`${ability}Increase` value=(race.ability_increase[abilityIncreases.findIndex(increase => increase == ability)].increase))
+                            else
+                                input(type='checkbox' onclick='toggleInput()')
+                                .l-margin--1
+                                input(type='number' placeholder='--' name=`${ability}Increase` disabled)
+                .l-margin--3
+                hr
+                .l-margin--2
+                .c-edithero-form__input
+                    label(for='speed') Speed (ft):
+                    input(type='number' name='speed' min='0' placeholder='30' value=(race.speed || null))
+                
+                    label(for='alignment') Alignment:
+                    input(type='text' name='alignment' placeholder='Lawful Neutral' value=(race.alignment || null))
+                
+                    label(for='size') Size:
+                    input(type='text' name='size' placeholder='Medium' value=(race.size || null))
+                
+                    label(for='languages') Languages:
+                    input(type='text' name='languages' placeholder='Common, Human' value=(race.languages || null))
+                .c-edithero-form__input.c-edithero-form__input--stack
+                    label(for='traits') Traits:
+                    textarea(name='traits' placeholder='Write race traits here.')=(race.traits || null)
+                .l-margin--3
+                .l-ability-points-grid.grid--2
+                    button.c-button--large.m-clickable(type='submit' name='deleterace' value='false') Update Race
+                    button.c-button--large.m-background-red.m-clickable(type='submit' name='deleterace' value='true') Delete Race
+    
+    script.
+        function toggleInput() {
+            const checkbox = event.target;
+            const abilityContainer = checkbox.parentElement;
+            const abilityIncrease = abilityContainer.querySelector('input[type="number"]');
+            abilityIncrease.disabled = !abilityIncrease.disabled;
+            if(abilityIncrease.disabled) abilityIncrease.value = null;
+        };

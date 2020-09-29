@@ -1,0 +1,45 @@
+extends ../layout
+
+block content
+
+    .l-margin-start
+    .l-main-content
+        h1 SideQuest Admin
+        hr
+        .l-margin--3
+            .l-main-content
+            .l-cards
+                a.c-card(href=`/admin/${username}/users`)
+                    .c-card__header
+                        .c-card__header-left
+                            h2 Manage Users
+                        .c-card__header-right
+                    img.c-card__image(src="/images/resources/rouge.jpg", alt="Rouge image")
+                
+                a.c-card(href=`/admin/${username}/heroes`)
+                    .c-card__header
+                        .c-card__header-left
+                            h2 Manage Heroes
+                        .c-card__header-right
+                    img.c-card__image(src="/images/resources/group.png", alt="Group image")
+                
+                a.c-card(href=`/admin/${username}/announcements`)
+                    .c-card__header
+                        .c-card__header-left
+                            h2 Announcements
+                        .c-card__header-right
+                    img.c-card__image(src="/images/resources/megaphone.png", alt="Megaphone image")
+                
+                a.c-card(href=`/admin/${username}/races`)
+                    .c-card__header
+                        .c-card__header-left
+                            h2 Races
+                        .c-card__header-right
+                    img.c-card__image(src="/images/resources/tortle.png", alt="Tortle image")
+                
+                a.c-card(href=`/admin/${username}/classes`)
+                    .c-card__header
+                        .c-card__header-left
+                            h2 Classes
+                        .c-card__header-right
+                    img.c-card__image(src="/images/resources/classes.jpg", alt="Classes image")

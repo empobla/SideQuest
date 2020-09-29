@@ -805,6 +805,24 @@ main {
     outline: none;
 }
 
+.c-ability-points input[type='radio'] {
+    -webkit-appearance:none;
+    margin-top: 1em;
+    width: 2em;;
+    height: 2em;
+    background: #555;
+    border-radius: 50px;
+    border: 2px solid #232426;
+}
+
+.c-ability-points input[type='radio']:checked {
+    background: #a50000;
+}
+
+.c-ability-points input[type='radio']:focus {
+    outline: none;
+}
+
 .l-ability-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -950,6 +968,78 @@ main {
 }
 
 /*****************************************/
+/**************** Admin ******************/
+/*****************************************/
+.l-manageusers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 2em;
+}
+
+.c-manageusers-grid__list {
+    padding: 0;
+}
+
+.c-manageusers-grid__list li {
+    list-style: none;
+    margin-bottom: 3em;
+}
+
+/* Admin user */
+.c-adminuser-form {
+    background-color: #ececec;
+    padding: 10%;
+}
+
+.c-adminuser-form__input {
+    display: flex;
+    flex-direction: column;
+}
+
+.c-adminuser-form__input input {
+    height: 3em;
+    width: 100%;
+    background: #fff;
+    border: none;
+    margin: 1em 0 2em 0;
+}
+
+.c-adminuser-form__input label {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.c-adminuser-checkboxes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    
+}
+
+.c-checkbox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.c-checkbox input[type='checkbox'] {
+    -webkit-appearance:none;
+    margin-top: 1em;
+    width: 2em;;
+    height: 2em;
+    background: #555;
+    border-radius: 5px;
+    border: 2px solid #232426;
+}
+
+.c-checkbox input[type='checkbox']:checked {
+    background: #a50000;
+}
+
+.c-checkbox input[type='checkbox']:focus {
+    outline: none;
+}
+
+/*****************************************/
 /********* Global Class Styling **********/
 /*****************************************/
 .l-select-button {
@@ -1026,6 +1116,14 @@ main {
 
 .l-margin--2 {
     margin: 2em 0;
+}
+
+.l-margin--1 {
+    margin: 1em 0;
+}
+
+.l-margin-bottom--1 {
+    margin-bottom: 1em;
 }
 
 .l-margin-bottom--0 {
@@ -1414,6 +1512,13 @@ blockquote{
     }
 
     /*****************************************/
+    /**************** Admin ******************/
+    /*****************************************/
+    .l-manageusers-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /*****************************************/
     /********* Global Class Styling **********/
     /*****************************************/
     .l-margin-start {
@@ -1457,6 +1562,13 @@ blockquote{
     /*****************************************/
     .l-stat-cards {
         grid-template-columns: repeat(4, 1fr);
+    }
+
+    /*****************************************/
+    /**************** Admin ******************/
+    /*****************************************/
+    .l-manageusers-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -1525,6 +1637,13 @@ blockquote{
     .l-editchar-grid {
         grid-template-columns: 40% 1fr;
         grid-template-rows: repeat(1);
+    }
+
+    /*****************************************/
+    /**************** Admin ******************/
+    /*****************************************/
+    .l-manageusers-grid {
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 

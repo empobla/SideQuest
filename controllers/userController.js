@@ -216,7 +216,7 @@ exports.accountView = async (req, res, next) => {
     try{
         const user = req.user;
         const heroes = await Hero.find()
-        res.render('account_view', { title: `SideQuest - ${user.username}` , user, heroes });
+        res.render('users/account_view', { title: `SideQuest - ${user.username}` , user, heroes });
     } catch(error) {
         next(error);
     }
@@ -508,7 +508,7 @@ exports.editStoryPost = async (req, res, next) => {
             res.redirect(`/users/${username}/story/edit/${storyId}`);
         } else {
             await Story.findByIdAndRemove(storyId);
-            res.redirect(`/users/${username}/story`)
+            res.redirect(`/users/${username}/story`);
         }
     } catch(error) {
         next(error);

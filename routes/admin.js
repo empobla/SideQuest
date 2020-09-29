@@ -8,31 +8,48 @@ const adminController = require('../controllers/adminController');
 /* GET admin listing */
 router.get('/', function(req, res, next) {
     req.isAuthenticated()
-      // ? res.send('respond with a resource - '+req.user.username)
-      ? res.redirect(`/users/user/${req.user.username}`)
+      ? res.redirect(`/admin/${req.user.username}`)
       : res.redirect('/users/login');
 });
 router.get('/*',  userController.isAdmin);
+router.get('/:username', adminController.adminView);
 
 // Users Edit and Delete
-router.get('/users', adminController.accountView);
-router.get('/users/:userId', adminController.accountView);
-router.post('/users/:userId', adminController.usersPost);
+router.get('/:username/users', adminController.users);
+router.get('/:username/users/:userId', adminController.editUserGet);
+router.post('/:username/users/:userId', adminController.editUserPost);
 
-// Announcements Delete
-router.get('/announcements', adminController.accountView);
-router.post('/announcements', adminController.announcementsPost);
+// Announcements
+router.get('/:username/announcements', adminController.announcements);
+router.get('/:username/announcements/newannouncement', adminController.announcements);
+router.post('/:username/announcements/newannouncement', adminController.newAnnouncementPost);
+router.get('/:username/announcements/edit/:announcementId', adminController.editAnnouncementGet);
+router.post('/:username/announcements/edit/:announcementId', adminController.editAnnouncementPost);
 
 // Heroes Edit and Delete
-router.get('/manageheroes', adminController.accountView);
-router.post('/manageheroes', adminController.manageHeroesPost);
+router.get('/:username/heroes', adminController.heroes);
+router.get('/:username/heroes/:heroId', userController.newHeroGet);
 
-// Story Delete
-router.get('/story', adminController.accountView);
-router.post('/story', adminController.storyPost);
+// Races CURD
+router.get('/:username/races', adminController.races);
+router.get('/:username/races/newrace', adminController.races);
+router.post('/:username/races/newrace', adminController.newRacePost);
+router.get('/:username/races/edit/:raceId', adminController.editRaceGet);
+router.post('/:username/races/edit/:raceId', adminController.editRacePost);
 
-// Characters Delete
-router.get('/characters', adminController.accountView);
-router.post('/characters', adminController.charactersPost);
+// Classes CURD
+router.get('/:username/classes', adminController.classes);
+router.get('/:username/classes/newclass', adminController.classes);
+router.post('/:username/classes/newclass', adminController.newClassPost);
+router.get('/:username/classes/edit/:classId', adminController.editClassGet);
+router.post('/:username/classes/edit/:classId', adminController.editClassPost);
+
+// // Story Delete
+// router.get('/story', adminController.accountView);
+// router.post('/story', adminController.storyPost);
+
+// // Characters Delete
+// router.get('/characters', adminController.accountView);
+// router.post('/characters', adminController.charactersPost);
 
 module.exports = router;

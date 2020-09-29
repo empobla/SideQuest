@@ -43,18 +43,23 @@ router.post('/:username/editSpell', userController.editSpellPost);
 // router.get('/:username/temprace', async (req, res, next) => {
 //   try {
 //     const race = new Race();
-//     race.name = 'Aasimar';
-//     race.description = 'Aasimar are placed in the world to serve as guardians of law and good. Their patrons expect them to strike at evil, lead by example, and further the cause of justice.';
-//     const chaAbilityIncrease = {
-//       name: 'charisma',
+//     race.name = 'Tortle';
+//     race.description = "What many tortles consider a simple life, others might call a life of adventure. Tortles are born near sandy coastlines, but as soon as they're able to walk on two legs, they become nomad survivalists eager to explore the wilderness, experience its many wonders, put their skills to the test, and make new acquaintances.";
+//     const strAbilityIncrease = {
+//       name: 'strength',
 //       increase: 2
 //     };
-//     race.ability_increase.push(chaAbilityIncrease);
+//     const wisAbilityIncrease = {
+//       name: 'wisdom',
+//       increase: 1
+//     };
+//     race.ability_increase.push(strAbilityIncrease);
+//     race.ability_increase.push(wisAbilityIncrease);
 //     race.speed = 30;
-//     race.alignment = 'Lawful Neutral';
+//     race.alignment = 'Lawful Good';
 //     race.size = 'Medium';
-//     race.languages = 'Common, Celestial';
-//     race.traits = 'Darkvision - Desc\nCelestial Resistance - Desc\nHealing Hands - Desc\nLight Bearer - Desc';
+//     race.languages = 'Common, Aquan';
+//     race.traits = 'Claws - Desc\nHold Breath - Desc\nNatural Armor - Desc\nShell Defense - Desc\nSurvival Instinct - Desc';
 
 //     await race.save()
 //     res.json(race);
@@ -65,26 +70,27 @@ router.post('/:username/editSpell', userController.editSpellPost);
 // const Class = require('../models/class');
 // router.get('/:username/temprace', async (req, res, next) => {
 //   try {
-//     // const heroClass = new Class();
-//     // heroClass.name = 'Paladin';
-//     // heroClass.description = 'A holy warrior bound to a sacred oath.';
-//     // heroClass.hit_die = 'd10';
-//     // heroClass.abilities.push('strength');
-//     // heroClass.abilities.push('charisma');
-//     // heroClass.st_proficiencies.push('wisdom');
-//     // heroClass.st_proficiencies.push('charisma');
-//     // heroClass.armor_weapon_proficiencies = 'All armor, shields, simple and martial weapons.';
+//     const heroClass = new Class();
+//     heroClass.name = 'Monk';
+//     heroClass.description = 'A master of martial arts, harnessing the power of the body in pursuit of physical and spiritual perfection.';
+//     heroClass.hit_die = 'd8';
+//     heroClass.hitpoints_start = '8 + your Constitution modifier';
+//     heroClass.hitpoints_higherlvls = '1d8 (or 5) + your Constitution modifier per Monk level after 1st';
+//     heroClass.abilities.push('dexterity');
+//     heroClass.abilities.push('wisdom');
+//     heroClass.st_proficiencies.push('strength');
+//     heroClass.st_proficiencies.push('dexterity');
+//     heroClass.skills.choose = 2;
+//     const skills = ['acrobatics', 'athletics', 'history', 'insight', 'religion', 'stealth'];
+//     heroClass.skills.skills = skills;
 
-//     const heroclass = await Class.findOne({ name: 'Paladin' });
-//     heroclass.hitpoints_start = '10 + your Constitution modifier';
-//     heroclass.hitpoints_higherlvls = '1d10 (or 6) + your Constitution modifier per Paladin level after 1st'
-//     heroclass.spell_ability = 'charisma';
-//     heroclass.skills.choose = 2;
-//     const skills = ['athletics', 'insight', 'intimidation', 'medicine', 'persuasion', 'religion'];
-//     heroclass.skills.skills = skills;
+//     heroClass.spell_ability = 'wisdom';
+    
+//     heroClass.armor_weapon_proficiencies = 'Simple weapons and shortswords.';
+//     heroClass.tool_proficiencies = 'Choose one type of the artisan\'s tools or one musical instrument.'
 
-//     await heroclass.save();
-//     res.json(heroclass);
+//     await heroClass.save();
+//     res.json(heroClass);
 //   } catch (error) {
 //     next(error);
 //   }
