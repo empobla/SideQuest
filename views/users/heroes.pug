@@ -74,7 +74,14 @@ block content
 
             //- Race & Class
             .l-margin--3
-            form.c-edithero-form(action='' method='post' enctype='multipart/form-data')
+            - let formAction = '';
+            if url.endsWith('/newHero')
+                - formAction = `/users/${username}/heroes/newHero`;
+            else
+                - formAction = `/users/${username}/heroes/${hero._id}`;
+            form.c-edithero-form(action=`${formAction}` method='post' enctype='multipart/form-data')
+                if url.includes('/admin/')
+                    input(type='hidden' name='admin' value='true')
                 #l-main-content--edit-hero.c-tabs__content.c-tabs__content--active(data-tab='0')
                     h2 Character Name
                     hr

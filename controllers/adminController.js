@@ -57,9 +57,9 @@ exports.editUserGet = async (req, res, next) => {
         const username = req.params.username;
         const usersQuery = User.find();
         const userQuery = User.findOne({ _id: req.params.userId });
-        const [users, user] = await Promise.all([usersQuery, userQuery]);
+        const [users, userEdit] = await Promise.all([usersQuery, userQuery]);
         const userHeroes = await User.aggregate([
-            { $match: { _id: user._id } },
+            { $match: { _id: userEdit._id } },
             { $lookup: {
                 from: 'heros',
                 localField: 'characters',
@@ -67,7 +67,7 @@ exports.editUserGet = async (req, res, next) => {
                 as: 'characters'
             } }
         ]).then(result => result[0].characters);
-        res.render('admin/users', { title: 'SideQuest Admin - Edit User', username, user, userHeroes, users});
+        res.render('admin/users', { title: 'SideQuest Admin - Edit User', username, userEdit, userHeroes, users});
     } catch(error) {
         next(error);
     }

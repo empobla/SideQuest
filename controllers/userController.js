@@ -362,6 +362,7 @@ exports.newHeroPost = async (req, res, next) => {
 
 exports.editHeroPost = async (req, res, next) => {
     try {
+        console.log(req.body.admin)
         const username = req.params.username;
         const heroId = req.params.heroId;
         const oldHeroQuery = Hero.findOne({ _id: heroId });
@@ -394,15 +395,19 @@ exports.editHeroPost = async (req, res, next) => {
         (req.body.remove_emblem == 'true') ? hero.description.notes.organization.emblem = '' : '';
 
         if(req.body.deletecharacter) {
-            const user = await User.findOne({ username: username });
+            const user = await User.findOne({ characters: heroId });
             user.characters.forEach((character, idx) => {
                 if(character.toString() == heroId) user.characters.splice(idx, 1);
             });
             await Promise.all([User.findByIdAndUpdate(user._id, user, { new: true }), Hero.findByIdAndRemove(heroId)]);
-            res.redirect(`/users/${username}/heroes`);
+            req.body.admin != 'true'
+                ? res.redirect(`/users/${username}/heroes`)
+                : res.redirect(`/admin/${username}/heroes`);
         } else {
             await Hero.findByIdAndUpdate(oldHero._id, hero, { new: true });
-            res.redirect(`/users/${username}/heroes`);
+            req.body.admin != 'true'
+                ? res.redirect(`/users/${username}/heroes`)
+                : res.redirect(`/admin/${username}/heroes`);
         }
     } catch(error) {
         next(error);

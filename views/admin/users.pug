@@ -8,7 +8,7 @@ block content
             if url.endsWith('/users')
                 h1 Manage Users
             else
-                h1 Edit #{user.username}
+                h1 Edit #{userEdit.username}
         .c-divider__right
 
     if url.endsWith('/users')
@@ -55,13 +55,13 @@ block content
                             .c-adminuser-checkboxes
                                 .c-checkbox
                                     label(for='isAdmin') Admin
-                                    if user.isAdmin
+                                    if userEdit.isAdmin
                                         input(type='checkbox' name='isAdmin' value='true' checked)
                                     else
                                         input(type='checkbox' name='isAdmin' value='true')
                                 .c-checkbox
                                     label(for='isDM') DM
-                                    if user.isDM
+                                    if userEdit.isDM
                                         input(type='checkbox' name='isDM' value='true' checked)
                                     else
                                         input(type='checkbox' name='isDM' value='true')
@@ -73,7 +73,7 @@ block content
                         .c-adminuser-form
                             .c-adminuser-form__input
                                 label(for="username") Username:
-                                input(type="text" name="username" id="username" placeholder="Input new username..." required value=user.username disabled)
+                                input(type="text" name="username" id="username" placeholder="Input new username..." required value=userEdit.username disabled)
                             .c-adminuser-form__input
                                 label(for="password") New Password:
                                 input(type="password" name="password" id="password" placeholder="Input new password..." required disabled)
