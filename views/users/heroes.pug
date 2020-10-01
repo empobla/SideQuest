@@ -451,7 +451,7 @@ block content
                                 
 
                     .l-margin--3
-                    - const skills = ['acrobatics', 'animal_handling', 'arcana', 'athetics', 'deception', 'history', 'insight', 'intimidation', 'investigation', 'medicine', 'nature', 'perception', 'performance', 'persuasion', 'religion', 'sleight_of_hand', 'stealth', 'survival'];
+                    - const skills = ['acrobatics', 'animal_handling', 'arcana', 'athletics', 'deception', 'history', 'insight', 'intimidation', 'investigation', 'medicine', 'nature', 'perception', 'performance', 'persuasion', 'religion', 'sleight_of_hand', 'stealth', 'survival'];
                     h2 Skill Proficiencies
                     hr
                     .l-margin--3
@@ -1264,7 +1264,7 @@ block content
                 previousSkills = [];
             }
 
-            const skills = document.querySelectorAll('.skillprof-class');
+            const skills = document.querySelectorAll('.skillprof-class');   // Gets all skills selects from tab 1
             skills.forEach(skill => {
                 if(skill.options[skill.selectedIndex].value != -1) {
                     document.getElementById(`${skill.options[skill.selectedIndex].value}-skill`).setAttribute('checked', 'true');
@@ -1311,5 +1311,4 @@ block content
 
             updateBaseAll();
             loadedSpellsListeners();
-            //- setupModals();
         });
