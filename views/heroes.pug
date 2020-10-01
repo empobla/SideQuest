@@ -125,7 +125,7 @@ block content
                     img.c-stat-card__image(src='/images/icons/heart.png' alt='Heart icon')
                     h3 Max HP
                     if hero.class
-                        - const startHPNum = parseInt(hero.class.hitpoints_start.substring(0, 1));
+                        - const startHPNum = parseInt(hero.class.hitpoints_start.split(' ')[0]);
                         - const maxHPString = hero.class.hitpoints_higherlvls.split(')')[0];
                         - const classHPNum = parseInt(maxHPString.substring(maxHPString.length-1));
                         if (hero.level == 1)
