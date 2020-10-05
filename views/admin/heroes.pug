@@ -1,13 +1,13 @@
 extends ../layout
 
 block content
-
+    
     .l-margin-start
-    .l-divider
-        .c-divider__left
-            if url.endsWith('/heroes')
-                h1 Manage Heroes
-        .c-divider__right
+    if url.endsWith('/heroes')
+        a.l-divider(href=`/admin/${user.username}`)
+            .c-divider__left
+                h1 &#10525; Manage Heroes
+            .c-divider__right
     
     if url.endsWith('/heroes')
         .l-main-content

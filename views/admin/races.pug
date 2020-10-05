@@ -4,15 +4,19 @@ include ../mixins/_text_editor
 block content
 
     .l-margin-start
-    .l-divider
-        .c-divider__left
-            if url.endsWith('/races')
-                h1 Races
-            else if url.endsWith('/newrace')
-                h1 New Race
-            else
-                h1 Edit Race: #{race.name}
-        .c-divider__right
+    if url.endsWith('/races')
+        a.l-divider(href=`/admin/${user.username}`)
+            .c-divider__left
+                h1 &#10525; Races
+            .c-divider__right
+    else
+        a.l-divider(href=`/admin/${user.username}/races`)
+            .c-divider__left
+                if url.endsWith('/newrace')
+                    h1 &#10525; New Race
+                else
+                    h1 &#10525; Edit Race: #{race.name}
+            .c-divider__right
     
     if url.endsWith('/races')
         .l-main-content

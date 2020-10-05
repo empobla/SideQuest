@@ -2,14 +2,14 @@ extends layout
 include mixins/_text_editor
 
 block content
-
-    .l-margin-start
-    .l-divider
-        .c-divider__left
-            h1 Historia
-        .c-divider__right
     
     if url.endsWith('/story')
+        .l-margin-start
+        .l-divider
+            .c-divider__left
+                h1 Historia
+            .c-divider__right
+
         .l-main-content
             .l-search
                 form.c-search(action='')
@@ -28,6 +28,12 @@ block content
                             a.m-color-black(href=`/story/${story._id}`) #{story.name}
     
     else
+        .l-margin-start
+        a.l-divider(href='/story')
+            .c-divider__left
+                h1 &#10525; Historia
+            .c-divider__right
+
         .l-main-content
             h2= story.name
             hr

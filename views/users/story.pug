@@ -2,17 +2,21 @@ extends ../layout
 include ../mixins/_text_editor
 
 block content
-
+    
     .l-margin-start
-    .l-divider
-        .c-divider__left
-            if url.endsWith('/story')
+    if url.endsWith('/story')
+        .l-divider
+            .c-divider__left
                 h1 Editar Historia
-            else if url.endsWith('/newstory')
-                h1 Nueva Historia
-            else
-                h1 Editar Historia: #{story.name}
-        .c-divider__right
+            .c-divider__right
+    else
+        a.l-divider(href=`/users/${user.username}/story`)
+            .c-divider__left
+                if url.endsWith('/newstory')
+                    h1 &#10525; Nueva Historia
+                else
+                    h1 &#10525; Editar Historia: #{story.name}
+            .c-divider__right
     
     if url.endsWith('/story')
         .l-main-content

@@ -2,17 +2,21 @@ extends ../layout
 include ../mixins/_text_editor
 
 block content
-
+    
     .l-margin-start
-    .l-divider
-        .c-divider__left
-            if url.endsWith('/classes')
-                h1 Classes
-            else if url.endsWith('/newclass')
-                h1 New Class
-            else
-                h1 Edit Class: #{heroClass.name}
-        .c-divider__right
+    if url.endsWith('/classes')
+        a.l-divider(href=`/admin/${user.username}`)
+            .c-divider__left
+                h1 &#10525; Classes
+            .c-divider__right
+    else
+        a.l-divider(href=`/admin/${user.username}/classes`)
+            .c-divider__left
+                if url.endsWith('/newclass')
+                    h1 &#10525; New Class
+                else
+                    h1 &#10525; Edit Class: #{heroClass.name}
+            .c-divider__right
     
     if url.endsWith('/classes')
         .l-main-content

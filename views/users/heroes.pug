@@ -37,13 +37,19 @@ block content
     
     else
         .l-margin-start
-        .l-divider
-            .c-divider__left
-                if url.endsWith('/newHero')
-                    h1 Crear Héroe
-                else
-                    h1 Editar Héroe
-            .c-divider__right
+        if url.includes('/admin/')
+            a.l-divider(href=`/admin/${user.username}/heroes`)
+                .c-divider__left
+                    h1 &#10525; Editar Héroe
+                .c-divider__right
+        else
+            a.l-divider(href=`/users/${user.username}/heroes`)
+                .c-divider__left
+                    if url.endsWith('/newHero')
+                        h1 &#10525; Crear Héroe
+                    else
+                        h1 &#10525; Editar Héroe
+                .c-divider__right
 
         .c-tabs
             .c-tabs__sidebar

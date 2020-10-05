@@ -2,17 +2,21 @@ extends ../layout
 include ../mixins/_text_editor
 
 block content
-
+    
     .l-margin-start
-    .l-divider
-        .c-divider__left
-            if url.endsWith('/announcements')
-                h1 Anuncios
-            else if url.endsWith('/newannouncement')
-                h1 Anuncio Nuevo
-            else
-                h1 Editar Anuncio: #{announcement.name}
-        .c-divider__right
+    if url.endsWith('/announcements')
+        a.l-divider(href=`/admin/${user.username}`)
+            .c-divider__left
+                h1 &#10525; Anuncios
+            .c-divider__right
+    else
+        a.l-divider(href=`/admin/${user.username}/announcements`)
+            .c-divider__left
+                if url.endsWith('/newannouncement')
+                    h1 &#10525; Anuncio Nuevo
+                else
+                    h1 &#10525; Editar Anuncio: #{announcement.name}
+            .c-divider__right
     
     if url.endsWith('/announcements')
         .l-main-content

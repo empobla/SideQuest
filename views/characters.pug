@@ -3,13 +3,13 @@ include mixins/_text_editor
 
 block content
 
-    .l-margin-start
-    .l-divider
-        .c-divider__left
-            h1 Personajes
-        .c-divider__right
-
     if url.endsWith('/characters')
+        .l-margin-start
+        .l-divider
+            .c-divider__left
+                h1 Personajes
+            .c-divider__right
+
         .l-main-content
             .l-search
                 form.c-search(action='')
@@ -42,6 +42,12 @@ block content
                             img.c-card__image(src=tmpImg)
     
     else
+        .l-margin-start
+        a.l-divider(href='/characters')
+            .c-divider__left
+                h1 &#10525; Personajes
+            .c-divider__right
+
         .l-main-content
             .l-text-wrap
                 if character.image != '' && character.image != undefined

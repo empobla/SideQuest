@@ -4,13 +4,13 @@ include mixins/_spell_dropdown
 
 block content
     
-    .l-margin-start
-    .l-divider
-        .c-divider__left
-            h1 Héroes
-        .c-divider__right
-    
     if url.endsWith('/heroes')
+        .l-margin-start
+        .l-divider
+            .c-divider__left
+                h1 Héroes
+            .c-divider__right
+
         .l-main-content
             .l-cards
                 each hero in heroes
@@ -24,6 +24,12 @@ block content
                         else
                             img.c-card__image(src=tmpImg)
     else
+        .l-margin-start
+        a.l-divider(href='/heroes')
+            .c-divider__left
+                h1 &#10525; Héroes
+            .c-divider__right
+
         .l-main-content
             .l-text-wrap
                 if hero.image != '' && hero.image != undefined

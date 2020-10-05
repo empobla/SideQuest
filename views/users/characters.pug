@@ -4,15 +4,19 @@ include ../mixins/_text_editor
 block content
 
     .l-margin-start
-    .l-divider
-        .c-divider__left
-            if url.endsWith('/characters')
+    if url.endsWith('/characters')
+        .l-divider
+            .c-divider__left
                 h1 Editar Personajes
-            else if url.endsWith('/newcharacter')
-                h1 Personaje Nuevo
-            else
-                h1 Editar Personajes: #{character.name}
-        .c-divider__right
+            .c-divider__right
+    else
+        a.l-divider(href=`/users/${user.username}/characters`)
+            .c-divider__left
+                if url.endsWith('/newcharacter')
+                    h1 &#10525; Personaje Nuevo
+                else
+                    h1 &#10525; Editar Personajes: #{character.name}
+            .c-divider__right
 
     if url.endsWith('/characters')
         .l-main-content

@@ -3,13 +3,16 @@ extends ../layout
 block content
 
     .l-margin-start
-    .l-divider
-        .c-divider__left
-            if url.endsWith('/users')
-                h1 Manage Users
-            else
-                h1 Edit #{userEdit.username}
-        .c-divider__right
+    if url.endsWith('/users')
+        a.l-divider(href=`/admin/${user.username}`)
+            .c-divider__left
+                h1 &#10525; Manage Users
+            .c-divider__right
+    else
+        a.l-divider(href=`/admin/${user.username}/users`)
+            .c-divider__left
+                h1 &#10525; Edit #{userEdit.username}
+            .c-divider__right
 
     if url.endsWith('/users')
         .l-main-content
