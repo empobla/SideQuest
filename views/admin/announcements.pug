@@ -2,15 +2,16 @@ extends ../layout
 include ../mixins/_text_editor
 
 block content
+    - const route = url.includes('/admin/') ? 'admin' : 'dm';
     
     .l-margin-start
     if url.endsWith('/announcements')
-        a.l-divider(href=`/admin/${user.username}`)
+        a.l-divider(href=`/${route}/${user.username}`)
             .c-divider__left
                 h1 &#10525; Anuncios
             .c-divider__right
     else
-        a.l-divider(href=`/admin/${user.username}/announcements`)
+        a.l-divider(href=`/${route}/${user.username}/announcements`)
             .c-divider__left
                 if url.endsWith('/newannouncement')
                     h1 &#10525; Anuncio Nuevo
@@ -31,7 +32,7 @@ block content
             .l-margin--2
             .l-ability-points-grid.grid--3
                 div
-                a.c-button--large.m-clickable(href=`/admin/${username}/announcements/newannouncement`) Anuncio Nuevo
+                a.c-button--large.m-clickable(href=`/${route}/${username}/announcements/newannouncement`) Anuncio Nuevo
                 div
         
         .l-margin--3
@@ -40,10 +41,10 @@ block content
                 each announcement in announcements
                     tr.c-spell 
                         td.m-align-left
-                            a.m-color-black(href=`/admin/${username}/announcements/edit/${announcement._id}`) #{announcement.name}
+                            a.m-color-black(href=`/${route}/${username}/announcements/edit/${announcement._id}`) #{announcement.name}
                         td.m-align-left
                             - const date = new Date(announcement.date)
-                            a.m-color-black(href=`/admin/${username}/announcements/edit/${announcement._id}`)= `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()}`
+                            a.m-color-black(href=`/${route}/${username}/announcements/edit/${announcement._id}`)= `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()}`
                             
     else if url.endsWith('/newannouncement')
         .l-main-content

@@ -1,0 +1,24 @@
+extends ../layout
+
+block content
+
+    .l-margin-start
+    .l-main-content
+        h1 SideQuest Dungeon Master
+        hr
+        .l-margin--3
+            .l-main-content
+            .l-cards
+                a.c-card(href=`/dm/${username}/announcements`)
+                    .c-card__header
+                        .c-card__header-left
+                            h2 Announcements
+                        .c-card__header-right
+                    img.c-card__image(src="/images/resources/megaphone.png", alt="Megaphone image")
+
+                a.c-card(href=`/dm/${username}/notes`)
+                    .c-card__header
+                        .c-card__header-left
+                            h2 Notas
+                        .c-card__header-right
+                    img.c-card__image(src="/images/resources/notes.png", alt="Notes image")

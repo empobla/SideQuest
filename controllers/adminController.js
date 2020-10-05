@@ -17,30 +17,6 @@ exports.adminView = async (req, res, next) => {
     }
 };
 
-exports.accountView = async (req, res, next) => {
-    try{
-        const user = req.user;
-        
-        const userId = req.params.userId;
-        const heroesQuery = Hero.find()
-        const usersQuery = User.find();
-        const userQuery = User.findOne({ _id: userId });
-        const announcementsQuery = Announcement.find();
-        const storiesQuery = Story.find();
-        const charactersQuery = Character.find();
-        
-        const [heroes, users, selectedUser, announcements, stories, characters] = await Promise.all([
-            heroesQuery, usersQuery, userQuery, announcementsQuery, storiesQuery, charactersQuery
-        ]);
-
-        res.render('account_view', { title: `SideQuest - ${user.username}`, 
-            user, heroes, users, selectedUser, announcements, stories, characters
-        });
-    } catch(error) {
-        next(error);
-    }
-};
-
 // Users edit and delete
 exports.users = async (req, res, next) => {
     try {
@@ -119,9 +95,15 @@ exports.announcements = async (req, res, next) => {
         const username = req.params.username;
         const announcements = await Announcement.find();
 
-        res.locals.url.endsWith('/newannouncement')
-            ? res.render('admin/announcements', { title: 'SideQuest Admin - Anuncio Nuevo' })
-            : res.render('admin/announcements', { title: 'SideQuest Admin - Anuncios', username, announcements });
+        if(res.locals.url.includes('/admin/')){
+            res.locals.url.endsWith('/newannouncement')
+                ? res.render('admin/announcements', { title: 'SideQuest Admin - Anuncio Nuevo' })
+                : res.render('admin/announcements', { title: 'SideQuest Admin - Anuncios', username, announcements });
+        } else {
+            res.locals.url.endsWith('/newannouncement')
+            ? res.render('admin/announcements', { title: 'SideQuest DM - Anuncio Nuevo' })
+            : res.render('admin/announcements', { title: 'SideQuest DM - Anuncios', username, announcements });
+        }
     } catch(error) {
         next(error);
     }
@@ -134,7 +116,9 @@ exports.newAnnouncementPost = async (req, res, next) => {
         announcement.user = username;
         
         await announcement.save();
-        res.redirect(`/admin/${username}/announcements/edit/${announcement._id}`);
+        res.locals.url.includes('/admin/')
+            ? res.redirect(`/admin/${username}/announcements/edit/${announcement._id}`)
+            : res.redirect(`/dm/${username}/announcements/edit/${announcement._id}`)
     } catch(error) {
         next(error);
     }
@@ -145,7 +129,9 @@ exports.editAnnouncementGet = async (req, res, next) => {
         const username = req.params.username;
         const announcement = await Announcement.findOne({ _id: req.params.announcementId });
 
-        res.render('admin/announcements', { title: 'SideQuest Admin - Editar Anuncio', username, announcement });
+        res.locals.url.includes('/admin/')
+            ? res.render('admin/announcements', { title: 'SideQuest Admin - Editar Anuncio', username, announcement })
+            : res.render('admin/announcements', { title: 'SideQuest DM - Editar Anuncio', username, announcement });
     } catch(error) {
         next(error);
     }
@@ -158,10 +144,14 @@ exports.editAnnouncementPost = async (req, res, next) => {
 
         if(req.body.deleteannouncement != 'true') {
             await Announcement.findByIdAndUpdate(announcementId, req.body, { new: true });
-            res.redirect(`/admin/${username}/announcements/edit/${announcementId}`);
+            res.locals.url.includes('/admin/')
+                ? res.redirect(`/admin/${username}/announcements/edit/${announcementId}`)
+                : res.redirect(`/dm/${username}/announcements/edit/${announcementId}`)
         } else {
             await Announcement.findByIdAndRemove(announcementId);
-            res.redirect(`/admin/${username}/announcements`);
+            res.locals.url.includes('/admin/')
+                ? res.redirect(`/admin/${username}/announcements`)
+                : res.redirect(`/dm/${username}/announcements`);
         }
     } catch(error) {
         next(error);

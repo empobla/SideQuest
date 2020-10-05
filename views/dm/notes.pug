@@ -1,0 +1,43 @@
+extends ../layout
+
+block content
+
+    .l-margin-start
+    if url.endsWith('/notes')
+        a.l-divider(href=`/dm/${user.username}`)
+            .c-divider__left
+                h1 &#10525; Notas
+            .c-divider__right
+    else
+        a.l-divider(href=`/dm/${user.username}/announcements`)
+            .c-divider__left
+                if url.endsWith('/newnote')
+                    h1 &#10525; Nota Nueva
+                else
+                    h1 &#10525; Editar Nota: #{note.name}
+            .c-divider__right
+    
+    if url.endsWith('/notes')
+        .l-main-content
+            .l-search
+                form.c-search(action='')
+                    .c-search__input
+                        label(for='name') Nombre de la nota
+                        input(type='text' name='name' id='name' placeholder='Buscar nota por nombre' disabled)
+                    .c-search__input--button
+                        button.c-button--large.m-background-lightgray(type='' disabled) Buscar
+        
+            .l-margin--2
+            .l-ability-points-grid.grid--3
+                div
+                a.c-button--large.m-clickable(href=`/dm/${username}/notes/newnote`) Nota Nueva
+                div
+        
+        - let notes = {};
+        .l-margin--3
+        .l-main-content
+            table.l-spells
+                each note in notes
+                    tr.c-spell 
+                        td.m-align-left
+                            a.m-color-black(href=`/dm/${username}/notes/edit/${note._id}`) #{note.name}
