@@ -24,5 +24,10 @@ router.post('/:username/announcements/edit/:announcementId', adminController.edi
 
 // Notes
 router.get('/:username/notes', dmController.notes);
+router.get('/:username/notes/newnote', dmController.notes);
+router.post('/:username/notes/newnote', dmController.newNotePost);
+router.get('/:username/notes/view/:noteId', dmController.notes);
+router.get('/:username/notes/edit/:noteId', dmController.editNoteGet);
+router.post('/:username/notes/edit/:noteId', dmController.editNotePost);
 
 module.exports = router;

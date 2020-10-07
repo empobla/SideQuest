@@ -633,6 +633,23 @@ main {
     padding-right: 0;
 }
 
+.c-tabs__topbar {
+    position: relative;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+
+    padding: 0;
+
+    background-color: white;
+    border: 1px solid #dad4d2;
+    border-left: none;
+    box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.4);
+
+    padding: 1em 2em;
+    padding-right: 0;
+}
+
 .c-tabs__button {
     display: grid;
     grid-template-columns: 4fr 1fr;
@@ -727,6 +744,11 @@ main {
     grid-gap: 1em;
     align-items: flex-start;
     margin-top: 2em;
+}
+
+.c-edithero-form__input--stack input {
+    min-width: 100%;
+    max-width: 100%;
 }
 
 .c-edithero-form__input--stack textarea {
@@ -1037,6 +1059,48 @@ main {
 
 .c-checkbox input[type='checkbox']:focus {
     outline: none;
+}
+
+/*****************************************/
+/***************** DM ********************/
+/*****************************************/
+/* Notes */
+.c-table__image {
+    width: 50px;
+}
+
+#l-main-content--note-compendium {
+    margin: 2em 0;
+    
+    background: #ececec;
+    padding: 2em;
+}
+
+.l-notes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 4em;
+}
+
+.c-notes-section {
+    background-color: #fff;
+    box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.4);
+    
+    height: 100vh;
+    overflow: scroll;
+    padding: 2em;
+}
+
+.c-spell__herotableimage {
+    width: 50px;
+}
+
+.l-stat-cards--notes {
+    grid-template-columns: repeat(2, 1fr) !important;
+}
+
+.hero__ability-scores--notes th {
+    padding: 1em;
 }
 
 /*****************************************/

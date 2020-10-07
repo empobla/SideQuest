@@ -37,7 +37,7 @@ block content
     .l-main-content
         table.l-spells
             each spell in spells
-                - console.log(spell)
+                //- - console.log(spell)
                 tr.c-spell.c-spell--display.m-clickable
                     td
                         img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)

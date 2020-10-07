@@ -1,4 +1,7 @@
 extends ../layout
+include ../mixins/_text_editor
+include ../mixins/_hero_dropdown
+include ../mixins/_spell_dropdown
 
 block content
 
@@ -9,7 +12,7 @@ block content
                 h1 &#10525; Notas
             .c-divider__right
     else
-        a.l-divider(href=`/dm/${user.username}/announcements`)
+        a.l-divider(href=`/dm/${user.username}/notes`)
             .c-divider__left
                 if url.endsWith('/newnote')
                     h1 &#10525; Nota Nueva
@@ -33,11 +36,356 @@ block content
                 a.c-button--large.m-clickable(href=`/dm/${username}/notes/newnote`) Nota Nueva
                 div
         
-        - let notes = {};
         .l-margin--3
         .l-main-content
             table.l-spells
                 each note in notes
-                    tr.c-spell 
+                    tr.c-spell
                         td.m-align-left
-                            a.m-color-black(href=`/dm/${username}/notes/edit/${note._id}`) #{note.name}
+                            - const date = new Date(note.date)
+                            p= `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()}`
+                        td.m-align-left
+                            p #{note.name}
+                        td
+                            a(href=`/dm/${username}/notes/view/${note._id}`)
+                                img.c-table__image(src='/images/icons/eye.svg' alt='Eye icon')
+                        td
+                            a(href=`/dm/${username}/notes/edit/${note._id}`)
+                                img.c-table__image(src='/images/icons/edit.svg' alt='Edit icon')
+    
+    else if url.endsWith('/newnote')
+        .l-main-content
+            .l-notes
+                .c-notes-section
+                    h2.m-align-center Nota
+                    hr
+                    .l-margin--2
+                    form.c-edithero-form(action='' method='post')
+                        .c-edithero-form__input.c-edithero-form__input--stack
+                            label(for='name') *Nombre de la Nota:
+                            input(type='text' name='name' id='name' placeholder='Sesión 1: Notas' required)
+                        .c-edithero-form__input.c-edithero-form__input--stack
+                            label(for='notes') Nota:
+                            +textEditor('editor', '', 'Escribe las notas aquí.', 'notes')
+                        .l-margin--2
+                        .m-align-center
+                            button.c-button--large.m-clickable.l-margin-right--1(type='submit') Crear Nota
+                .c-notes-section
+                    h2.m-align-center Compendio
+                    hr
+                    .l-margin--2
+                    .c-tabs
+                        .c-tabs__topbar
+                            - const links = ['Heroes', 'Personajes', 'Spells'];
+                            each link, index in links
+                                .c-tabs__button.m-clickable(data-for-tab=`${index}`)
+                                    if index == 0
+                                        .c-tabs__button-left.c-tabs__button-left--active
+                                            h2= link
+                                    else
+                                        .c-tabs__button-left
+                                            h2= link
+                        
+                        #l-main-content--note-compendium.c-tabs__content.c-tabs__content--active(data-tab='0')
+                            table.l-spells
+                                each hero in heroes
+                                    tr.c-spell.c-spell--display.m-clickable
+                                        td
+                                            if hero.image != '' && hero.image != undefined
+                                                img.c-spell__image.c-spell__herotableimage(src=`http://res.cloudinary.com/duezou4td/image/upload/${hero.image}.png` alt=`${hero.name}'s Image`)
+                                            else
+                                                p No Image
+                                        td= hero.name
+                                        td= `${hero.race.name} ${hero.class.name}`
+                                            p.m-color-lightgray= `Level ${hero.level}`
+                                        if hero.class
+                                            - const startHPNum = parseInt(hero.class.hitpoints_start.split(' ')[0]);
+                                            - const maxHPString = hero.class.hitpoints_higherlvls.split(')')[0];
+                                            - const classHPNum = parseInt(maxHPString.substring(maxHPString.length-1));
+                                            if (hero.level == 1)
+                                                td= `${startHPNum + hero.abilities.constitution.modifier} HP`
+                                            else
+                                                td= `${(hero.level-1) * (classHPNum + hero.abilities.constitution.modifier) + startHPNum + hero.abilities.constitution.modifier} HP`
+                                        td= `${hero.physical_attributes.ac} AC`
+                                        //- td= `${hero.physical_attributes.speed}ft Speed`
+                                        td.c-dropdown-button &nabla;
+                                    tr
+                                        +heroDropdown(hero, 'hero')
+                        
+                        #l-main-content--note-compendium.c-tabs__content(data-tab='1')
+                            table.l-spells
+                                each character in characters
+                                    tr.c-spell.c-spell--display.m-clickable
+                                        td
+                                            if character.image != '' && character.image != undefined
+                                                img.c-spell__image.c-spell__herotableimage(src=`http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png` alt=`${character.name}'s Image`)
+                                            else
+                                                p No Image
+                                        td= character.name
+                                        td= `${character.race || '???'} ${character.class || '???'}`
+                                            p.m-color-lightgray= `Size: ${character.size || '???'}`
+                                        td= `Met in ${character.place || '???'}`
+                                        td= `Age: ${character.age || '???'}`
+                                        td.c-dropdown-button &nabla;
+                                    tr
+                                        +heroDropdown(character, 'character')
+                        
+                        #l-main-content--note-compendium.c-tabs__content(data-tab='2')
+                            table.l-spells
+                                each spell in spells
+                                    tr.c-spell.c-spell--display.m-clickable
+                                        td
+                                            img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
+                                        - const spellLevelDict = {'cantrip': 'Cantrip', 'level1': '1st', 'level2': '2nd', 'level3': '3rd', 'level4': '4th', 'level5': '5th', 'level6': '6th', 'level7': '7th', 'level8': '8th', 'level9': '9th'};
+                                        td.m-color-lightgray= spellLevelDict[spell.level]
+                                        td= spell.name
+                                            - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
+                                            p.m-color-lightgray= `${spell.school} • ${components}`
+                                        td= spell.casting_time
+                                        //- td= spell.duration
+                                        td= spell.range
+                                        td.c-dropdown-button &nabla;
+                                    tr
+                                        +spellDropdown(spell, 'display')
+    
+    else if url.includes('/view/')
+        .l-main-content
+            .l-notes
+                .c-notes-section
+                    h2.m-align-center Nota
+                    hr
+                    .l-margin--2
+                    h3.m-align-center= note.name
+                    .l-margin--2
+                    +textEditor('view', note.notes)
+                
+                .c-notes-section
+                    h2.m-align-center Compendio
+                    hr
+                    .l-margin--2
+                    .c-tabs
+                        .c-tabs__topbar
+                            - const links = ['Heroes', 'Personajes', 'Spells'];
+                            each link, index in links
+                                .c-tabs__button.m-clickable(data-for-tab=`${index}`)
+                                    if index == 0
+                                        .c-tabs__button-left.c-tabs__button-left--active
+                                            h2= link
+                                    else
+                                        .c-tabs__button-left
+                                            h2= link
+                        
+                        #l-main-content--note-compendium.c-tabs__content.c-tabs__content--active(data-tab='0')
+                            table.l-spells
+                                each hero in heroes
+                                    tr.c-spell.c-spell--display.m-clickable
+                                        td
+                                            if hero.image != '' && hero.image != undefined
+                                                img.c-spell__image.c-spell__herotableimage(src=`http://res.cloudinary.com/duezou4td/image/upload/${hero.image}.png` alt=`${hero.name}'s Image`)
+                                            else
+                                                p No Image
+                                        td= hero.name
+                                        td= `${hero.race.name} ${hero.class.name}`
+                                            p.m-color-lightgray= `Level ${hero.level}`
+                                        if hero.class
+                                            - const startHPNum = parseInt(hero.class.hitpoints_start.split(' ')[0]);
+                                            - const maxHPString = hero.class.hitpoints_higherlvls.split(')')[0];
+                                            - const classHPNum = parseInt(maxHPString.substring(maxHPString.length-1));
+                                            if (hero.level == 1)
+                                                td= `${startHPNum + hero.abilities.constitution.modifier} HP`
+                                            else
+                                                td= `${(hero.level-1) * (classHPNum + hero.abilities.constitution.modifier) + startHPNum + hero.abilities.constitution.modifier} HP`
+                                        td= `${hero.physical_attributes.ac} AC`
+                                        //- td= `${hero.physical_attributes.speed}ft Speed`
+                                        td.c-dropdown-button &nabla;
+                                    tr
+                                        +heroDropdown(hero, 'hero')
+                        
+                        #l-main-content--note-compendium.c-tabs__content(data-tab='1')
+                            table.l-spells
+                                each character in characters
+                                    tr.c-spell.c-spell--display.m-clickable
+                                        td
+                                            if character.image != '' && character.image != undefined
+                                                img.c-spell__image.c-spell__herotableimage(src=`http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png` alt=`${character.name}'s Image`)
+                                            else
+                                                p No Image
+                                        td= character.name
+                                        td= `${character.race || '???'} ${character.class || '???'}`
+                                            p.m-color-lightgray= `Size: ${character.size || '???'}`
+                                        td= `Met in ${character.place || '???'}`
+                                        td= `Age: ${character.age || '???'}`
+                                        td.c-dropdown-button &nabla;
+                                    tr
+                                        +heroDropdown(character, 'character')
+                        
+                        #l-main-content--note-compendium.c-tabs__content(data-tab='2')
+                            table.l-spells
+                                each spell in spells
+                                    tr.c-spell.c-spell--display.m-clickable
+                                        td
+                                            img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
+                                        - const spellLevelDict = {'cantrip': 'Cantrip', 'level1': '1st', 'level2': '2nd', 'level3': '3rd', 'level4': '4th', 'level5': '5th', 'level6': '6th', 'level7': '7th', 'level8': '8th', 'level9': '9th'};
+                                        td.m-color-lightgray= spellLevelDict[spell.level]
+                                        td= spell.name
+                                            - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
+                                            p.m-color-lightgray= `${spell.school} • ${components}`
+                                        td= spell.casting_time
+                                        //- td= spell.duration
+                                        td= spell.range
+                                        td.c-dropdown-button &nabla;
+                                    tr
+                                        +spellDropdown(spell, 'display')
+    
+    else
+        .l-main-content
+            .l-notes
+                .c-notes-section
+                    h2.m-align-center Nota
+                    hr
+                    .l-margin--2
+                    form.c-edithero-form(action='' method='post')
+                        .c-edithero-form__input.c-edithero-form__input--stack
+                            label(for='name') *Nombre de la Nota:
+                            input(type='text' name='name' id='name' placeholder='Sesión 1: Notas' value=note.name required)
+                        .c-edithero-form__input.c-edithero-form__input--stack
+                            label(for='notes') Nota:
+                            +textEditor('editor', note.notes || '', 'Escribe las notas aquí.', 'notes')
+                        .l-margin--2
+                        .m-align-center
+                            button.c-button--large.m-clickable.l-margin-right--1(type='submit' name='deletenote' value='false') Guardar Nota
+                            button.c-button--large.m-clickable.m-background-red.l-margin-right--1(type='submit' name='deletenote' value='true') Borrar Nota
+                .c-notes-section
+                    h2.m-align-center Compendio
+                    hr
+                    .l-margin--2
+                    .c-tabs
+                        .c-tabs__topbar
+                            - const links = ['Heroes', 'Personajes', 'Spells'];
+                            each link, index in links
+                                .c-tabs__button.m-clickable(data-for-tab=`${index}`)
+                                    if index == 0
+                                        .c-tabs__button-left.c-tabs__button-left--active
+                                            h2= link
+                                    else
+                                        .c-tabs__button-left
+                                            h2= link
+                        
+                        #l-main-content--note-compendium.c-tabs__content.c-tabs__content--active(data-tab='0')
+                            table.l-spells
+                                each hero in heroes
+                                    tr.c-spell.c-spell--display.m-clickable
+                                        td
+                                            if hero.image != '' && hero.image != undefined
+                                                img.c-spell__image.c-spell__herotableimage(src=`http://res.cloudinary.com/duezou4td/image/upload/${hero.image}.png` alt=`${hero.name}'s Image`)
+                                            else
+                                                p No Image
+                                        td= hero.name
+                                        td= `${hero.race.name} ${hero.class.name}`
+                                            p.m-color-lightgray= `Level ${hero.level}`
+                                        if hero.class
+                                            - const startHPNum = parseInt(hero.class.hitpoints_start.split(' ')[0]);
+                                            - const maxHPString = hero.class.hitpoints_higherlvls.split(')')[0];
+                                            - const classHPNum = parseInt(maxHPString.substring(maxHPString.length-1));
+                                            if (hero.level == 1)
+                                                td= `${startHPNum + hero.abilities.constitution.modifier} HP`
+                                            else
+                                                td= `${(hero.level-1) * (classHPNum + hero.abilities.constitution.modifier) + startHPNum + hero.abilities.constitution.modifier} HP`
+                                        td= `${hero.physical_attributes.ac} AC`
+                                        //- td= `${hero.physical_attributes.speed}ft Speed`
+                                        td.c-dropdown-button &nabla;
+                                    tr
+                                        +heroDropdown(hero, 'hero')
+                        
+                        #l-main-content--note-compendium.c-tabs__content(data-tab='1')
+                            table.l-spells
+                                each character in characters
+                                    tr.c-spell.c-spell--display.m-clickable
+                                        td
+                                            if character.image != '' && character.image != undefined
+                                                img.c-spell__image.c-spell__herotableimage(src=`http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png` alt=`${character.name}'s Image`)
+                                            else
+                                                p No Image
+                                        td= character.name
+                                        td= `${character.race || '???'} ${character.class || '???'}`
+                                            p.m-color-lightgray= `Size: ${character.size || '???'}`
+                                        td= `Met in ${character.place || '???'}`
+                                        td= `Age: ${character.age || '???'}`
+                                        td.c-dropdown-button &nabla;
+                                    tr
+                                        +heroDropdown(character, 'character')
+                        
+                        #l-main-content--note-compendium.c-tabs__content(data-tab='2')
+                            table.l-spells
+                                each spell in spells
+                                    tr.c-spell.c-spell--display.m-clickable
+                                        td
+                                            img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
+                                        - const spellLevelDict = {'cantrip': 'Cantrip', 'level1': '1st', 'level2': '2nd', 'level3': '3rd', 'level4': '4th', 'level5': '5th', 'level6': '6th', 'level7': '7th', 'level8': '8th', 'level9': '9th'};
+                                        td.m-color-lightgray= spellLevelDict[spell.level]
+                                        td= spell.name
+                                            - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
+                                            p.m-color-lightgray= `${spell.school} • ${components}`
+                                        td= spell.casting_time
+                                        //- td= spell.duration
+                                        td= spell.range
+                                        td.c-dropdown-button &nabla;
+                                    tr
+                                        +spellDropdown(spell, 'display')
+            
+    script.
+        function setupNotesTabs() {
+            document.querySelectorAll('.c-tabs__button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const sideBar = button.parentElement;
+                    const tabsContainer = sideBar.parentElement;
+                    const tabNumber = button.dataset.forTab;
+                    const tabToActivate = tabsContainer.querySelector(`.c-tabs__content[data-tab='${tabNumber}']`);
+
+                    sideBar.querySelectorAll('.c-tabs__button').forEach(button => {
+                        const buttonParts = button.children;
+                        for(const part of buttonParts) {
+                            part.classList.remove('c-tabs__button-left--active');
+                        }
+                    });
+
+                    tabsContainer.querySelectorAll('.c-tabs__content').forEach(tab => {
+                        tab.classList.remove('c-tabs__content--active');
+                    });
+
+                    const buttonParts = button.children;
+                    for(const part of buttonParts) {
+                        part.classList.add('c-tabs__button-left--active');
+                    }
+
+                    tabToActivate.classList.add('c-tabs__content--active');
+
+                });
+            });
+        };
+
+        // Sets up spell tables
+        function setupSpellTables(){
+            const spellBar = document.querySelectorAll('.c-spell');
+            const dropdownButton = document.querySelectorAll('.c-dropdown-button');
+            const spellDescription = document.querySelectorAll('.c-spell-description');
+
+            spellBar.forEach((element, index) => {
+                element.addEventListener('click', () => {
+                    
+                    spellDescription[index].style.display === '' || spellDescription[index].style.display === 'none'
+                        ? spellDescription[index].style.display = 'table-cell'
+                        : spellDescription[index].style.display = 'none';
+                    
+                    
+                    dropdownButton[index].innerHTML === '∇'
+                        ? dropdownButton[index].innerHTML = '&Delta;'
+                        : dropdownButton[index].innerHTML = '&nabla;';
+                });
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupNotesTabs();
+            setupSpellTables();
+        });
