@@ -96,7 +96,7 @@ block content
                                             else
                                                 p No Image
                                         td= hero.name
-                                        td= `${hero.race.name} ${hero.class.name}`
+                                        td.m-responsive-display--table= `${hero.race.name} ${hero.class.name}`
                                             p.m-color-lightgray= `Level ${hero.level}`
                                         if hero.class
                                             - const startHPNum = parseInt(hero.class.hitpoints_start.split(' ')[0]);
@@ -124,7 +124,7 @@ block content
                                         td= character.name
                                         td= `${character.race || '???'} ${character.class || '???'}`
                                             p.m-color-lightgray= `Size: ${character.size || '???'}`
-                                        td= `Met in ${character.place || '???'}`
+                                        td.m-responsive-display--table= `Met in ${character.place || '???'}`
                                         td= `Age: ${character.age || '???'}`
                                         td.c-dropdown-button &nabla;
                                     tr
@@ -141,7 +141,7 @@ block content
                                         td= spell.name
                                             - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
                                             p.m-color-lightgray= `${spell.school} • ${components}`
-                                        td= spell.casting_time
+                                        td.m-responsive-display--table= spell.casting_time
                                         //- td= spell.duration
                                         td= spell.range
                                         td.c-dropdown-button &nabla;

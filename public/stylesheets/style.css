@@ -1583,6 +1583,27 @@ blockquote{
     }
 
     /*****************************************/
+    /***************** DM ********************/
+    /*****************************************/
+    /* Notes */
+    .l-notes {
+        grid-template-columns: 1fr;
+    }
+
+    .c-tabs__topbar {
+        flex-flow: row wrap;
+    }
+
+    #l-main-content--note-compendium {
+        background: none;
+        padding: 0;
+    }
+
+    .m-responsive-display--table {
+        display: none;
+    }
+
+    /*****************************************/
     /********* Global Class Styling **********/
     /*****************************************/
     .l-margin-start {
@@ -1633,6 +1654,23 @@ blockquote{
     /*****************************************/
     .l-manageusers-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    /*****************************************/
+    /***************** DM ********************/
+    /*****************************************/
+    /* Notes */
+    .c-tabs__topbar {
+        flex-flow: row nowrap;
+    }
+
+    #l-main-content--note-compendium {
+        background: #ececec;
+        padding: 2em;
+    }
+
+    .m-responsive-display--table {
+        display: table-cell;
     }
 }
 
@@ -1708,6 +1746,27 @@ blockquote{
     /*****************************************/
     .l-manageusers-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    /*****************************************/
+    /***************** DM ********************/
+    /*****************************************/
+    /* Notes */
+    .l-notes {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .c-tabs__topbar {
+        flex-flow: row wrap;
+    }
+
+    #l-main-content--note-compendium {
+        background: none;
+        padding: 0;
+    }
+
+    .m-responsive-display--table {
+        display: none;
     }
 }
 
@@ -1803,6 +1862,18 @@ blockquote{
     }
 
     /*****************************************/
+    /***************** DM ********************/
+    /*****************************************/
+    /* Notes */
+    .c-tabs__topbar {
+        flex-flow: row nowrap;
+    }
+
+    .m-responsive-display--table {
+        display: table-cell;
+    }
+
+    /*****************************************/
     /********* Global Class Styling **********/
     /*****************************************/
     .l-margin-start {
@@ -1820,6 +1891,15 @@ blockquote{
 
     .c-search__input {
         margin-bottom: 0em;
+    }
+
+    /*****************************************/
+    /***************** DM ********************/
+    /*****************************************/
+    /* Notes */
+    #l-main-content--note-compendium {
+        background: #ececec;
+        padding: 2em;
     }
 }
 
