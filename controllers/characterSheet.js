@@ -53,7 +53,8 @@ exports.fillPdf = async (req, res, next) => {
     
     const path = getPath(selector);
 
-    const pdfDoc = await PdfEdit.loadPdfUrl(selector);;
+    // const pdfDoc = await PdfEdit.loadPdfUrl(selector);
+    const pdfDoc = await PdfEdit.loadPdfLocal(selector);
 
     const FontHelvetica = PdfEdit.loadFont('Helvetica', pdfDoc);
 

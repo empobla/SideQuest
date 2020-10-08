@@ -236,9 +236,21 @@ exports.logAcroFieldNames = (pdfDoc) => {
 
 // Loads Local PDF Document as a Uint8Array
 // .load - (Promise<PDFDocument>)
-exports.loadPdfLocal = path => {
-    const pdfDoc = PDFDocument.load(fs.readFileSync(path), { capNumbers: false });
-    return pdfDoc;
+exports.loadPdfLocal = type => {
+    if(type == 'charactersheet') {
+      const path = 'public/pdfs/charactersheet/charactersheet.pdf'
+      const pdfDoc = PDFDocument.load(fs.readFileSync(path), { capNumbers: false });
+      return pdfDoc;
+    } else if(type == 'characterdetails') {
+      const path = 'public/pdfs/charactersheet/characterdetails.pdf'
+      const pdfDoc = PDFDocument.load(fs.readFileSync(path), { capNumbers: false });
+      return pdfDoc;
+    } else {
+      const path = 'public/pdfs/charactersheet/spellcasting.pdf'
+      const pdfDoc = PDFDocument.load(fs.readFileSync(path), { capNumbers: false });
+      return pdfDoc;
+    }
+    
 };
 
 // Loads PDF Document from URL as an ArrayBuffer
