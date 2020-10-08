@@ -16,19 +16,21 @@ block content
             .c-divider__left
                 if url.endsWith('/newnote')
                     h1 &#10525; Nota Nueva
+                else if url.endsWith('/search')
+                    h1 &#10525; Notas: Búsqueda
                 else
                     h1 &#10525; Editar Nota: #{note.name}
             .c-divider__right
     
-    if url.endsWith('/notes')
+    if url.endsWith('/notes') || url.endsWith('/search')
         .l-main-content
             .l-search
-                form.c-search(action='')
+                form.c-search(action=`/dm/${username}/notes/search` method='post')
                     .c-search__input
                         label(for='name') Nombre de la nota
-                        input(type='text' name='name' id='name' placeholder='Buscar nota por nombre' disabled)
+                        input(type='text' name='name' id='name' placeholder='Buscar nota por nombre')
                     .c-search__input--button
-                        button.c-button--large.m-background-lightgray(type='' disabled) Buscar
+                        button.c-button--large.m-clickable(type='submit') Buscar
         
             .l-margin--2
             .l-ability-points-grid.grid--3

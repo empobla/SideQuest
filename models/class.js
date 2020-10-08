@@ -29,4 +29,8 @@ const classSchema = new mongoose.Schema({
     }
 });
 
+classSchema.index({
+    name: 'text'
+});
+
 module.exports = mongoose.model('Class', classSchema);

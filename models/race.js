@@ -28,4 +28,8 @@ const raceSchema = new mongoose.Schema({
     }
 });
 
+raceSchema.index({
+    name: 'text'
+});
+
 module.exports = mongoose.model('Race', raceSchema);

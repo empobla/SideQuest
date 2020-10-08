@@ -15,19 +15,21 @@ block content
             .c-divider__left
                 if url.endsWith('/newannouncement')
                     h1 &#10525; Anuncio Nuevo
+                else if url.endsWith('/search')
+                    h1 &#10525; Anuncios: Búsqueda
                 else
                     h1 &#10525; Editar Anuncio: #{announcement.name}
             .c-divider__right
     
-    if url.endsWith('/announcements')
+    if url.endsWith('/announcements') || url.endsWith('/search')
         .l-main-content
             .l-search
-                form.c-search(action='')
+                form.c-search(action=`/${route}/${username}/announcements/search` method='post')
                     .c-search__input
                         label(for='name') Nombre del anuncio
-                        input(type='text' name='name' id='name' placeholder='Buscar anuncio por nombre' disabled)
+                        input(type='text' name='name' id='name' placeholder='Buscar anuncio por nombre')
                     .c-search__input--button
-                        button.c-button--large.m-background-lightgray(type='' disabled) Buscar
+                        button.c-button--large.m-clickable(type='submit') Buscar
         
             .l-margin--2
             .l-ability-points-grid.grid--3

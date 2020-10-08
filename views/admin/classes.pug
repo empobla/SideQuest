@@ -14,19 +14,21 @@ block content
             .c-divider__left
                 if url.endsWith('/newclass')
                     h1 &#10525; New Class
+                else if url.endsWith('/search')
+                    h1 &#10525; Classes: Search
                 else
                     h1 &#10525; Edit Class: #{heroClass.name}
             .c-divider__right
     
-    if url.endsWith('/classes')
+    if url.endsWith('/classes') || url.endsWith('/search')
         .l-main-content
             .l-search
-                form.c-search(action='')
+                form.c-search(action=`/admin/${username}/classes/search` method='post')
                     .c-search__input
                         label(for='name') Class name
-                        input(type='text' name='name' id='name' placeholder='Search for class by name' disabled)
+                        input(type='text' name='name' id='name' placeholder='Search for class by name')
                     .c-search__input--button
-                        button.c-button--large.m-background-lightgray(type='' disabled) Search
+                        button.c-button--large.m-clickable(type='submit') Search
         
             .l-margin--2
             .l-ability-points-grid.grid--3

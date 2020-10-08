@@ -17,6 +17,7 @@ router.get('/:username', dmController.dmView);
 
 // Announcements
 router.get('/:username/announcements', adminController.announcements);
+router.post('/:username/announcements/search', adminController.announcementsSearch);
 router.get('/:username/announcements/newannouncement', adminController.announcements);
 router.post('/:username/announcements/newannouncement', adminController.newAnnouncementPost);
 router.get('/:username/announcements/edit/:announcementId', adminController.editAnnouncementGet);
@@ -24,6 +25,7 @@ router.post('/:username/announcements/edit/:announcementId', adminController.edi
 
 // Notes
 router.get('/:username/notes', dmController.notes);
+router.post('/:username/notes/search', dmController.notesSearch);
 router.get('/:username/notes/newnote', dmController.notes);
 router.post('/:username/notes/newnote', dmController.newNotePost);
 router.get('/:username/notes/view/:noteId', dmController.notes);

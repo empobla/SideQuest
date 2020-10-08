@@ -16,7 +16,7 @@ exports.notes = async (req, res, next) => {
         const username = req.params.username;
 
         if(res.locals.url.endsWith('/notes')) {
-            const notes = await Note.find();
+            const notes = await Note.aggregate([ { $sort: { date: -1 } } ]);
             res.render('dm/notes', { title: 'SideQuest DM - Notas', username, notes });
         } else {
             const tmpHeroes = await Hero.find();
@@ -54,6 +54,18 @@ exports.notes = async (req, res, next) => {
                 res.render('dm/notes', { title: 'SideQuest DM - Nota Nueva', username, heroes, characters, spells });
             }
         }
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.notesSearch = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        const searchQuery = req.body;
+        const notes = await Note.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
+        
+        res.render('dm/notes', { title: 'SideQuest DM - Notas: Búsqueda', username, notes });
     } catch(error) {
         next(error);
     }

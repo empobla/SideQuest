@@ -21,6 +21,7 @@ router.post('/:username/users/:userId', adminController.editUserPost);
 
 // Announcements
 router.get('/:username/announcements', adminController.announcements);
+router.post('/:username/announcements/search', adminController.announcementsSearch);
 router.get('/:username/announcements/newannouncement', adminController.announcements);
 router.post('/:username/announcements/newannouncement', adminController.newAnnouncementPost);
 router.get('/:username/announcements/edit/:announcementId', adminController.editAnnouncementGet);
@@ -32,6 +33,7 @@ router.get('/:username/heroes/:heroId', userController.newHeroGet);
 
 // Races CURD
 router.get('/:username/races', adminController.races);
+router.post('/:username/races/search', adminController.racesSearch);
 router.get('/:username/races/newrace', adminController.races);
 router.post('/:username/races/newrace', adminController.newRacePost);
 router.get('/:username/races/edit/:raceId', adminController.editRaceGet);
@@ -39,6 +41,7 @@ router.post('/:username/races/edit/:raceId', adminController.editRacePost);
 
 // Classes CURD
 router.get('/:username/classes', adminController.classes);
+router.post('/:username/classes/search', adminController.classesSearch);
 router.get('/:username/classes/newclass', adminController.classes);
 router.post('/:username/classes/newclass', adminController.newClassPost);
 router.get('/:username/classes/edit/:classId', adminController.editClassGet);

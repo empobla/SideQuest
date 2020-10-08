@@ -93,7 +93,7 @@ exports.editUserPost = async (req, res, next) => {
 exports.announcements = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const announcements = await Announcement.find();
+        const announcements = await Announcement.aggregate([ { $sort: { date: -1 } } ]);
 
         if(res.locals.url.includes('/admin/')){
             res.locals.url.endsWith('/newannouncement')
@@ -104,6 +104,20 @@ exports.announcements = async (req, res, next) => {
             ? res.render('admin/announcements', { title: 'SideQuest DM - Anuncio Nuevo' })
             : res.render('admin/announcements', { title: 'SideQuest DM - Anuncios', username, announcements });
         }
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.announcementsSearch = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        const searchQuery = req.body;
+        const announcements = await Announcement.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
+        
+        res.locals.url.includes('/admin/')
+            ? res.render('admin/announcements', { title: 'SideQuest Admin - Anuncios: Búsqueda', username, announcements })
+            : res.render('admin/announcements', { title: 'SideQuest DM - Anuncios: Búsqueda', username, announcements });
     } catch(error) {
         next(error);
     }
@@ -179,6 +193,18 @@ exports.races = async (req, res, next) => {
         res.locals.url.endsWith('/newrace')
             ? res.render('admin/races', { title: 'SideQuest Admin - New Race' })
             : res.render('admin/races', { title: 'SideQuest Admin - Manage Races', username, races });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.racesSearch = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        const searchQuery = req.body;
+        const races = await Race.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
+        
+        res.render('admin/races', { title: 'SideQuest Admin - Races: Search', username, races });
     } catch(error) {
         next(error);
     }
@@ -273,6 +299,18 @@ exports.classes = async (req, res, next) => {
         res.locals.url.endsWith('/newclass')
             ? res.render('admin/classes', { title: 'SideQuest Admin - New Class' })
             : res.render('admin/classes', { title: 'SideQuest Admin - Manage Classes', username, classes });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.classesSearch = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        const searchQuery = req.body;
+        const classes = await Class.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
+        
+        res.render('admin/classes', { title: 'SideQuest Admin - Classes: Search', username, classes });
     } catch(error) {
         next(error);
     }
