@@ -22,8 +22,10 @@ const spellSchema = new mongoose.Schema({
     }
 });
 
-// spellSchema.index({
-//     name: 'text'
-// });
+spellSchema.index({
+    name: 'text',
+    level: 'text',
+    school: 'text'
+});
 
 module.exports = mongoose.model('Spell', spellSchema);

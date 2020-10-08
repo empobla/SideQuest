@@ -3,21 +3,27 @@ include mixins/_text_editor
 
 block content
     
-    if url.endsWith('/story')
+    if url.endsWith('/story') || url.endsWith('/search')
         .l-margin-start
-        .l-divider
-            .c-divider__left
-                h1 Historia
-            .c-divider__right
+        if url.endsWith('/story')
+            .l-divider
+                .c-divider__left
+                    h1 Historia
+                .c-divider__right
+        else
+            a.l-divider(href='/story')
+                .c-divider__left
+                    h1 &#10525; Historia: Búsqueda
+                .c-divider__right
 
         .l-main-content
             .l-search
-                form.c-search(action='')
+                form.c-search(action='/story/search' method='post')
                     .c-search__input
                         label(for='name') Nombre de la sesión
-                        input(type='text' name='name' id='name' placeholder='Buscar sesión por nombre' disabled)
+                        input(type='text' name='name' id='name' placeholder='Buscar sesión por nombre')
                     .c-search__input--button
-                        button.c-button--large.m-background-lightgray(type='' disabled) Buscar
+                        button.c-button--large.m-clickable(type='submit') Buscar
         
         .l-margin--3
         .l-main-content

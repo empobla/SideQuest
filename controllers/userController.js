@@ -417,7 +417,7 @@ exports.editHeroPost = async (req, res, next) => {
 // Spells
 exports.spells = async (req, res, next) => {
     try {
-        const spells = await Spell.find();
+        const spells = await Spell.aggregate([ { $sort: { level: 1 } } ]);
         
         const spellLevels = ['cantrip', 'level1', 'level2', 'level3', 'level4', 'level5', 'level6', 'level7', 'level8', 'level9'];
         const spellsQuery = [];
@@ -460,12 +460,59 @@ exports.editSpellPost = async (req, res, next) => {
     }
 };
 
+exports.spellsSearch = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        const searchQuery = req.body;
+        let searchData = await Promise.all([
+            Spell.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]),
+            Spell.aggregate([ { $match: { $text: { $search: searchQuery.level.replace(/\s/g, '') } } } ]),
+            Spell.aggregate([ { $match: { $text: { $search: searchQuery.school } } } ]),
+        ]);
+
+        searchData = searchData[0].concat(searchData[1], searchData[2]);
+
+        const spells = Array.from(new Set(searchData.map(character => character._id.toString()))).map(id => {
+            return searchData.find(spell => spell._id.toString() == id)
+        });
+
+        const spellLevels = ['cantrip', 'level1', 'level2', 'level3', 'level4', 'level5', 'level6', 'level7', 'level8', 'level9'];
+        const spellsQuery = [];
+
+        for(let i = 0; i < spellLevels.length; i++) {
+            const level = Spell.aggregate([
+                { $match: { level: spellLevels[i] } },
+                { $sort: { name: 1 } }
+            ]);
+            spellsQuery.push(level);
+        }
+
+        const sortedSpells = await Promise.all(spellsQuery.map(level => level));
+        
+        res.render('users/spells', { title: 'SideQuest - Spell Compendium: Search', username, spells, sortedSpells });
+    } catch(error) {
+        next(error);
+    }
+};
+
 // Edit Story
 exports.story = async (req, res, next) => {
     try {
         const username = req.params.username;
         const stories = await Story.find();
         res.render('users/story', { title: 'SideQuest - Editar Historia', username, stories });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.storySearch = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        const searchQuery = req.body;
+        const stories = await Story.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
+        
+        res.render('users/story', { title: 'SideQuest - Editar Historia: Búsqueda', username, stories });
     } catch(error) {
         next(error);
     }
@@ -527,6 +574,29 @@ exports.characters = async (req, res, next) => {
         const characters = await Character.find();
 
         res.render('users/characters', { title: 'SideQuest - Editar Personajes', username, characters });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.charactersSearch = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        const searchQuery = req.body;
+        let searchData = await Promise.all([
+            Character.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]),
+            Character.aggregate([ { $match: { $text: { $search: searchQuery.relationship } } } ]),
+            Character.aggregate([ { $match: { $text: { $search: searchQuery.place } } } ]),
+            Character.aggregate([ { $match: { $text: { $search: searchQuery.race } } } ])
+        ]);
+
+        searchData = searchData[0].concat(searchData[1], searchData[2], searchData[3]);
+
+        const characters = Array.from(new Set(searchData.map(character => character._id.toString()))).map(id => {
+            return searchData.find(character => character._id.toString() == id)
+        });
+        
+        res.render('users/characters', { title: 'SideQuest - Editar Personajes: Búsqueda', username, characters });
     } catch(error) {
         next(error);
     }

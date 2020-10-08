@@ -26,7 +26,7 @@ exports.index = async (req, res, next) => {
 // Heroes
 exports.heroes = async (req, res, next) => {
     try{
-        const heroes = await Hero.find();
+        const heroes = await Hero.aggregate([ { $sort: { name: 1 } } ]);
         res.render('heroes', { title: 'SideQuest - Heroes', heroes });
     } catch(error) {
         next(error);
@@ -132,15 +132,50 @@ exports.story = async (req, res, next) => {
     }
 };
 
+exports.storySearch = async (req, res, next) => {
+    try {
+        const searchQuery = req.body;
+        const stories = await Story.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
+        
+        res.render('story', { title: 'SideQuest - Historia: Búsqueda', stories });
+    } catch(error) {
+        next(error);
+    }
+};
+
 // Characters
 exports.characters = async (req, res, next) => {
     try {
-        const charactersQuery = Character.find();
+        const charactersQuery = Character.aggregate([
+            { $sort: { name: 1 } }
+        ]);
         const characterQuery = Character.findOne({ name: req.params.characterName });
         const [characters, character] = await Promise.all([charactersQuery, characterQuery]);
 
         const title = res.locals.url.endsWith('/characters') ? 'Personajes' : `Personajes: ${character.name}`
         res.render('characters', { title: `SideQuest - ${title}`, characters, character });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.charactersSearch = async (req, res, next) => {
+    try {
+        const searchQuery = req.body;
+        let searchData = await Promise.all([
+            Character.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]),
+            Character.aggregate([ { $match: { $text: { $search: searchQuery.relationship } } } ]),
+            Character.aggregate([ { $match: { $text: { $search: searchQuery.place } } } ]),
+            Character.aggregate([ { $match: { $text: { $search: searchQuery.race } } } ])
+        ]);
+
+        searchData = searchData[0].concat(searchData[1], searchData[2], searchData[3]);
+
+        const characters = Array.from(new Set(searchData.map(character => character._id.toString()))).map(id => {
+            return searchData.find(character => character._id.toString() == id)
+        });
+        
+        res.render('characters', { title: 'SideQuest - Personajes: Búsqueda', characters });
     } catch(error) {
         next(error);
     }

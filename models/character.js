@@ -34,4 +34,11 @@ const characterSchema = new mongoose.Schema({
     notes: [noteSubSchema]
 });
 
+characterSchema.index({
+    name: 'text',
+    relationship: 'text',
+    place: 'text',
+    race: 'text'
+});
+
 module.exports = mongoose.model('Character', characterSchema);

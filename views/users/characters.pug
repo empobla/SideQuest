@@ -14,28 +14,30 @@ block content
             .c-divider__left
                 if url.endsWith('/newcharacter')
                     h1 &#10525; Personaje Nuevo
+                else if url.endsWith('/search')
+                    h1 &#10525; Editar Personajes: Búsqueda
                 else
                     h1 &#10525; Editar Personajes: #{character.name}
             .c-divider__right
 
-    if url.endsWith('/characters')
+    if url.endsWith('/characters') || url.endsWith('/search')
         .l-main-content
                 .l-search
-                    form.c-search(action='')
+                    form.c-search(action=`/users/${username}/characters/search` method='post')
                         .c-search__input
                             label(for='name') Nombre
-                            input(type='text' name='name' id='name' placeholder='Buscar personaje por nombre' disabled)
+                            input(type='text' name='name' id='name' placeholder='Buscar personaje por nombre')
                         .c-search__input
                             label(for='relationship') Relacion
-                            input(type='text' name='relationship' id='relationship' placeholder='Buscar personaje por relacion' disabled)
+                            input(type='text' name='relationship' id='relationship' placeholder='Buscar personaje por relacion')
                         .c-search__input
                             label(for='place') Lugar
-                            input(type='text' name='place' id='place' placeholder='Buscar personaje por lugar' disabled)
+                            input(type='text' name='place' id='place' placeholder='Buscar personaje por lugar')
                         .c-search__input
                             label(for='race') Raza
-                            input(type='text' name='race' id='race' placeholder='Buscar personaje por raza' disabled)
+                            input(type='text' name='race' id='race' placeholder='Buscar personaje por raza')
                         .c-search__input
-                            button.c-button--large.m-background-lightgray(type='' disabled) Buscar
+                            button.c-button--large.m-clickable(type='submit') Buscar
 
                 .l-margin--2
                 .l-ability-points-grid.grid--3

@@ -19,10 +19,12 @@ router.get('/heroes/:hero/charactersheet/:selector', characterSheet.fillPdf);
 /* Characters */
 router.get('/characters', sideQuestController.characters);
 router.get('/characters/:characterName', sideQuestController.characters);
+router.post('/characters/search', sideQuestController.charactersSearch);
 
 /* Story */
 router.get('/story', sideQuestController.story);
 router.get('/story/:storyId', sideQuestController.story);
+router.post('/story/search', sideQuestController.storySearch);
 
 /* Maps */
 router.get('/maps', sideQuestController.maps);

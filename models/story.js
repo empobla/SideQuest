@@ -21,4 +21,8 @@ const storySchema = new mongoose.Schema({
     notes: [noteSubSchema]
 });
 
+storySchema.index({
+    name: 'text'
+});
+
 module.exports = mongoose.model('Story', storySchema);

@@ -5,25 +5,31 @@ include ../mixins/_spell_form
 block content
 
     .l-margin-start
-    .l-divider
-        .c-divider__left
-            h1 Spell Compendium
-        .c-divider__right
+    if url.endsWith('/spells')
+        .l-divider
+            .c-divider__left
+                h1 Spell Compendium
+            .c-divider__right
+    else
+        a.l-divider(href=`/users/${username}/spells`)
+            .c-divider__left
+                h1 &#10525; Spell Compendium: Search
+            .c-divider__right
 
     .l-main-content
         .l-search
-            form.c-search(action='')
+            form.c-search(action=`/users/${user.username}/spells/search` method='post')
                 .c-search__input
                     label(for='name') Spell name
-                    input(type='text' name='name' placeholder='Buscar spell por nombre' disabled)
+                    input(type='text' name='name' placeholder='Buscar spell por nombre')
                 .c-search__input
                     label(for='level') Spell level
-                    input(type='text' name='level' placeholder='Buscar spell por nivel' disabled)
+                    input(type='text' name='level' placeholder='Buscar spell por nivel')
                 .c-search__input
                     label(for='school') Spell school
-                    input(type='text' name='school' placeholder='Buscar spell por escuela' disabled)
+                    input(type='text' name='school' placeholder='Buscar spell por escuela')
                 .c-search__input--button
-                    button.c-button--large.m-background-lightgray(type='' disabled) Buscar
+                    button.c-button--large.m-clickable(type='submit') Buscar
         
         .l-margin--2
         .l-ability-points-grid.grid--5

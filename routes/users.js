@@ -37,6 +37,63 @@ router.post('/:username/heroes/:heroId',
 router.get('/:username/spells', userController.spells);
 router.post('/:username/savespell', userController.saveSpellPost);
 router.post('/:username/editSpell', userController.editSpellPost);
+router.post('/:username/spells/search', userController.spellsSearch);
+
+// Story
+router.get('/:username/story', userController.story);
+router.post('/:username/story/search', userController.storySearch);
+router.get('/:username/story/newstory', userController.newStoryGet);
+router.post('/:username/story/newstory', userController.newStoryPost);
+router.get('/:username/story/edit/:storyId', userController.editStoryGet);
+router.post('/:username/story/edit/:storyId', userController.editStoryPost);
+
+// Characters
+router.get('/:username/characters', userController.characters);
+router.post('/:username/characters/search', userController.charactersSearch);
+router.get('/:username/characters/newcharacter', userController.newCharacterGet);
+router.post('/:username/characters/newcharacter',
+  userController.upload,
+  userController.pushToCloudinary,
+  userController.newCharacterPost
+);
+router.get('/:username/characters/edit/:characterId', userController.editCharacterGet);
+router.post('/:username/characters/edit/:characterId',
+  userController.upload,
+  userController.pushToCloudinary,
+  userController.editCharacterPost
+);
+
+/* DM */
+// Manage Heroes
+router.get('/user/:username/manageheroes',
+  userController.isDM,
+  userController.accountView
+);
+
+router.get('/user/:username/addhero', 
+  userController.isDMorAdmin,
+  userController.addHeroGet
+);
+router.post('/user/:username/addhero', userController.addHeroPost);
+
+router.get('/user/:username/edithero/:heroname',
+  userController.isDMorAdmin,
+  userController.dmEditHeroGet
+);
+router.post('/user/:username/edithero/:heroname', userController.dmEditHeroPost);
+
+// Announcements
+router.get('/user/:username/announcements', 
+  userController.isDMorAdmin,
+  userController.announcementsGet
+);
+router.get('/user/:username/announcements/addAnnouncement', userController.announcementsGet);
+router.post('/user/:username/announcements/addAnnouncement', userController.addAnnouncement);
+router.get('/user/:username/announcements/:announcementId', userController.announcementsGet);
+router.post('/user/:username/announcements/:announcementId', userController.announcementsPost);
+router.get('/user/:username/announcements/:announcementId/saved', userController.announcementsGet);
+router.post('/user/:username/announcements/:announcementId/saved', userController.announcementsPost);
+
 
 // TEMP CREATE RACE AND CLASS
 // const Race = require('../models/race');
@@ -95,59 +152,5 @@ router.post('/:username/editSpell', userController.editSpellPost);
 //     next(error);
 //   }
 // });
-
-
-// Story
-router.get('/:username/story', userController.story);
-router.get('/:username/story/newstory', userController.newStoryGet);
-router.post('/:username/story/newstory', userController.newStoryPost);
-router.get('/:username/story/edit/:storyId', userController.editStoryGet);
-router.post('/:username/story/edit/:storyId', userController.editStoryPost);
-
-// Characters
-router.get('/:username/characters', userController.characters);
-router.get('/:username/characters/newcharacter', userController.newCharacterGet);
-router.post('/:username/characters/newcharacter',
-  userController.upload,
-  userController.pushToCloudinary,
-  userController.newCharacterPost
-);
-router.get('/:username/characters/edit/:characterId', userController.editCharacterGet);
-router.post('/:username/characters/edit/:characterId',
-  userController.upload,
-  userController.pushToCloudinary,
-  userController.editCharacterPost
-);
-
-/* DM */
-// Manage Heroes
-router.get('/user/:username/manageheroes',
-  userController.isDM,
-  userController.accountView
-);
-
-router.get('/user/:username/addhero', 
-  userController.isDMorAdmin,
-  userController.addHeroGet
-);
-router.post('/user/:username/addhero', userController.addHeroPost);
-
-router.get('/user/:username/edithero/:heroname',
-  userController.isDMorAdmin,
-  userController.dmEditHeroGet
-);
-router.post('/user/:username/edithero/:heroname', userController.dmEditHeroPost);
-
-// Announcements
-router.get('/user/:username/announcements', 
-  userController.isDMorAdmin,
-  userController.announcementsGet
-);
-router.get('/user/:username/announcements/addAnnouncement', userController.announcementsGet);
-router.post('/user/:username/announcements/addAnnouncement', userController.addAnnouncement);
-router.get('/user/:username/announcements/:announcementId', userController.announcementsGet);
-router.post('/user/:username/announcements/:announcementId', userController.announcementsPost);
-router.get('/user/:username/announcements/:announcementId/saved', userController.announcementsGet);
-router.post('/user/:username/announcements/:announcementId/saved', userController.announcementsPost);
 
 module.exports = router;
