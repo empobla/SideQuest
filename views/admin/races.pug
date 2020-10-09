@@ -82,7 +82,8 @@ block content
                     input(type='text' name='languages' placeholder='Common, Human')
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='traits') Traits:
-                    textarea(name='traits' placeholder='Write race traits here.')
+                    //- textarea(name='traits' placeholder='Write race traits here.')
+                    +textEditor('editor', '', 'Write race traits here.', 'traits')
                 .l-margin--3
                 button.c-button--large.m-clickable(type='submit') Create Race
     
@@ -132,7 +133,8 @@ block content
                     input(type='text' name='languages' placeholder='Common, Human' value=(race.languages || null))
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='traits') Traits:
-                    textarea(name='traits' placeholder='Write race traits here.')=(race.traits || null)
+                    //- textarea(name='traits' placeholder='Write race traits here.')=(race.traits || null)
+                    +textEditor('editor', race.traits, 'Write race traits here.', 'traits')
                 .l-margin--3
                 .l-ability-points-grid.grid--2
                     button.c-button--large.m-clickable(type='submit' name='deleterace' value='false') Update Race

@@ -94,6 +94,68 @@ block content
             - const parts = (alliesOrgs.text != undefined) ? alliesOrgs.text.split(/(\r\n)/g) : [];
             each part in parts
                 p= part
+            
+            if hero.race
+                h2 #{hero.race.name}
+                hr
+                p.m-align-justify= hero.race.description
+                p <strong>Alignment:</strong> #{hero.race.alignment}
+                p <strong>Speed:</strong> #{hero.race.speed}
+                p <strong>Languages:</strong> #{hero.race.languages}
+                - let raceAI = '';
+                - for(const increase of hero.race.ability_increase) {
+                -   increase.increase > 0 ? raceAI += `+${increase.increase} ` : raceAI += `${increase.increase} `;
+                -   raceAI += increase.name[0].toUpperCase() + increase.name.substring(1) + ', ';
+                - }
+                - raceAI = raceAI.substring(0,raceAI.length-2);
+                p <strong>Ability Score Improvements:</strong> #{raceAI}
+                h3 Traits
+                input#js-racejson(type='hidden' value=`${JSON.stringify(hero.race)}`)
+                p#js-racetraits Race Traits
+            else
+                h2 Raza
+                input#js-racejson(type='hidden' value='false')
+                p #{hero.name} no tiene raza.
+
+            if hero.class
+                h2 #{hero.class.name}
+                hr
+                p.m-align-justify= hero.class.description
+                h3 Hit Points
+                p <strong>Hit Die:</strong> #{hero.class.hit_die}
+                p <strong>Hit Points at 1st Level:</strong> #{hero.class.hitpoints_start}
+                p <strong>Hit Points at Higher Levels:</strong> #{hero.class.hitpoints_higherlvls}
+                
+                br
+                h3 Abilities
+                - let classPA = '';
+                - for(const ability of hero.class.abilities) { classPA += ability[0].toUpperCase() + ability.substring(1) + ', '; }
+                - classPA = classPA.substring(0, classPA.length-2);
+                p <strong>Primary Abilities:</strong> #{classPA}
+                
+                - let classSP = '';
+                - for(const ability of hero.class.st_proficiencies) { classSP += ability[0].toUpperCase() + ability.substring(1) + ', '; }
+                - classSP = classSP.substring(0, classSP.length-2);
+                p <strong>Saving Throw Proficiencies:</strong> #{classSP}
+                
+                if hero.class.spell_ability != '' && hero.class.spell_ability != undefined
+                    - const classSA = `${hero.class.spell_ability[0].toUpperCase() + hero.class.spell_ability.substring(1)}`;
+                    p <strong>Spell Save DC =</strong> 8 + your proficiency bonus + your #{classSA} modifier
+                    p <strong>Spell Attack Modifier =</strong> your proficiency bonus + your #{classSA} modifier
+                
+                br
+                h3 Proficiencies
+                - let classSK = '';
+                - for(const skill of hero.class.skills.skills) { classSK += skill[0].toUpperCase() + skill.substring(1) + ', '; }
+                - classSK = classSK.substring(0, classSK.length-2);
+                p <strong>Skills:</strong> Choose #{hero.class.skills.choose} skills from #{classSK}
+
+                p <strong>Armor and Weapon Proficiencies:</strong> #{hero.class.armor_weapon_proficiencies}
+                p <strong>Tool Proficiencies:</strong> #{`${hero.class.tool_proficiencies || 'none'}`}
+            else
+                h2 Clase
+                p #{hero.name} no tiene clase.
+            
 
         .l-main-content.l-clearleft
             h2 Statistics
@@ -288,6 +350,14 @@ block content
                     : dropdownButton[index].innerHTML = '&nabla;';
             });
         });
+
+        const racejson = document.querySelector('#js-racejson').value;
+        if(racejson != 'false') {
+            const race = JSON.parse(racejson);
+            const raceTraits = document.querySelector('#js-racetraits');
+            raceTraits.innerHTML = race.traits.replace(/(\r\n|\r|\n)/g, '<br>');
+        }
+
 
     //-      -->        //- If user is on hero sheets page
     //-                 else if url.endsWith('/sheets')

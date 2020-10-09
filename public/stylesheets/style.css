@@ -1230,6 +1230,10 @@ main {
     text-align: center;
 }
 
+.m-align-justify {
+    text-align: justify;
+}
+
 .m-responsive-display--table {
     display: table-cell;
 }
