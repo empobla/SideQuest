@@ -127,7 +127,6 @@ block content
                 p <strong>Hit Points at 1st Level:</strong> #{hero.class.hitpoints_start}
                 p <strong>Hit Points at Higher Levels:</strong> #{hero.class.hitpoints_higherlvls}
                 
-                br
                 h3 Abilities
                 - let classPA = '';
                 - for(const ability of hero.class.abilities) { classPA += ability[0].toUpperCase() + ability.substring(1) + ', '; }
@@ -144,7 +143,6 @@ block content
                     p <strong>Spell Save DC =</strong> 8 + your proficiency bonus + your #{classSA} modifier
                     p <strong>Spell Attack Modifier =</strong> your proficiency bonus + your #{classSA} modifier
                 
-                br
                 h3 Proficiencies
                 - let classSK = '';
                 - for(const skill of hero.class.skills.skills) { classSK += skill[0].toUpperCase() + skill.substring(1) + ', '; }
