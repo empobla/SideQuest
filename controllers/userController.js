@@ -499,7 +499,7 @@ exports.spellsSearch = async (req, res, next) => {
 exports.story = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const stories = await Story.aggregate([ { $sort: { name: 1 } } ]);
+        const stories = await Story.aggregate([ { $sort: { name: -1 } } ]);
         res.render('users/story', { title: 'SideQuest - Editar Historia', username, stories });
     } catch(error) {
         next(error);

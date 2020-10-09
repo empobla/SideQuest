@@ -120,7 +120,7 @@ exports.story = async (req, res, next) => {
     try {
         const storyId = req.params.storyId;
 
-        const storiesQuery = Story.aggregate([ { $sort: { name: 1 } } ]);
+        const storiesQuery = Story.aggregate([ { $sort: { name: -1 } } ]);
         const storyQuery = Story.findOne({ _id: storyId });
         const [stories, story] = await Promise.all([storiesQuery, storyQuery]);
 
