@@ -571,7 +571,7 @@ exports.editStoryPost = async (req, res, next) => {
 exports.characters = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const characters = await Character.find();
+        const characters = await Character.aggregate([ { $sort: { name: 1 } } ]);
 
         res.render('users/characters', { title: 'SideQuest - Editar Personajes', username, characters });
     } catch(error) {
