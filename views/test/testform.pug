@@ -1,0 +1,31 @@
+extends layout
+
+block content
+    .outer_wrapper.color
+        //- form.content(action="/data" method="POST")
+        .content
+            .content_header
+                h2 Test Form
+            .content_sidebar
+                .sidebar_item
+                    a(href='/testform') Page1
+                .sidebar_item
+                    a(href='/testform2') Page2
+            .content_main
+                if url === '/testform'
+                    //- .content_form
+                    form.content_form(action='/data' method="POST")
+                        .form_input
+                            label(for="firstname") First Name:
+                            input(type="text" name="firstname" id="firstname" placeholder="John")
+                        .form_input
+                            label(for="lastname") Last Name:
+                            input(type="text" name="lastname" id="lastname" placeholder="Doe")
+                        .form_input
+                            button(type="submit") done
+                else
+                    .content_form
+                        p= `${test.firstname} ${test.lastname}`
+                        .form_input
+                            label(for="age") Age:
+                            input(type='number' name='age' id='age' placeholder='60')

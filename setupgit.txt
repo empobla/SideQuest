@@ -1,0 +1,31 @@
+Push to origin master
+
+git stash -u - saves changes in a non-commited branch
+git stash pop - loads stashed changes
+git branch - lists branches
+git branch -r - lists remote branches
+git push <remote> --delete <branch> - deletes remote branch
+git checkout -b <name> - creates branch
+git checkout <branch> - switch to branch
+git branch -d <branch> - deletes branch
+git branch -D <branch> - force delete branch
+git push -u <remote> <branch> - sets branch as upstream and pushes to it
+
+** Pushes to master branch will autodeploy after some mins **
+
+WSL NPM:
+sudo apt-get install curl - install curl
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash - install current nvm version
+** must check https://github.com/nvm-sh/nvm to see latest version to input. running command twice will keep latest version **
+
+Verify installation with command -v nvm (returns 'nvm')
+nvm -ls - lists node versions
+nvm install - installs latest node version
+nvm install <version> - installs node version
+nvm use <version> - uses specified node version
+nvm use node - uses latest node version installed
+
+nvm installs node versions in ~/.nvm/versions/node. To delete any version, just rm -rf the folder of the version:
+    rm -rf v14.5.0
+
+npm i - sets up npm on current directory with package.json
