@@ -11,6 +11,8 @@ git branch -d <branch> - deletes branch
 git branch -D <branch> - force delete branch
 git push -u <remote> <branch> - sets branch as upstream and pushes to it
 git rm -r --cached <file/path> - deletes file from remote repo after being added to gitignore
+git merge <branch> - merges current branch with specified branch
+git merge <branch> --squash - merges current branch with specified branch, puts all commits on specified branch together into one. Must do a final commit to reflect changes after merge
 
 ** Pushes to master branch will autodeploy after some mins **
 
