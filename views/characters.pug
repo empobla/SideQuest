@@ -85,6 +85,7 @@ block content
 
         .l-main-content.l-clearleft
             h2 Comentarios
+            hr
             if user
                 .l-content-box
                     .c-content-box
@@ -99,90 +100,39 @@ block content
                             .l-content-box__text
                                 form.c-edithero-form(action='' method='post')
                                     .c-edithero-form__input.c-edithero-form__input--stack
-                                        textarea(name='comment' placeholder='Escribe tu comentario aquí.')
-                                        button.c-button(type='submit') Comentar
+                                        input(type='hidden' name='user_id' value=user._id)
+                                        input(type='hidden' name='username' value=user.username)
+                                        textarea(name='text' placeholder='Escribe tu comentario aquí.')
+                                        button.c-button.m-clickable(type='submit') Comentar
+            
             //- If character notes exist, display them with appropriate line breaks
-            if character.notes != '' && character.notes != undefined
-                each note in character.notes
+            if character.comments != '' && character.comments != undefined
+                each comment in character.comments
                     .l-content-box--full-width
                         .c-content-box
                             img.c-content-box__image(src='/images/logos/favicon.png' alt='')
 
                             .l-content-box__content
                                 .c-content-box__title
-                                    h4 #{note.character}
+                                    h4 #{comment.username}
+                                    - const dateComment = new Date(comment.date)
+                                    em.l-content-box__title--info= `Posted ${String(dateComment.getDate()).padStart(2,'0')}/${String(dateComment.getMonth() + 1).padStart(2,'0')}/${dateComment.getFullYear()}`
                                 
                                 .l-content-box__text
-                                    - const lines = note.text.split(/(\r\n|\r|\n)/g);
+                                    - const lines = comment.text.split(/(\r\n|\r|\n)/g);
                                     each line in lines
                                         p= line
-                                if user.username == note.character
+                                
+                                if user && user.isAdmin
                                     .l-margin--3
-                                    a.c-button.m-background-red(href='') Delete
+                                    form(action=`/characters/${character.name}/deletecomment/${comment._id}` method='post')
+                                        button.c-button.m-background-red.m-clickable(type='submit' name='_id' value=comment._id) Delete
                                     .l-margin--2
-            else
-                p No hay comentarios.
-        
-        //-
-            //- Load all announcements
-            - var count = 0;
-            each announcement in announcements
-                .l-content-box
-                    .c-content-box
-                        img.c-content-box__image(src='/images/logos/favicon.png' alt='')
-                        
-                        .l-content-box__content
-                            .c-content-box__title
-                                h3 #{announcement.name}
-                                - const date = new Date(announcement.date)
-                                em.l-content-box__title--info= `Posted ${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()} by ${announcement.user}`
-                            
-                            .l-content-box__text
-                                //- Announcements preview
-                                .wmd-panel
-            
-                
-    //-             //- If user is viewing an individual character
-    //-             else
-    //-                 h3 #{character.name}
-    //-                 hr
-    //-                 .text_wrap
-    //-                     if character.image != '' && character.image != undefined
-    //-                         img(src=`http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png` alt=`${character.name} image`)
-    //-                     else
-    //-                         img(src=tmpImg alt=`${character.name} image`)
-    //-                     .basic_info
-    //-                         h4 Resumen
-    //-                         p= `Lugar de Origen o donde fué conocido: ${character.place || '???'}`
-    //-                         p= `Edad: ${character.age || '???'}`
-    //-                         p= `Raza: ${character.race || '???'}`
-    //-                         p= `Clase: ${character.class || '???'}`
-    //-                         p= `Tamaño: ${character.size || '???'}`
-                    
-    //-                 h4 Apariencia:
-    //-                 if character.appearance != '' && character.appearance != undefined
-    //-                     .main_item.margin.smaller_font_9
-    //-                         - const lines = character.appearance.split(/(\r\n|\r|\n)/g)
-    //-                         each line in lines
-    //-                             p= line
-    //-                 else
-    //-                     p ???
-                    
-    //-                 h4 Resumen/Historia:
-    //-                 hr
-    //-                 if character.summary != '' && character.summary != undefined
-    //-                         +textEditor('view', character.summary)
-    //-                 else
-    //-                     p #{character.name} no tiene historia/resumen.
-                    
-    //-                 //- If character notes exist, display them with appropriate line breaks
-    //-                 if character.notes != '' && character.notes != undefined
-    //-                     h4 Notas:
-    //-                     hr
-    //-                     each note in character.notes
-    //-                         .note
-    //-                             div
-    //-                                 h4= note.character
-    //-                                 - const lines = note.text.split(/(\r\n|\r|\n)/g);
-    //-                                 each line in lines
-    //-                                     p= line
+                                else if user && user._id.toString() == comment.user_id.toString()
+                                    .l-margin--3
+                                    form(action=`/characters/${character.name}/deletecomment/${comment._id}` method='post')
+                                        button.c-button.m-background-red.m-clickable(type='submit' name='_id' value=comment._id) Delete
+                                    .l-margin--2
+            else if !user
+                .l-margin--2
+                p No hay comentarios todavía.

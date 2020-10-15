@@ -45,20 +45,56 @@ block content
             hr
             +textEditor('view', story.summary)
 
-        //- If story notes exist, display them with appropriate line breaks
-        if story.notes != '' && story.notes != undefined
-            .l-main-content.l-clearleft
-                h3 Notas:
-                each note in story.notes
+        .l-main-content.l-clearleft
+            h2 Comentarios
+            hr
+            if user
+                .l-content-box
+                    .c-content-box
+                        img.c-content-box__image(src='/images/logos/favicon.png' alt='SideQuest Logo')
+        
+                        .l-content-box__content
+                            .c-content-box__title
+                                h3 #{user.username}
+                                - const date = new Date()
+                                em.l-content-box__title--info= `Posted ${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()}`
+                            
+                            .l-content-box__text
+                                form.c-edithero-form(action='' method='post')
+                                    .c-edithero-form__input.c-edithero-form__input--stack
+                                        input(type='hidden' name='user_id' value=user._id)
+                                        input(type='hidden' name='username' value=user.username)
+                                        textarea(name='text' placeholder='Escribe tu comentario aquí.')
+                                        button.c-button.m-clickable(type='submit') Comentar
+            
+            //- If story notes exist, display them with appropriate line breaks
+            if story.comments != '' && story.comments != undefined
+                each comment in story.comments
                     .l-content-box--full-width
                         .c-content-box
                             img.c-content-box__image(src='/images/logos/favicon.png' alt='')
 
                             .l-content-box__content
                                 .c-content-box__title
-                                    h4= note.character
-
+                                    h4 #{comment.username}
+                                    - const dateComment = new Date(comment.date)
+                                    em.l-content-box__title--info= `Posted ${String(dateComment.getDate()).padStart(2,'0')}/${String(dateComment.getMonth() + 1).padStart(2,'0')}/${dateComment.getFullYear()}`
+                                
                                 .l-content-box__text
-                                    - const lines = note.text.split(/(\r\n|\r|\n)/g);
+                                    - const lines = comment.text.split(/(\r\n|\r|\n)/g);
                                     each line in lines
                                         p= line
+                                
+                                if user && user.isAdmin
+                                    .l-margin--3
+                                    form(action=`/story/${story._id}/deletecomment/${comment._id}` method='post')
+                                        button.c-button.m-background-red.m-clickable(type='submit' name='_id' value=comment._id) Delete
+                                    .l-margin--2
+                                else if user && user._id.toString() == comment.user_id.toString()
+                                    .l-margin--3
+                                    form(action=`/story/${story._id}/deletecomment/${comment._id}` method='post')
+                                        button.c-button.m-background-red.m-clickable(type='submit' name='_id' value=comment._id) Delete
+                                    .l-margin--2
+            else if !user
+                .l-margin--2
+                p No hay comentarios todavía.
