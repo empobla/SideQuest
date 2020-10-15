@@ -2,6 +2,7 @@ const Hero = require('../models/hero');
 const Story = require('../models/story');
 const Character = require('../models/character');
 const Announcements = require('../models/announcement');
+const Comment = require('../models/comment');
 
 // Index
 exports.index = async (req, res, next) => {
@@ -154,6 +155,47 @@ exports.characters = async (req, res, next) => {
 
         const title = res.locals.url.endsWith('/characters') ? 'Personajes' : `Personajes: ${character.name}`
         res.render('characters', { title: `SideQuest - ${title}`, characters, character });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.addCommentPost = async (req, res, next) => {
+    try {
+        if(res.locals.url.includes('/characters/')) {
+            const character = await Character.findOne({ name: req.params.characterName });
+            const comment = new Comment(req.body);
+            character.comments.push(comment);
+            await Character.findByIdAndUpdate(character._id, character, { new: true });
+            res.redirect(`/characters/${req.params.characterName}`);
+        } else if(res.locals.url.includes('/story/')) {
+            const story = await Story.findOne({ _id: req.params.storyId });
+            const comment = new Comment(req.body);
+            story.comments.push(comment);
+            await Story.findByIdAndUpdate(story._id, story, { new: true });
+            res.redirect(`/story/${story._id}`);
+        }
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.deleteCommentPost = async (req, res, next) => {
+    try {
+        const commentId = req.params.commentId;
+        if(res.locals.url.includes('/characters/')) {
+            const character = await Character.findOne({ name: req.params.characterName });
+            const commentIndex = character.comments.findIndex(comment => comment._id.toString() == commentId);
+            character.comments.splice(commentIndex, 1)
+            await Character.findByIdAndUpdate(character._id, character, { new: true });
+            res.redirect(`/characters/${req.params.characterName}`);
+        } else if(res.locals.url.includes('/story/')) {
+            const story = await Story.findOne({ _id: req.params.storyId });
+            const commentIndex = story.comments.findIndex(comment => comment._id.toString() == commentId);
+            story.comments.splice(commentIndex, 1);
+            await Story.findByIdAndUpdate(story._id, story, { new: true });
+            res.redirect(`/story/${story._id}`);
+        }
     } catch(error) {
         next(error);
     }
