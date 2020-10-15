@@ -3,15 +3,6 @@ const Comment = require('./comment');
 
 const commentSchema = mongoose.model('Comment').schema;
 
-const noteSubSchema = new mongoose.Schema({
-    character_id: mongoose.Schema.Types.ObjectId,
-    character: String,
-    text: {
-        type: String,
-        trim: true
-    }
-});
-
 const characterSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -35,7 +26,6 @@ const characterSchema = new mongoose.Schema({
         trim: true
     },
     comments: [commentSchema]
-    // notes: [noteSubSchema]
 });
 
 characterSchema.index({
