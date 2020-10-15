@@ -19,6 +19,7 @@ router.get('/heroes/:hero/charactersheet/:selector', characterSheet.fillPdf);
 /* Characters */
 router.get('/characters', sideQuestController.characters);
 router.get('/characters/:characterName', sideQuestController.characters);
+router.post('/characters/:characterName', sideQuestController.addCommentPost);
 router.post('/characters/search', sideQuestController.charactersSearch);
 
 /* Story */

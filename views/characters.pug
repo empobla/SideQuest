@@ -83,10 +83,26 @@ block content
             else
                 p #{character.name} no tiene historia/resumen.
 
-        //- If character notes exist, display them with appropriate line breaks
-        if character.notes != '' && character.notes != undefined
-            .l-main-content.l-clearleft
-                h2 Notas
+        .l-main-content.l-clearleft
+            h2 Comentarios
+            if user
+                .l-content-box
+                    .c-content-box
+                        img.c-content-box__image(src='/images/logos/favicon.png' alt='SideQuest Logo')
+        
+                        .l-content-box__content
+                            .c-content-box__title
+                                h3 #{user.username}
+                                - const date = new Date()
+                                em.l-content-box__title--info= `Posted ${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()}`
+                            
+                            .l-content-box__text
+                                form.c-edithero-form(action='' method='post')
+                                    .c-edithero-form__input.c-edithero-form__input--stack
+                                        textarea(name='comment' placeholder='Escribe tu comentario aquí.')
+                                        button.c-button(type='submit') Comentar
+            //- If character notes exist, display them with appropriate line breaks
+            if character.notes != '' && character.notes != undefined
                 each note in character.notes
                     .l-content-box--full-width
                         .c-content-box
@@ -100,6 +116,12 @@ block content
                                     - const lines = note.text.split(/(\r\n|\r|\n)/g);
                                     each line in lines
                                         p= line
+                                if user.username == note.character
+                                    .l-margin--3
+                                    a.c-button.m-background-red(href='') Delete
+                                    .l-margin--2
+            else
+                p No hay comentarios.
         
         //-
             //- Load all announcements
