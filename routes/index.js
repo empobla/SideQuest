@@ -19,14 +19,14 @@ router.get('/heroes/:hero/charactersheet/:selector', characterSheet.fillPdf);
 /* Characters */
 router.get('/characters', sideQuestController.characters);
 router.get('/characters/:characterName', sideQuestController.characters);
-router.post('/characters/:characterName', sideQuestController.addCommentPost);
+router.post('/characters/:characterName/createcomment', sideQuestController.addCommentPost);
 router.post('/characters/:characterName/deletecomment/:commentId', sideQuestController.deleteCommentPost);
 router.post('/characters/search', sideQuestController.charactersSearch);
 
 /* Story */
 router.get('/story', sideQuestController.story);
 router.get('/story/:storyId', sideQuestController.story);
-router.post('/story/:storyId', sideQuestController.addCommentPost);
+router.post('/story/:storyId/createcomment', sideQuestController.addCommentPost);
 router.post('/story/:storyId/deletecomment/:commentId', sideQuestController.deleteCommentPost);
 router.post('/story/search', sideQuestController.storySearch);
 

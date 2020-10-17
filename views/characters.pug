@@ -98,7 +98,7 @@ block content
                                 em.l-content-box__title--info= `Posted ${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()}`
                             
                             .l-content-box__text
-                                form.c-edithero-form(action='' method='post')
+                                form.c-edithero-form(action=`/characters/${character.name}/createcomment` method='post')
                                     .c-edithero-form__input.c-edithero-form__input--stack
                                         input(type='hidden' name='user_id' value=user._id)
                                         input(type='hidden' name='username' value=user.username)
