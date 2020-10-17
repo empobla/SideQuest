@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Spell = require('./spell');
 
 const abilitySubSchema = new mongoose.Schema({
     base_score: {
