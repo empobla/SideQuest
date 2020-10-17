@@ -4,9 +4,9 @@ const Hero = require('../models/hero');
 const Spell = require('../models/spell');
 const Story = require('../models/story');
 const Character = require('../models/character');
-const Announcement = require('../models/announcement');
 const Race = require('../models/race');
 const Class = require('../models/class');
+const Map = require('../models/map');
 
 // Require middleware
 const Passport = require('passport');
@@ -93,6 +93,22 @@ exports.pushToCloudinary = async (req, res, next) => {
                     ? res.redirect(`/users/${username}/characters/edit/${characterId}`)
                     : res.redirect(`/users/${username}/characters/newcharacter`);
             });
+        } else if(res.locals.url.includes('/maps/')) {
+            if(req.files.image == undefined) next();
+            Cloudinary.v2.uploader.upload(req.files.image[0].path || null, {
+                folder: 'sideQuest/mapImages'
+            })
+            .then(result => {
+                req.body.image = result.public_id;
+                next();
+            })
+            .catch(() => {
+                const username = req.params.username;
+                const mapId = req.params.mapId;
+                (mapId != undefined && mapId != '')
+                    ? res.redirect(`/users/${username}/maps/edit/${mapId}`)
+                    : res.redirect(`/users/${username}/maps/newmap`);
+            })
         } else {
             Cloudinary.v2.uploader.upload(req.file.path, {
                 folder: 'sideQuest'
@@ -119,6 +135,7 @@ exports.pushToCloudinary = async (req, res, next) => {
 // Express Validator
 const { check, validationResult } = require('express-validator');
 const { sanitize } = require('express-validator');
+const e = require('express');
 
 // Sign up
 exports.signUpGet = (req, res) => {
@@ -650,85 +667,75 @@ exports.editCharacterPost = async (req, res, next) => {
     }
 };
 
-/******************************************/
-/****************** DM ********************/
-/******************************************/
-
-exports.addHeroGet = (req, res) => {
-    const username = req.params.username;
-    res.render('users/add_hero.pug', { title: 'SideQuest - Agregar Heroe' });
-};
-
-exports.addHeroPost = async (req, res, next) => {
+// Edit Maps
+exports.maps = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const hero = new Hero(req.body);
-        // res.json(hero);
-        await hero.save();
-        res.redirect(`manageheroes`);
+        const maps = await Map.aggregate([{ $sort: { name: 1 } }]);
+
+        res.render('users/maps', { title: 'SideQuest - Editar Mapas', username, maps });
     } catch(error) {
         next(error);
     }
 };
 
-exports.dmEditHeroGet = async (req, res, next) => {
-    try{
-        const heroName = req.params.heroname;
-        const hero = await Hero.findOne({ name: heroName });
-        res.render('users/add_hero', { title: 'SideQuest - Editar Heroe', hero });
-    } catch(error) {
-        next(error);
-    }
-};
-
-exports.dmEditHeroPost = async (req, res, next) => {
-    try {
-        const heroName = req.params.heroname;
-        const newHeroName = req.body.name;
-        const newHeroPlayer = req.body.player_name || '';
-        const hero = await Hero.findOne({ name: heroName });
-        // res.json(hero);
-        hero.name = newHeroName;
-        hero.player_name = newHeroPlayer;
-        await Hero.findByIdAndUpdate(hero._id, hero, { new: true });
-        res.redirect(`/users/user/${req.user.username}/manageheroes`);
-    } catch(error) {
-        next(error);
-    }
-};
-
-exports.announcementsGet = async (req, res, next) => {
+exports.mapsSearch = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const announcementsQuery = Announcement.find();
-        const announcementQuery = Announcement.findOne({ _id: req.params.announcementId });
-        const [announcements, announcement] = await Promise.all([announcementsQuery, announcementQuery]);
+        const searchQuery = req.body;
+        const maps = await Map.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
+
+        res.render('users/maps', { title: 'SideQuest - Editar Mapas: Búsqueda', username, maps });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.newMapGet = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        res.render('users/maps', { title: 'SideQuest - Mapa Nuevo' });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.newMapPost = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        const map = new Map(req.body);
         
-        res.render('users/edit_announcements', { title: 'SideQuest - Editar Anuncios', username, announcements, announcement });
+        await map.save();
+        res.redirect(`/users/${username}/maps`);
     } catch(error) {
         next(error);
     }
 };
 
-exports.addAnnouncement = async (req, res, next) => {
+exports.editMapGet = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const announcement = new Announcement(req.body);
-        
-        await announcement.save();
-        res.redirect(`/users/user/${username}/announcements/${announcement._id}`);
+        const mapId = req.params.mapId;
+        const map = await Map.findOne({ _id: mapId });
+
+        res.render('users/maps', { title: 'SideQuest - Editar Mapa', username, map });
     } catch(error) {
         next(error);
     }
 };
 
-exports.announcementsPost = async (req, res, next) => {
+exports.editMapPost = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const announcementId = req.params.announcementId;
+        const mapId = req.params.mapId;
 
-        await Announcement.findByIdAndUpdate(announcementId, req.body, { new: true });
-        res.redirect(`/users/user/${username}/announcements/${announcementId}/saved`)
+        if(req.body.deletemap == 'true') {
+            await Map.findByIdAndRemove(mapId);
+            res.redirect(`/users/${username}/maps`);
+        } else {
+            await Map.findByIdAndUpdate(mapId, req.body, { new: true });
+            res.redirect(`/users/${username}/maps/edit/${mapId}`);
+        }
     } catch(error) {
         next(error);
     }

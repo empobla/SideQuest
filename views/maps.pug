@@ -1,12 +1,102 @@
 extends layout
+include mixins/_text_editor
 
 block content
     
     .l-margin-start
-    .l-divider
-        .c-divider__left
-            h1 Mapas
-        .c-divider__right
+    if url.endsWith('/maps')
+        .l-divider
+            .c-divider__left
+                h1 Mapas
+            .c-divider__right
+    else
+        a.l-divider(href=`/maps`)
+            .c-divider__left
+                h1 &#10525; Mapas
+            .c-divider__right
+        
+    if url.endsWith('/maps') || url.endsWith('/search')
+        .l-main-content
+                .l-search
+                    form.c-search(action=`/users/${username}/maps/search` method='post')
+                        .c-search__input
+                            label(for='name') Nombre
+                            input(type='text' name='name' id='name' placeholder='Buscar mapa por nombre')
+                        .c-search__input
+                            button.c-button--large.m-clickable(type='submit') Buscar
+                
+                .l-margin--3
+                .l-cards--4
+                    each map in maps
+                        a.c-card(href=`/maps/${map._id}`)
+                            .c-card__header
+                                .c-card__header-left
+                                    h2 #{map.name}
+                                .c-card__header-right
+                            img.c-card__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${map.image}.png` alt=`${map.name} Image`)
+    
+    else
+        .l-main-content
+            h2= map.name
+            hr
+            .l-margin--2
+            .c-mapimage
+                img(src=`http://res.cloudinary.com/duezou4td/image/upload/${map.image}.png` alt=`${map.name} Image`)
+            if map.description != undefined && map.description != ''
+                +textEditor('view', map.description)
+            
+        .l-main-content
+            h2 Comentarios
+            hr
+            if user
+                .l-content-box
+                    .c-content-box
+                        img.c-content-box__image(src='/images/logos/favicon.png' alt='SideQuest Logo')
+        
+                        .l-content-box__content
+                            .c-content-box__title
+                                h3 #{user.username}
+                                - const date = new Date()
+                                em.l-content-box__title--info= `Posted ${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()}`
+                            
+                            .l-content-box__text
+                                form.c-edithero-form(action='' method='post')
+                                    .c-edithero-form__input.c-edithero-form__input--stack
+                                        input(type='hidden' name='user_id' value=user._id)
+                                        input(type='hidden' name='username' value=user.username)
+                                        textarea(name='text' placeholder='Escribe tu comentario aquí.')
+                                        button.c-button.m-clickable(type='submit') Comentar
+            
+            //- If map comments exist, display them with appropriate line breaks
+            if map.comments != '' && map.comments != undefined
+                each comment in map.comments
+                    .l-content-box--full-width
+                        .c-content-box
+                            img.c-content-box__image(src='/images/logos/favicon.png' alt='')
 
-    .l-main-content
-        h2 Coming soon...
+                            .l-content-box__content
+                                .c-content-box__title
+                                    h4 #{comment.username}
+                                    - const dateComment = new Date(comment.date)
+                                    em.l-content-box__title--info= `Posted ${String(dateComment.getDate()).padStart(2,'0')}/${String(dateComment.getMonth() + 1).padStart(2,'0')}/${dateComment.getFullYear()}`
+                                
+                                .l-content-box__text
+                                    - const lines = comment.text.split(/(\r\n|\r|\n)/g);
+                                    each line in lines
+                                        p= line
+                                
+                                if user && user.isAdmin
+                                    .l-margin--3
+                                    form(action=`/map/${map._id}/deletecomment/${comment._id}` method='post')
+                                        button.c-button.m-background-red.m-clickable(type='submit' name='_id' value=comment._id) Delete
+                                    .l-margin--2
+                                else if user && user._id.toString() == comment.user_id.toString()
+                                    .l-margin--3
+                                    form(action=`/map/${map._id}/deletecomment/${comment._id}` method='post')
+                                        button.c-button.m-background-red.m-clickable(type='submit' name='_id' value=comment._id) Delete
+                                    .l-margin--2
+            else if !user
+                .l-margin--2
+                p No hay comentarios todavía. Para agregar un comentario, 
+                    strong
+                        a(href='/login') ingresa a tu cuenta.

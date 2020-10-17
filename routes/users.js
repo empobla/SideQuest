@@ -63,36 +63,19 @@ router.post('/:username/characters/edit/:characterId',
   userController.editCharacterPost
 );
 
-/* DM */
-// Manage Heroes
-router.get('/user/:username/manageheroes',
-  userController.isDM,
-  userController.accountView
-);
-
-router.get('/user/:username/addhero', 
-  userController.isDMorAdmin,
-  userController.addHeroGet
-);
-router.post('/user/:username/addhero', userController.addHeroPost);
-
-router.get('/user/:username/edithero/:heroname',
-  userController.isDMorAdmin,
-  userController.dmEditHeroGet
-);
-router.post('/user/:username/edithero/:heroname', userController.dmEditHeroPost);
-
-// Announcements
-router.get('/user/:username/announcements', 
-  userController.isDMorAdmin,
-  userController.announcementsGet
-);
-router.get('/user/:username/announcements/addAnnouncement', userController.announcementsGet);
-router.post('/user/:username/announcements/addAnnouncement', userController.addAnnouncement);
-router.get('/user/:username/announcements/:announcementId', userController.announcementsGet);
-router.post('/user/:username/announcements/:announcementId', userController.announcementsPost);
-router.get('/user/:username/announcements/:announcementId/saved', userController.announcementsGet);
-router.post('/user/:username/announcements/:announcementId/saved', userController.announcementsPost);
+// Maps
+router.get('/:username/maps', userController.maps);
+router.post('/:username/maps/search', userController.mapsSearch);
+router.get('/:username/maps/newmap', userController.newMapGet);
+router.post('/:username/maps/newmap', 
+  userController.upload,
+  userController.pushToCloudinary,
+  userController.newMapPost);
+router.get('/:username/maps/edit/:mapId', userController.editMapGet);
+router.post('/:username/maps/edit/:mapId', 
+  userController.upload,
+  userController.pushToCloudinary,
+  userController.editMapPost);
 
 
 // TEMP CREATE RACE AND CLASS

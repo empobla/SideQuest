@@ -3,6 +3,7 @@ const Story = require('../models/story');
 const Character = require('../models/character');
 const Announcements = require('../models/announcement');
 const Comment = require('../models/comment');
+const Map = require('../models/map');
 
 // Index
 exports.index = async (req, res, next) => {
@@ -226,7 +227,12 @@ exports.charactersSearch = async (req, res, next) => {
 // Maps
 exports.maps = async (req, res, next) => {
     try {
-        res.render('maps', { title: 'SideQuest - Mapas' })
+        const mapsQuery = await Map.aggregate([{ $sort: { name: 1 } }]);
+        const mapQuery = await Map.findOne({ _id: req.params.mapId });
+        const [maps, map] = await Promise.all([mapsQuery, mapQuery]);
+
+        const title = res.locals.url.endsWith('/maps') ? 'Mapas' : `Mapa: ${map.name}`
+        res.render('maps', { title: `SideQuest - ${title}`, maps, map });
     } catch(error) {
         next(error);
     }

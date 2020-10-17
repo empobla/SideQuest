@@ -32,6 +32,7 @@ router.post('/story/search', sideQuestController.storySearch);
 
 /* Maps */
 router.get('/maps', sideQuestController.maps);
+router.get('/maps/:mapId', sideQuestController.maps);
 
 /* Login */
 router.get('/login', userController.loginGet);
