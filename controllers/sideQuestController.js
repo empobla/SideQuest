@@ -164,17 +164,35 @@ exports.characters = async (req, res, next) => {
 exports.addCommentPost = async (req, res, next) => {
     try {
         if(res.locals.url.includes('/characters/')) {
-            const character = await Character.findOne({ name: req.params.characterName });
-            const comment = new Comment(req.body);
-            character.comments.push(comment);
-            await Character.findByIdAndUpdate(character._id, character, { new: true });
-            res.redirect(`/characters/${req.params.characterName}`);
+            if(req.body.text.trim() != undefined && req.body.text.trim() != '') {
+                const character = await Character.findOne({ name: req.params.characterName });
+                const comment = new Comment(req.body);
+                character.comments.push(comment);
+                await Character.findByIdAndUpdate(character._id, character, { new: true });
+                res.redirect(`/characters/${req.params.characterName}`);
+            } else {
+                res.redirect(`/characters/${req.params.characterName}`);
+            }
         } else if(res.locals.url.includes('/story/')) {
-            const story = await Story.findOne({ _id: req.params.storyId });
-            const comment = new Comment(req.body);
-            story.comments.push(comment);
-            await Story.findByIdAndUpdate(story._id, story, { new: true });
-            res.redirect(`/story/${story._id}`);
+            if(req.body.text.trim() != undefined && req.body.text.trim() != '') {
+                const story = await Story.findOne({ _id: req.params.storyId });
+                const comment = new Comment(req.body);
+                story.comments.push(comment);
+                await Story.findByIdAndUpdate(story._id, story, { new: true });
+                res.redirect(`/story/${story._id}`);
+            } else {
+                res.redirect(`/story/${req.params.storyId}`);
+            }
+        } else if(res.locals.url.includes('/maps/')) {
+            if(req.body.text.trim() != undefined && req.body.text.trim() != '') {
+                const map = await Map.findOne({ _id: req.params.mapId });
+                const comment = new Comment(req.body);
+                map.comments.push(comment);
+                await Map.findByIdAndUpdate(map._id, map, { new: true });
+                res.redirect(`/maps/${map._id}`);
+            } else {
+                res.redirect(`/maps/${req.params.mapId}`);
+            }
         }
     } catch(error) {
         next(error);
@@ -196,6 +214,12 @@ exports.deleteCommentPost = async (req, res, next) => {
             story.comments.splice(commentIndex, 1);
             await Story.findByIdAndUpdate(story._id, story, { new: true });
             res.redirect(`/story/${story._id}`);
+        } else if(res.locals.url.includes('/maps/')) {
+            const map = await Map.findOne({ _id: req.params.mapId });
+            const commentIndex = map.comments.findIndex(comment => comment._id.toString() == commentId);
+            map.comments.splice(commentIndex, 1);
+            await Map.findByIdAndUpdate(map._id, map, { new: true });
+            res.redirect(`/maps/${map._id}`);
         }
     } catch(error) {
         next(error);
@@ -233,6 +257,17 @@ exports.maps = async (req, res, next) => {
 
         const title = res.locals.url.endsWith('/maps') ? 'Mapas' : `Mapa: ${map.name}`
         res.render('maps', { title: `SideQuest - ${title}`, maps, map });
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.mapsSearch = async (req, res, next) => {
+    try {
+        const searchQuery = req.body;
+        const maps = await Map.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
+
+        res.render('maps', { title: 'SideQuest - Mapas: Búsqueda', maps });
     } catch(error) {
         next(error);
     }

@@ -33,6 +33,9 @@ router.post('/story/search', sideQuestController.storySearch);
 /* Maps */
 router.get('/maps', sideQuestController.maps);
 router.get('/maps/:mapId', sideQuestController.maps);
+router.post('/maps/:mapId/createcomment', sideQuestController.addCommentPost);
+router.post('/maps/:mapId/deletecomment/:commentId', sideQuestController.deleteCommentPost);
+router.post('/maps/search', sideQuestController.mapsSearch);
 
 /* Login */
 router.get('/login', userController.loginGet);
