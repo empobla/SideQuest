@@ -41,7 +41,7 @@ exports.notes = async (req, res, next) => {
             });
             
             const heroesQuery = Promise.all(heroesArray);
-            const [heroes, characters, spells] = await Promise.all([heroesQuery, Character.find(), Spell.find()]);
+            const [heroes, characters, spells] = await Promise.all([heroesQuery, Character.find(), Spell.aggregate([{$sort:{level:1, name:1}}])]);
             heroes.forEach(hero => {
                 hero.race = hero.race[0];
                 hero.class = hero.class[0];

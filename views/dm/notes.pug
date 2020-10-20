@@ -138,11 +138,10 @@ block content
                                     tr.c-spell.c-spell--display.m-clickable
                                         td
                                             img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
-                                        - const spellLevelDict = {'cantrip': 'Cantrip', 'level1': '1st', 'level2': '2nd', 'level3': '3rd', 'level4': '4th', 'level5': '5th', 'level6': '6th', 'level7': '7th', 'level8': '8th', 'level9': '9th'};
+                                        - const spellLevelDict = {'0': 'Cantrip', '1': '1st', '2': '2nd', '3': '3rd', '4': '4th', '5': '5th', '6': '6th', '7': '7th', '8': '8th', '9': '9th'};
                                         td.m-color-lightgray= spellLevelDict[spell.level]
                                         td= spell.name
-                                            - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
-                                            p.m-color-lightgray= `${spell.school} • ${components}`
+                                            p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
                                         td.m-responsive-display--table= spell.casting_time
                                         //- td= spell.duration
                                         td= spell.range

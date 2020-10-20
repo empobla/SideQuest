@@ -77,6 +77,40 @@ router.post('/:username/maps/edit/:mapId',
   userController.pushToCloudinary,
   userController.editMapPost);
 
+// const fetch = require('node-fetch');
+// const Spell = require('../models/spell');
+// router.get('/:username/importspells', async (req, res, next) => {
+//   try {
+//     const data = await fetch('https://www.dnd5eapi.co/api/spells')
+//       .then(resp => resp.json())
+//       .catch(err => next(err));
+    
+//     const spellIdxList = data.results.map(result => result.index);
+
+//     const spellPromises = spellIdxList.map(spellIdx => {
+//       const spellData = fetch(`https://www.dnd5eapi.co/api/spells/${spellIdx}`)
+//         .then(resp => resp.json())
+//         .catch(err => next(err));
+//       return spellData;
+//     });
+
+//     const spellsAPI = await Promise.all(spellPromises);
+
+//     const spells = spellsAPI.map(async spell => {
+//       const spellModel = new Spell(spell);
+//       spellModel.school = spell.school.name;
+//       spellModel.materials = spell.material;
+//       spellModel.description = spell.desc.join('\n');
+//       if(spell.higher_level) spellModel.description += '\nAt Higher Levels:\n' + spell.higher_level;
+//       await spellModel.save()
+//     });
+
+//     // res.json(spells)
+//     res.send('done')
+//   } catch(error) {
+//     next(error);
+//   }
+// });
 
 // TEMP CREATE RACE AND CLASS
 // const Race = require('../models/race');

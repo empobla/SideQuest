@@ -791,6 +791,10 @@ main {
     grid-template-columns: repeat(3, 1fr);
 }
 
+.l-ability-points-grid.grid--4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
 .l-ability-points-grid.grid--5 {
     grid-template-columns: repeat(5, 1fr);
 }

@@ -5,12 +5,10 @@ const spellSchema = new mongoose.Schema({
         type: String,
         required: 'Spell name is missing'
     },
-    level: {
-        type: String,
-        required: true
-    },
+    level: Number,
     school: String,
     ritual: Boolean,
+    concentration: Boolean,
     casting_time: String,
     range: String,
     components: [String],

@@ -332,11 +332,11 @@ block content
                             each level in spells
                                 if (level[0] != undefined)
                                     - const currLvl = level[0].level;
-                                    if (currLvl == 'cantrip')
-                                        - let levelName = `${currLvl[0].toUpperCase() + currLvl.substring(1)}`;
+                                    if (currLvl == 0)
+                                        - let levelName = 'Cantrips';
                                         optgroup(label=levelName)
                                     else
-                                        - let levelName = `${currLvl[0].toUpperCase() + currLvl.substring(1, currLvl.length-1) + ' ' + currLvl.substring(currLvl.length-1)}`;
+                                        - let levelName = `Level ${currLvl}`;
                                         optgroup(label=levelName)
                                     each spell in level
                                         if (spell instanceof Object)
@@ -378,8 +378,7 @@ block content
                                                 td
                                                     img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
                                                 td= spell.name
-                                                    - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
-                                                    p.m-color-lightgray= `${spell.school} • ${components}`
+                                                    p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
                                                 td= spell.casting_time
                                                 td= spell.duration
                                                 td= spell.range
@@ -426,8 +425,7 @@ block content
                                                 td
                                                     img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
                                                 td= spell.name
-                                                    - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
-                                                    p.m-color-lightgray= `${spell.school} • ${components}`
+                                                    p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
                                                 td= spell.casting_time
                                                 td= spell.duration
                                                 td= spell.range
@@ -1027,19 +1025,12 @@ block content
 
             if(selectValue == -1) return;
 
-            const levelDict = {
-                'cantrip': 0, 'level1': 1, 'level2': 2,
-                'level3': 3, 'level4': 4, 'level5': 5,
-                'level6': 6, 'level7': 7, 'level8': 8,
-                'level9': 9,
-            };
-
             // Get spell level and id from selected option
             const spellLevel = selectValue.split(',')[0];
             const spellId = selectValue.split(',')[1];
 
             // Find and get spell object from 'spells' array
-            const selectedLevel = spells[levelDict[spellLevel]];
+            const selectedLevel = spells[spellLevel];
             const selectedSpell = selectedLevel.filter(spell => spell._id == spellId)[0];
 
             let sections = type == 'racial'
@@ -1047,7 +1038,7 @@ block content
                 : document.querySelectorAll('.js-classspells');
 
                 
-            const levelSection = sections[levelDict[spellLevel]];
+            const levelSection = sections[spellLevel];
             if(levelSection.classList[1] == 'm-inactive') {
                 levelSection.classList.remove('m-inactive');
                 levelSection.classList.add('m-active');
@@ -1083,10 +1074,9 @@ block content
             // Spell Name and Components tabledata
             const nameData = document.createElement('td');
             nameData.appendChild(document.createTextNode(`${selectedSpell.name}`));
-            const components = selectedSpell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
             const componentText = document.createElement('p');
             componentText.classList.add('m-color-lightgray');
-            componentText.appendChild(document.createTextNode(`${selectedSpell.school} • ${components}`));
+            componentText.appendChild(document.createTextNode(`${selectedSpell.school} • ${selectedSpell.components.join(', ')}`));
             nameData.appendChild(componentText);
             spellRow.appendChild(nameData);
 
@@ -1123,20 +1113,20 @@ block content
             const infoLS = document.createElement('em');
             let infoLSText = '';
             switch(selectedSpell.level) {
-                case 'cantrip':
-                    infoLSText = `${selectedSpell.school} ${selectedSpell.level} ${selectedSpell.ritual ? '(ritual)' : ''}`;
+                case 0:
+                    infoLSText = `${selectedSpell.school} cantrip ${selectedSpell.ritual ? '(ritual)' : ''} ${selectedSpell.concentration ? '(concentration)' : ''}`;
                     break;
-                case 'level1':
-                    infoLSText = `${selectedSpell.level.substring(5)}st-level ${selectedSpell.school.toLowerCase()} ${selectedSpell.ritual ? '(ritual)' : ''}`;
+                case 1:
+                    infoLSText = `${selectedSpell.level}st-level ${selectedSpell.school.toLowerCase()} ${selectedSpell.ritual ? '(ritual)' : ''} ${selectedSpell.concentration ? '(concentration)' : ''}`;
                     break;
-                case 'level2':
-                    infoLSText = `${selectedSpell.level.substring(5)}nd-level ${selectedSpell.school.toLowerCase()} ${selectedSpell.ritual ? '(ritual)' : ''}`;
+                case 2:
+                    infoLSText = `${selectedSpell.level}nd-level ${selectedSpell.school.toLowerCase()} ${selectedSpell.ritual ? '(ritual)' : ''} ${selectedSpell.concentration ? '(concentration)' : ''}`;
                     break;
-                case 'level3':
-                    infoLSText = `${selectedSpell.level.substring(5)}rd-level ${selectedSpell.school.toLowerCase()} ${selectedSpell.ritual ? '(ritual)' : ''}`;
+                case 3:
+                    infoLSText = `${selectedSpell.level}rd-level ${selectedSpell.school.toLowerCase()} ${selectedSpell.ritual ? '(ritual)' : ''} ${selectedSpell.concentration ? '(concentration)' : ''}`;
                     break;
                 default:
-                    infoLSText = `${selectedSpell.level.substring(5)}th-level ${selectedSpell.school.toLowerCase()} ${selectedSpell.ritual ? '(ritual)' : ''}`;
+                    infoLSText = `${selectedSpell.level}th-level ${selectedSpell.school.toLowerCase()} ${selectedSpell.ritual ? '(ritual)' : ''} ${selectedSpell.concentration ? '(concentration)' : ''}`;
                     break;
             }
             infoLS.appendChild(document.createTextNode(infoLSText));
@@ -1150,7 +1140,7 @@ block content
             const infoInfo = document.createElement('div');
             infoInfo.innerHTML = `<p><strong>Casting Time: </strong> ${selectedSpell.casting_time}</p>
             <p><strong>Range: </strong> ${selectedSpell.range}</p>
-            <p><strong>Components: </strong><span>${components}</span><span>${selectedSpell.materials != '' && selectedSpell.materials != undefined ? ` (${selectedSpell.materials})` : ''}</span></p>
+            <p><strong>Components: </strong><span>${selectedSpell.components.join(', ')}</span><span>${selectedSpell.materials != '' && selectedSpell.materials != undefined ? ` (${selectedSpell.materials})` : ''}</span></p>
             <p><strong>Duration: </strong> ${selectedSpell.duration}</p>`;
             dropdownData.appendChild(infoInfo);
 

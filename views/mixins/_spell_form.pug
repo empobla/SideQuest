@@ -4,20 +4,20 @@ mixin spellForm()
         label(for='name') *Name:
         input(type='text' name='name' id='name' placeholder='Wingardium Leviosa' required)
     .l-margin--2
-    .l-ability-points-grid.grid--3
+    .l-ability-points-grid.grid--4
         .c-ability-points
             label(for='level') Level:
             select(name='level' id='level')
-                option(value='cantrip') Cantrip
-                option(value='level1') Level 1
-                option(value='level2') Level 2
-                option(value='level3') Level 3
-                option(value='level4') Level 4
-                option(value='level5') Level 5
-                option(value='level6') Level 6
-                option(value='level7') Level 7
-                option(value='level8') Level 8
-                option(value='level9') Level 9
+                option(value='0') Cantrip
+                option(value='1') Level 1
+                option(value='2') Level 2
+                option(value='3') Level 3
+                option(value='4') Level 4
+                option(value='5') Level 5
+                option(value='6') Level 6
+                option(value='7') Level 7
+                option(value='8') Level 8
+                option(value='9') Level 9
         .c-ability-points
             label(for='school') School:
             select(name='school' id='school')
@@ -35,6 +35,11 @@ mixin spellForm()
             select(name='ritual' id='ritual')
                 option(value='false') No
                 option(value='true') Yes
+        .c-ability-points
+            label(for='concentration') Concentration:
+            select(name='concentration' id='concentration')
+                option(value='false') No
+                option(value='true') Yes
     .l-margin--2
     .c-edithero-form__input
         label(for='casting_time') Casting Time:
@@ -46,13 +51,13 @@ mixin spellForm()
     .l-ability-points-grid.grid--3
         .c-ability-points
             label(for='components.verbal') Verbal
-            input(type='checkbox' name='components[]' id='components.verbal' value='verbal')
+            input(type='checkbox' name='components[]' id='components.verbal' value='V')
         .c-ability-points
             label(for='components.somatic') Somatic
-            input(type='checkbox' name='components[]' id='components.somatic' value='somatic')
+            input(type='checkbox' name='components[]' id='components.somatic' value='S')
         .c-ability-points
             label(for='components.material') Material
-            input(type='checkbox' name='components[]' id='components.material' value='material')
+            input(type='checkbox' name='components[]' id='components.material' value='M')
     .l-margin--2
     .c-edithero-form__input.c-edithero-form__input--stack
         label(for='materials') Materials:

@@ -47,11 +47,10 @@ block content
                 tr.c-spell.c-spell--display.m-clickable
                     td
                         img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
-                    - const spellLevelDict = {'cantrip': 'Cantrip', 'level1': '1st', 'level2': '2nd', 'level3': '3rd', 'level4': '4th', 'level5': '5th', 'level6': '6th', 'level7': '7th', 'level8': '8th', 'level9': '9th'};
+                    - const spellLevelDict = {'0': 'Cantrip', '1': '1st', '2': '2nd', '3': '3rd', '4': '4th', '5': '5th', '6': '6th', '7': '7th', '8': '8th', '9': '9th'};
                     td.m-color-lightgray= spellLevelDict[spell.level]
                     td= spell.name
-                        - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
-                        p.m-color-lightgray= `${spell.school} • ${components}`
+                        p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
                     td= spell.casting_time
                     td= spell.duration
                     td= spell.range
@@ -72,11 +71,11 @@ block content
                             each level in sortedSpells
                                 if (level[0] != undefined)
                                     - const currLvl = level[0].level;
-                                    if (currLvl == 'cantrip')
-                                        - let levelName = `${currLvl[0].toUpperCase() + currLvl.substring(1)}`;
+                                    if (currLvl == 0)
+                                        - let levelName = 'Cantrip';
                                         optgroup(label=levelName)
                                     else
-                                        - let levelName = `${currLvl[0].toUpperCase() + currLvl.substring(1, currLvl.length-1) + ' ' + currLvl.substring(currLvl.length-1)}`;
+                                        - let levelName = `Level ${currLvl}`;
                                         optgroup(label=levelName)
                                     each spell in level
                                         if (spell instanceof Object)
@@ -176,25 +175,26 @@ block content
             document.querySelector('#js-spellform').style.display = 'block';
             document.querySelector('#save_changes').style.display = 'inline-block';
 
-            switch(spellInfo[0]) {
-                case 'cantrip':
-                    spellLookup = spells[0];
-                    break;
-                case 'level1':
-                case 'level2':
-                case 'level3':
-                case 'level4':
-                case 'level5':
-                case 'level6':
-                case 'level7':
-                case 'level8':
-                case 'level9':
-                    const index = parseInt(spellInfo[0].substring(5))
-                    spellLookup = spells[index];
-                    break;
-                default:
-                    break;
-            }
+            //- switch(spellInfo[0]) {
+            //-     case 'cantrip':
+            //-         spellLookup = spells[0];
+            //-         break;
+            //-     case 'level1':
+            //-     case 'level2':
+            //-     case 'level3':
+            //-     case 'level4':
+            //-     case 'level5':
+            //-     case 'level6':
+            //-     case 'level7':
+            //-     case 'level8':
+            //-     case 'level9':
+            //-         const index = parseInt(spellInfo[0].substring(5))
+            //-         spellLookup = spells[index];
+            //-         break;
+            //-     default:
+            //-         break;
+            //- }
+            spellLookup = spells[parseInt(spellInfo[0])]
 
             for(let i = 0; i < spellLookup.length; i++) {
                 if(spellInfo[1] == spellLookup[i]._id) spell = spellLookup[i];
@@ -207,11 +207,7 @@ block content
             name.value = spell.name;
 
             const level = document.getElementById('level');
-            let lvlIdx = -1;
-            (spell.level === 'cantrip')
-                ? lvlIdx = 0
-                : lvlIdx = parseInt(spell.level.substring(5));
-            level.selectedIndex = `${lvlIdx}`;
+            level.selectedIndex = spell.level;
 
             const school = document.getElementById('school');
             let schIdx = -1;
@@ -252,6 +248,13 @@ block content
                 : ritIdx = 0;
             ritual.selectedIndex = `${ritIdx}`;
             
+            const concentration = document.getElementById('concentration');
+            let concIdx = -1;
+            spell.ritual
+                ? concIdx = 1
+                : concIdx = 0;
+            concentration.selectedIndex = `${concIdx}`;
+            
             const castingTime = document.getElementById('casting_time');
             castingTime.value = spell.casting_time;
 
@@ -263,9 +266,9 @@ block content
             const mComp = document.getElementById('components.material');
             let vFlag = false, sFlag = false, mFlag = false;
             for(let i = 0; i < spell.components.length; i++) {
-                if(spell.components[i] === 'verbal') vFlag = true;
-                if(spell.components[i] === 'somatic') sFlag = true;
-                if(spell.components[i] === 'material') mFlag = true;
+                if(spell.components[i] === 'V') vFlag = true;
+                if(spell.components[i] === 'S') sFlag = true;
+                if(spell.components[i] === 'M') mFlag = true;
             }
             vComp.checked = vFlag;
             sComp.checked = sFlag;

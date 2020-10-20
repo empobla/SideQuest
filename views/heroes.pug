@@ -278,8 +278,7 @@ block content
                                     td
                                         img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
                                     td= spell.name
-                                        - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
-                                        p.m-color-lightgray= `${spell.school} • ${components}`
+                                        p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
                                     td= spell.casting_time
                                     td= spell.duration
                                     td= spell.range
@@ -303,8 +302,7 @@ block content
                                     td
                                         img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
                                     td= spell.name
-                                        - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
-                                        p.m-color-lightgray= `${spell.school} • ${components}`
+                                        p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
                                     td= spell.casting_time
                                     td= spell.duration
                                     td= spell.range

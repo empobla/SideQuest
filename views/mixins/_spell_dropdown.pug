@@ -3,23 +3,22 @@ mixin spellDropdown(spell, options='', type='')
     - let dropdownColspan = options != 'display' ? '6' : '7';
     td(class=`${dropdownClass}` colspan=`${dropdownColspan}`)
         h4= spell.name
-        if spell.level === 'cantrip'
-            em= `${spell.school} ${spell.level} ${spell.ritual ? '(ritual)' : ''}`
-        else if spell.level === 'level1'
-            em=`${spell.level.substring(5)}st-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''}`
-        else if spell.level === 'level2'
-            em=`${spell.level.substring(5)}nd-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''}`
-        else if spell.level === 'level3'
-            em=`${spell.level.substring(5)}rd-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''}`
+        if spell.level === 0
+            em= `${spell.school} Cantrip ${spell.ritual ? '(ritual)' : ''} ${spell.concentration ? '(concentration)' : ''}`
+        else if spell.level === 1
+            em=`${spell.level}st-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''} ${spell.concentration ? '(concentration)' : ''}`
+        else if spell.level === 2
+            em=`${spell.level}nd-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''} ${spell.concentration ? '(concentration)' : ''}`
+        else if spell.level === 3
+            em=`${spell.level}rd-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''} ${spell.concentration ? '(concentration)' : ''}`
         else
-            em=`${spell.level.substring(5)}th-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''}`
+            em=`${spell.level}th-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''} ${spell.concentration ? '(concentration)' : ''}`
         
         .l-margin--2
         p <strong>Casting Time: </strong> #{spell.casting_time}
         p <strong>Range: </strong> #{spell.range}
         p <strong>Components: </strong>
-            - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
-            span= `${components}`
+            span= `${spell.components.join(', ')}`
             span= `${spell.materials != '' && spell.materials != undefined ? ` (${spell.materials})` : ''}`
         p <strong>Duration: </strong> #{spell.duration}
 
