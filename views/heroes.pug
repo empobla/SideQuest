@@ -1,6 +1,7 @@
 extends layout
 include mixins/_text_editor
 include mixins/_spell_dropdown
+include mixins/_spell_row
 
 block content
     
@@ -267,48 +268,30 @@ block content
             else
                 h3 Racial spells:
             each level in heroSpells.racial
-                //- If there is more than one spell in array, display level
-                //- Writes all spells of said level
-                if (level.length > 1)
-                    h4.l-margin-bottom--0= `${level[0]}`
-                    table.l-spells
-                        each spell in level
-                            if (spell instanceof Object)
-                                tr.c-spell.m-clickable
-                                    td
-                                        img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
-                                    td= spell.name
-                                        p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
-                                    td= spell.casting_time
-                                    td= spell.duration
-                                    td= spell.range
-                                    td.c-dropdown-button &nabla;
-                                tr
-                                    +spellDropdown(spell)
+                if level[0].level == 0
+                    h4.l-margin-bottom--0 Cantrips
+                else
+                    h4.l-margin-bottom--0= `Level ${level[0].level}`
+                table.l-spells
+                    each spell in level
+                        +spellRow(spell)
+                        tr
+                            +spellDropdown(spell, 'display')
 
             if hero.class
                 h3 #{hero.class.name || 'Class'} spells:
             else
                 h3 Class spells:
             each level in heroSpells.class
-                //- If there is more than one spell in array, display level
-                //- Writes all spells of said level
-                if (level.length > 1)
-                    h4.l-margin-bottom--0= `${level[0]}`
-                    table.l-spells
-                        each spell in level
-                            if (spell instanceof Object)
-                                tr.c-spell.m-clickable
-                                    td
-                                        img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
-                                    td= spell.name
-                                        p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
-                                    td= spell.casting_time
-                                    td= spell.duration
-                                    td= spell.range
-                                    td.c-dropdown-button &nabla;
-                                tr
-                                    +spellDropdown(spell)
+                if level[0].level == 0
+                    h4.l-margin-bottom--0 Cantrips
+                else
+                    h4.l-margin-bottom--0= `Level ${level[0].level}`
+                table.l-spells
+                    each spell in level
+                        +spellRow(spell)
+                        tr
+                            +spellDropdown(spell, 'display')
 
             h2 Sheets
             hr

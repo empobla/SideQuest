@@ -363,29 +363,30 @@ block content
                                 table.l-spells
                                     tbody
                     else
-                        - for(let i = 0; i < levelNames.length; i++)
-                            - let divclass = heroSpells.racial[i].length != 0 ? 'js-racialspells' : 'js-racialspells m-inactive';
+                        - for(let i = 0; i < 10; i++)
+                            - let divclass = i in heroSpells.racial ? 'js-racialspells' : 'js-racialspells m-inactive';
                             div(class=`${divclass}`)
-                                if levelNames[i] == 'cantrip'
-                                    h4(id=`js-racial-${levelNames[i]}`) Cantrips
+                                if i == 0
+                                    h4(id=`js-racial-cantrip`) Cantrips
                                 else
-                                    h4(id=`js-racial-${levelNames[i]}`)= `Level ${levelNames[i].substring(levelNames[i].length-1)}`
+                                    h4(id=`js-racial-${levelNames[i]}`)= `Level ${i}`
                                 table.l-spells
                                     tbody
-                                        - let index = 0;
-                                        each spell in heroSpells.racial[i]
-                                            tr(class=`c-spell m-clickable js-spell-loaded js-spellidx_${i}` id=`js-racial_${spell._id}`)
-                                                td
-                                                    img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
-                                                td= spell.name
-                                                    p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
-                                                td= spell.casting_time
-                                                td= spell.duration
-                                                td= spell.range
-                                                td.c-dropdown-button.js-dropdown-button-loaded &nabla;
-                                            tr(class=`js-spellidx_${i}`)
-                                                +spellDropdown(spell, 'edit', 'racial')
-                                        - index++;
+                                        if i in heroSpells.racial
+                                            //- - let index = 0;
+                                            each spell in heroSpells.racial[`${i}`]
+                                                tr(class=`c-spell m-clickable js-spell-loaded js-spellidx_${i}` id=`js-racial_${spell._id}`)
+                                                    td
+                                                        img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
+                                                    td= spell.name
+                                                        p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
+                                                    td= spell.casting_time
+                                                    td= spell.duration
+                                                    td= spell.range
+                                                    td.c-dropdown-button.js-dropdown-button-loaded &nabla;
+                                                tr(class=`js-spellidx_${i}`)
+                                                    +spellDropdown(spell, 'edit', 'racial')
+                                            //- - index++;
 
                     //- .js-racialspells.m-inactive
                     //-     h4(id='js-racial-cantrip') Cantrips
@@ -410,29 +411,30 @@ block content
                                 table.l-spells
                                     tbody
                     else
-                        - for(let i = 0; i < levelNames.length; i++)
-                            - let divclass = heroSpells.class[i].length != 0 ? 'js-classspells' : 'js-classspells m-inactive';
+                        - for(let i = 0; i < 10; i++)
+                            - let divclass = i in heroSpells.class ? 'js-classspells' : 'js-classspells m-inactive';
                             div(class=`${divclass}`)
-                                if levelNames[i] == 'cantrip'
-                                    h4(id=`js-racial-${levelNames[i]}`) Cantrips
+                                if i == 0
+                                    h4(id=`js-racial-cantrip`) Cantrips
                                 else
-                                    h4(id=`js-racial-${levelNames[i]}`)= `Level ${levelNames[i].substring(levelNames[i].length-1)}`
+                                    h4(id=`js-racial-${levelNames[i]}`)= `Level ${i}`
                                 table.l-spells
                                     tbody
-                                        - let index = 0;
-                                        each spell in heroSpells.class[i]
-                                            tr(class=`c-spell m-clickable js-spell-loaded js-spellidx_${index}` id=`js-racial_${spell._id}`)
-                                                td
-                                                    img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
-                                                td= spell.name
-                                                    p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
-                                                td= spell.casting_time
-                                                td= spell.duration
-                                                td= spell.range
-                                                td.c-dropdown-button.js-dropdown-button-loaded &nabla;
-                                            tr(class=`js-spellidx_${index}`)
-                                                +spellDropdown(spell, 'edit', 'class')
-                                            - index++;
+                                        if i in heroSpells.class
+                                            - let index = 0;
+                                            each spell in heroSpells.class[i]
+                                                tr(class=`c-spell m-clickable js-spell-loaded js-spellidx_${index}` id=`js-racial_${spell._id}`)
+                                                    td
+                                                        img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
+                                                    td= spell.name
+                                                        p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
+                                                    td= spell.casting_time
+                                                    td= spell.duration
+                                                    td= spell.range
+                                                    td.c-dropdown-button.js-dropdown-button-loaded &nabla;
+                                                tr(class=`js-spellidx_${index}`)
+                                                    +spellDropdown(spell, 'edit', 'class')
+                                                - index++;
                                             
                     //- .js-classspells.m-inactive
                     //-     h4(id='js-racial-cantrip') Cantrips
