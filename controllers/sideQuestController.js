@@ -73,41 +73,31 @@ exports.heroSummary = async (req, res, next) => {
             } }
         ]).then(res => res[0].spells);
 
-        const racialSpells = [
-            getHeroSpells.racial.map(spell => { if(spell.level === 0) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 1) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 2) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 3) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 4) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 5) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 6) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 7) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 8) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 9) return spell; }).filter(el => { return el != null; })
-        ];
-
-        const classSpells = [
-            getHeroSpells.class.map(spell => { if(spell.level === 0) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 1) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 2) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 3) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 4) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 5) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 6) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 7) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 8) return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 9) return spell; }).filter(el => { return el != null; })
-        ];
-
-        for(let i = 0; i < 10; i++) {
-            if(i == 0) {
-                racialSpells[i].unshift('Cantrips');
-                classSpells[i].unshift('Cantrips');
-            } else {
-                racialSpells[i].unshift('Level ' + i);
-                classSpells[i].unshift('Level ' + i);
-            }
-        };
+        // First sorts spells from unsorted array by level, and then sorts spells for each level alphabetically.
+        // Returns spells sorted by alphabetically by level in an object.
+        function spellsAlphaByLevelSort(unsortedArray) {
+            const outputObject = {};
+            
+            unsortedArray.forEach(spell => {
+                !(spell.level in outputObject)
+                    ? outputObject[spell.level] = [spell]
+                    : outputObject[spell.level].push(spell);
+            });
+            
+            Object.values(outputObject).forEach(spell => {
+                spell.sort((a, b) => {
+                    if(a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+                    if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+                    return 0;
+                });
+            });
+            
+            return outputObject;
+        }
+        
+        // Sort spells by alphabetically level
+        const racialSpells = spellsAlphaByLevelSort(getHeroSpells.racial);
+        const classSpells = spellsAlphaByLevelSort(getHeroSpells.class);
 
         const heroSpells = {racial: racialSpells, class: classSpells};
 
