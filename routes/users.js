@@ -37,7 +37,7 @@ router.post('/:username/heroes/:heroId',
 router.get('/:username/spells', userController.spells);
 router.post('/:username/savespell', userController.saveSpellPost);
 router.post('/:username/editSpell', userController.editSpellPost);
-router.post('/:username/spells/search', userController.spellsSearch);
+router.get('/:username/spells/search', userController.spellsSearch);
 
 // Story
 router.get('/:username/story', userController.story);

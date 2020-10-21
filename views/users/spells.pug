@@ -1,8 +1,10 @@
 extends ../layout
 include ../mixins/_spell_dropdown
+include ../mixins/_spell_row
 include ../mixins/_spell_form
 
 block content
+    script(src="/javascripts/ajax/spells.js")
 
     .l-margin-start
     if url.endsWith('/spells')
@@ -18,18 +20,20 @@ block content
 
     .l-main-content
         .l-search
-            form.c-search(action=`/users/${user.username}/spells/search` method='post')
+            //- form.c-search(action=`/users/${user.username}/spells/search` method='post')
+            form.c-search(action='' method='')
                 .c-search__input
                     label(for='name') Spell name
-                    input(type='text' name='name' placeholder='Buscar spell por nombre')
+                    input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
                 .c-search__input
                     label(for='level') Spell level
-                    input(type='text' name='level' placeholder='Buscar spell por nivel')
+                    input(type='text' name='level' id='search-level' placeholder='Buscar spell por nivel')
                 .c-search__input
                     label(for='school') Spell school
-                    input(type='text' name='school' placeholder='Buscar spell por escuela')
+                    input(type='text' name='school' id='search-school' placeholder='Buscar spell por escuela')
                 .c-search__input--button
-                    button.c-button--large.m-clickable(type='submit') Buscar
+                    //- button.c-button--large.m-clickable(type='submit') Buscar
+                    button.c-button--large.m-clickable(type='button' onclick=`searchSpells('${user.username}')`) Buscar
         
         .l-margin--2
         .l-ability-points-grid.grid--5
@@ -38,23 +42,13 @@ block content
             div
             button.c-button--large.m-clickable.js-modalbutton(type='button' data-for-modal='1') Edit Spell
             div
-        
+
+    //- TODO: Can simplify spell table even further with mixins 
     .l-margin--3
     .l-main-content
         table.l-spells
             each spell in spells
-                //- - console.log(spell)
-                tr.c-spell.c-spell--display.m-clickable
-                    td
-                        img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
-                    - const spellLevelDict = {'0': 'Cantrip', '1': '1st', '2': '2nd', '3': '3rd', '4': '4th', '5': '5th', '6': '6th', '7': '7th', '8': '8th', '9': '9th'};
-                    td.m-color-lightgray= spellLevelDict[spell.level]
-                    td= spell.name
-                        p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
-                    td= spell.casting_time
-                    td= spell.duration
-                    td= spell.range
-                    td.c-dropdown-button &nabla;
+                +spellRow(spell)
                 tr
                     +spellDropdown(spell, 'display')
 
@@ -101,6 +95,9 @@ block content
                     .l-margin--2
                     .c-edithero-form__input
                         button.c-button(type='submit') Add Spell
+
+    .c-loadingbg
+        .c-loadingbg__animation
     
     script.
         // Sets up modals
@@ -175,25 +172,6 @@ block content
             document.querySelector('#js-spellform').style.display = 'block';
             document.querySelector('#save_changes').style.display = 'inline-block';
 
-            //- switch(spellInfo[0]) {
-            //-     case 'cantrip':
-            //-         spellLookup = spells[0];
-            //-         break;
-            //-     case 'level1':
-            //-     case 'level2':
-            //-     case 'level3':
-            //-     case 'level4':
-            //-     case 'level5':
-            //-     case 'level6':
-            //-     case 'level7':
-            //-     case 'level8':
-            //-     case 'level9':
-            //-         const index = parseInt(spellInfo[0].substring(5))
-            //-         spellLookup = spells[index];
-            //-         break;
-            //-     default:
-            //-         break;
-            //- }
             spellLookup = spells[parseInt(spellInfo[0])]
 
             for(let i = 0; i < spellLookup.length; i++) {

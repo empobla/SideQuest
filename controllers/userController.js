@@ -475,36 +475,108 @@ exports.editSpellPost = async (req, res, next) => {
     }
 };
 
+// exports.spellsSearch = async (req, res, next) => {
+//     try {
+//         const username = req.params.username;
+//         const searchQuery = req.body;
+//         let searchData = await Promise.all([
+//             Spell.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]),
+//             Spell.aggregate([ { $match: { $text: { $search: searchQuery.level.replace(/\s/g, '') } } } ]),
+//             Spell.aggregate([ { $match: { $text: { $search: searchQuery.school } } } ]),
+//         ]);
+
+//         searchData = searchData[0].concat(searchData[1], searchData[2]);
+
+//         const spells = Array.from(new Set(searchData.map(character => character._id.toString()))).map(id => {
+//             return searchData.find(spell => spell._id.toString() == id)
+//         });
+
+//         const spellsQuery = [];
+
+//         for(let i = 0; i < 10; i++) {
+//             const level = Spell.aggregate([
+//                 { $match: { level: i } },
+//                 { $sort: { name: 1 } }
+//             ]);
+//             spellsQuery.push(level);
+//         }
+
+//         const sortedSpells = await Promise.all(spellsQuery.map(level => level));
+        
+//         res.render('users/spells', { title: 'SideQuest - Spell Compendium: Search', username, spells, sortedSpells });
+//     } catch(error) {
+//         next(error);
+//     }
+// };
+
+const pug = require('pug');
 exports.spellsSearch = async (req, res, next) => {
     try {
-        const username = req.params.username;
-        const searchQuery = req.body;
-        let searchData = await Promise.all([
-            Spell.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]),
-            Spell.aggregate([ { $match: { $text: { $search: searchQuery.level.replace(/\s/g, '') } } } ]),
-            Spell.aggregate([ { $match: { $text: { $search: searchQuery.school } } } ]),
-        ]);
-
-        searchData = searchData[0].concat(searchData[1], searchData[2]);
-
-        const spells = Array.from(new Set(searchData.map(character => character._id.toString()))).map(id => {
-            return searchData.find(spell => spell._id.toString() == id)
-        });
-
-        const spellLevels = ['cantrip', 'level1', 'level2', 'level3', 'level4', 'level5', 'level6', 'level7', 'level8', 'level9'];
-        const spellsQuery = [];
-
-        for(let i = 0; i < spellLevels.length; i++) {
-            const level = Spell.aggregate([
-                { $match: { level: spellLevels[i] } },
-                { $sort: { name: 1 } }
-            ]);
-            spellsQuery.push(level);
-        }
-
-        const sortedSpells = await Promise.all(spellsQuery.map(level => level));
+        const searchQuery = req.query;
         
-        res.render('users/spells', { title: 'SideQuest - Spell Compendium: Search', username, spells, sortedSpells });
+        const path = require('path');
+        if(searchQuery.name != '' || searchQuery.level != '' || searchQuery.school != '') {
+            var level = '';
+            const cantripRegex = /.*([cantrip]{2,})\w+.*|(.)*0/gi;
+            
+            if(searchQuery.level != '') {
+                if(searchQuery.level.length > 100) searchQuery.level = searchQuery.level.substring(0,101);
+                if(cantripRegex.test(searchQuery.level)){ level = 0; }
+                else if(searchQuery.level.includes('1')) { level = 1; }
+                else if(searchQuery.level.includes('2')) { level = 2; }
+                else if(searchQuery.level.includes('3')) { level = 3; }
+                else if(searchQuery.level.includes('4')) { level = 4; }
+                else if(searchQuery.level.includes('5')) { level = 5; }
+                else if(searchQuery.level.includes('6')) { level = 6; }
+                else if(searchQuery.level.includes('7')) { level = 7; }
+                else if(searchQuery.level.includes('8')) { level = 8; }
+                else if(searchQuery.level.includes('9')) { level = 9; }
+                else { level = '' };
+            }
+            let searchData = await Promise.all([
+                Spell.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]),
+                Spell.aggregate([ { $match: { level: level } } ]),
+                Spell.aggregate([ { $match: { $text: { $search: searchQuery.school } } } ]),
+            ]);
+
+            searchData = searchData[0].concat(searchData[1], searchData[2]);
+
+            const spells = Array.from(new Set(searchData.map(character => character._id.toString()))).map(id => {
+                return searchData.find(spell => spell._id.toString() == id)
+            });
+
+            const rows = spells.map(spell => {
+                const tmpfilename = path.join(__dirname, '../views/mixins/tmp.pug');
+                const options = { filename: tmpfilename, spell: spell }
+                const html = pug.render('include _spell_row\n+spellRow(spell)', options);
+                return html;
+            });
+            const dropdowns = spells.map(spell => {
+                const tmpfilename = path.join(__dirname, '../views/mixins/tmp.pug');
+                const options = { filename: tmpfilename, spell: spell }
+                const html = pug.render(`include _spell_dropdown\n+spellDropdown(spell, 'display')`, options);
+                return html;
+            });
+            
+            res.send({rows: rows, dropdowns: dropdowns});
+        } else {
+            const searchData = await Spell.aggregate([{$sort:{level:1, name:1}}]);
+            // Functions takes too long to load (3s-5s)
+            const rows = searchData.map(spell => {
+                const tmpfilename = path.join(__dirname, '../views/mixins/tmp.pug');
+                const options = { filename: tmpfilename, spell: spell }
+                const html = pug.render('include _spell_row\n+spellRow(spell)', options);
+                return html;
+            });
+            const dropdowns = searchData.map(spell => {
+                const tmpfilename = path.join(__dirname, '../views/mixins/tmp.pug');
+                const options = { filename: tmpfilename, spell: spell }
+                const html = pug.render(`include _spell_dropdown\n+spellDropdown(spell, 'display')`, options);
+                return html;
+            });
+
+            res.send({rows: rows, dropdowns: dropdowns});
+        }
     } catch(error) {
         next(error);
     }
