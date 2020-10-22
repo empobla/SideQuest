@@ -143,29 +143,29 @@ exports.fillPdf = async (req, res, next) => {
         ]).then(res => res[0].spells);
 
         const racialSpells = [
-            getHeroSpells.racial.map(spell => { if(spell.level === 'cantrip') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level1') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level2') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level3') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level4') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level5') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level6') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level7') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level8') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.racial.map(spell => { if(spell.level === 'level9') return spell; }).filter(el => { return el != null; })
+            getHeroSpells.racial.map(spell => { if(spell.level === 0) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.racial.map(spell => { if(spell.level === 1) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.racial.map(spell => { if(spell.level === 2) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.racial.map(spell => { if(spell.level === 3) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.racial.map(spell => { if(spell.level === 4) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.racial.map(spell => { if(spell.level === 5) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.racial.map(spell => { if(spell.level === 6) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.racial.map(spell => { if(spell.level === 7) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.racial.map(spell => { if(spell.level === 8) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.racial.map(spell => { if(spell.level === 9) return spell; }).filter(el => { return el != null; })
         ];
 
         const classSpells = [
-            getHeroSpells.class.map(spell => { if(spell.level === 'cantrip') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level1') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level2') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level3') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level4') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level5') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level6') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level7') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level8') return spell; }).filter(el => { return el != null; }),
-            getHeroSpells.class.map(spell => { if(spell.level === 'level9') return spell; }).filter(el => { return el != null; })
+            getHeroSpells.class.map(spell => { if(spell.level === 0) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.class.map(spell => { if(spell.level === 1) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.class.map(spell => { if(spell.level === 2) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.class.map(spell => { if(spell.level === 3) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.class.map(spell => { if(spell.level === 4) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.class.map(spell => { if(spell.level === 5) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.class.map(spell => { if(spell.level === 6) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.class.map(spell => { if(spell.level === 7) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.class.map(spell => { if(spell.level === 8) return spell; }).filter(el => { return el != null; }),
+            getHeroSpells.class.map(spell => { if(spell.level === 9) return spell; }).filter(el => { return el != null; })
         ];
 
         const heroSpells = racialSpells.map((level, index) => level.concat(classSpells[index]));
