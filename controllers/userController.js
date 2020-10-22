@@ -473,11 +473,11 @@ exports.editSpellPost = async (req, res, next) => {
     }
 };
 
-const pug = require('pug');
 exports.spellsSearch = async (req, res, next) => {
     try {
         const searchQuery = req.query;
         
+        const pug = require('pug');
         const path = require('path');
         if(searchQuery.name != '' || searchQuery.level != '' || searchQuery.school != '') {
             var level = '';
