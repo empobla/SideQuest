@@ -23,7 +23,7 @@ block content
     if url.endsWith('/races') || url.endsWith('/search')
         .l-main-content
             .l-search
-                form.c-search(action=`/admin/${username}/races/search` method='post')
+                form.c-search(action=`/admin/${username}/races/search` method='post' autocomplete='off')
                     .c-search__input
                         label(for='name') Race name
                         input(type='text' name='name' id='name' placeholder='Search for race by name')
@@ -46,7 +46,7 @@ block content
 
     else if url.endsWith('/newrace')
         .l-main-content
-            form.c-edithero-form(action='' method='post')
+            form.c-edithero-form(action='' method='post' autocomplete='off')
                 .c-edithero-form__input
                     label(for='name') *Race Name:
                     input(type='text' name='name' placeholder='Human' required)
@@ -89,7 +89,7 @@ block content
     
     else
         .l-main-content
-            form.c-edithero-form(action='' method='post')
+            form.c-edithero-form(action='' method='post' autocomplete='off')
                 .c-edithero-form__input
                     label(for='name') *Race Name:
                     input(type='text' name='name' placeholder='Human' value=race.name required)

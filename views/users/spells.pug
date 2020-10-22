@@ -20,7 +20,7 @@ block content
     .l-main-content
         .l-search
             //- form.c-search(action=`/users/${user.username}/spells/search` method='post')
-            form.c-search(action='' method='')
+            form.c-search(action='' method='' autocomplete='off')
                 .c-search__input
                     label(for='name') Spell name
                     input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
@@ -72,7 +72,7 @@ block content
                                         if (spell instanceof Object)
                                             option(value=`${spell.level},${spell._id}`) #{spell.name}
                     button.c-button#js-searchspell(type='button' onclick=`loadSpell(${JSON.stringify(sortedSpells)})`) Find
-                form.c-edithero-form(action=`/users/${username}/editSpell` method='post')
+                form.c-edithero-form(action=`/users/${username}/editSpell` method='post' autocomplete='off')
                     input(type="hidden" name='spell_id' id='spell_id')
                     #js-spellform
                         .l-margin--2
@@ -87,7 +87,7 @@ block content
                 h2 New Spell
                 p.m-clickable.js-closemodal(data-close-modal='0') &times;
             .c-modal__main
-                form.c-edithero-form(action=`/users/${username}/savespell` method='post')
+                form.c-edithero-form(action=`/users/${username}/savespell` method='post' autocomplete='off')
                     +spellForm()
                     .l-margin--2
                     .c-edithero-form__input

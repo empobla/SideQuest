@@ -23,7 +23,7 @@ block content
     if url.endsWith('/maps') || url.endsWith('/search')
         .l-main-content
                 .l-search
-                    form.c-search(action=`/users/${username}/maps/search` method='post')
+                    form.c-search(action=`/users/${username}/maps/search` method='post' autocomplete='off')
                         .c-search__input
                             label(for='name') Nombre
                             input(type='text' name='name' id='name' placeholder='Buscar mapa por nombre')
@@ -48,7 +48,7 @@ block content
     
     else if url.endsWith('/newmap')
         .l-main-content
-            form.c-edithero-form(action='' method='post' enctype='multipart/form-data')
+            form.c-edithero-form(action='' method='post' enctype='multipart/form-data' autocomplete='off')
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='name') *Nombre del Mapa:
                     input(type='text' name='name' placeholder='Imedu: Encuentro con Oyzzyrnaith' required)
@@ -63,7 +63,7 @@ block content
     
     else
         .l-main-content
-            form.c-edithero-form(action='' method='post' enctype='multipart/form-data')
+            form.c-edithero-form(action='' method='post' enctype='multipart/form-data' autocomplete='off')
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='name') *Nombre del Mapa:
                     input(type='text' name='name' placeholder='Imedu: Encuentro con Oyzzyrnaith' value=map.name required)

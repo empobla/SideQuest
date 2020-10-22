@@ -24,7 +24,7 @@ block content
     if url.endsWith('/announcements') || url.endsWith('/search')
         .l-main-content
             .l-search
-                form.c-search(action=`/${route}/${username}/announcements/search` method='post')
+                form.c-search(action=`/${route}/${username}/announcements/search` method='post' autocomplete='off')
                     .c-search__input
                         label(for='name') Nombre del anuncio
                         input(type='text' name='name' id='name' placeholder='Buscar anuncio por nombre')
@@ -50,7 +50,7 @@ block content
                             
     else if url.endsWith('/newannouncement')
         .l-main-content
-            form.c-edithero-form(action='' method='post')
+            form.c-edithero-form(action='' method='post' autocomplete='off')
                 .c-edithero-form__input
                     label(for='name') *Nombre del Anuncio:
                     input(type='text' name='name' id='name' placeholder='Anuncio 1' required)
@@ -61,7 +61,7 @@ block content
                 button.c-button--large.m-clickable.l-margin-right--1(type='submit') Crear Anuncio
     else
         .l-main-content
-            form.c-edithero-form(action='' method='post')
+            form.c-edithero-form(action='' method='post' autocomplete='off')
                 .c-edithero-form__input
                     label(for='name') *Nombre del Anuncio:
                     input(type='text' name='name' id='name' placeholder='Anuncio 1' value=announcement.name required)

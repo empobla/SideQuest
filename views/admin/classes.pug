@@ -23,7 +23,7 @@ block content
     if url.endsWith('/classes') || url.endsWith('/search')
         .l-main-content
             .l-search
-                form.c-search(action=`/admin/${username}/classes/search` method='post')
+                form.c-search(action=`/admin/${username}/classes/search` method='post' autocomplete='off')
                     .c-search__input
                         label(for='name') Class name
                         input(type='text' name='name' id='name' placeholder='Search for class by name')
@@ -46,7 +46,7 @@ block content
 
     else if url.endsWith('/newclass')
         .l-main-content
-            form.c-edithero-form(action='' method='post')
+            form.c-edithero-form(action='' method='post' autocomplete='off')
                 .c-edithero-form__input
                     label(for='name') *Class Name:
                     input(type='text' name='name' placeholder='Monk' required)
@@ -129,7 +129,7 @@ block content
     
     else
         .l-main-content
-            form.c-edithero-form(action='' method='post')
+            form.c-edithero-form(action='' method='post' autocomplete='off')
                 .c-edithero-form__input
                     label(for='name') *Class Name:
                     input(type='text' name='name' placeholder='Monk' value=heroClass.name required)

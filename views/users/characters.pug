@@ -23,7 +23,7 @@ block content
     if url.endsWith('/characters') || url.endsWith('/search')
         .l-main-content
                 .l-search
-                    form.c-search(action=`/users/${username}/characters/search` method='post')
+                    form.c-search(action=`/users/${username}/characters/search` method='post' autocomplete='off')
                         .c-search__input
                             label(for='name') Nombre
                             input(type='text' name='name' id='name' placeholder='Buscar personaje por nombre')
@@ -59,7 +59,7 @@ block content
                                 img.c-card__image(src=tmpImg)
 
     else if url.endsWith('/newcharacter')
-        form.c-editchar-form(action='' method='post' enctype='multipart/form-data')
+        form.c-editchar-form(action='' method='post' enctype='multipart/form-data' autocomplete='off')
             .l-main-content.l-editchar-grid
                 .l-text-wrap
                     label.l-margin-right--1(for='image') Subir imagen:
@@ -103,7 +103,7 @@ block content
                 button.c-button--large.m-clickable(type='submit') Crear Personaje
     
     else
-        form.c-editchar-form(action='' method='post' enctype='multipart/form-data')
+        form.c-editchar-form(action='' method='post' enctype='multipart/form-data' autocomplete='off')
             .l-main-content.l-editchar-grid
                 .l-text-wrap
                     if character.image != '' && character.image != undefined

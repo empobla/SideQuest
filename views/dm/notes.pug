@@ -25,7 +25,7 @@ block content
     if url.endsWith('/notes') || url.endsWith('/search')
         .l-main-content
             .l-search
-                form.c-search(action=`/dm/${username}/notes/search` method='post')
+                form.c-search(action=`/dm/${username}/notes/search` method='post' autocomplete='off')
                     .c-search__input
                         label(for='name') Nombre de la nota
                         input(type='text' name='name' id='name' placeholder='Buscar nota por nombre')
@@ -62,7 +62,7 @@ block content
                     h2.m-align-center Nota
                     hr
                     .l-margin--2
-                    form.c-edithero-form(action='' method='post')
+                    form.c-edithero-form(action='' method='post' autocomplete='off')
                         .c-edithero-form__input.c-edithero-form__input--stack
                             label(for='name') *Nombre de la Nota:
                             input(type='text' name='name' id='name' placeholder='Sesión 1: Notas' required)
@@ -233,7 +233,7 @@ block content
                     h2.m-align-center Nota
                     hr
                     .l-margin--2
-                    form.c-edithero-form(action='' method='post')
+                    form.c-edithero-form(action='' method='post' autocomplete='off')
                         .c-edithero-form__input.c-edithero-form__input--stack
                             label(for='name') *Nombre de la Nota:
                             input(type='text' name='name' id='name' placeholder='Sesión 1: Notas' value=note.name required)

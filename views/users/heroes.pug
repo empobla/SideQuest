@@ -85,7 +85,7 @@ block content
                 - formAction = `/users/${username}/heroes/newHero`;
             else
                 - formAction = `/users/${username}/heroes/${hero._id}`;
-            form.c-edithero-form(action=`${formAction}` method='post' enctype='multipart/form-data')
+            form.c-edithero-form(action=`${formAction}` method='post' enctype='multipart/form-data' autocomplete='off')
                 if url.includes('/admin/')
                     input(type='hidden' name='admin' value='true')
                 #l-main-content--edit-hero.c-tabs__content.c-tabs__content--active(data-tab='0')

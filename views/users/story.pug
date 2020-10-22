@@ -23,7 +23,7 @@ block content
     if url.endsWith('/story') || url.endsWith('/search')
         .l-main-content
             .l-search
-                form.c-search(action=`/users/${username}/story/search` method='post')
+                form.c-search(action=`/users/${username}/story/search` method='post' autocomplete='off')
                     .c-search__input
                         label(for='name') Nombre de la sesión
                         input(type='text' name='name' id='name' placeholder='Buscar sesión por nombre')
@@ -46,7 +46,7 @@ block content
 
     else if url.endsWith('/newstory')
         .l-main-content
-            form.c-edithero-form(action='' method='post')
+            form.c-edithero-form(action='' method='post' autocomplete='off')
                 .c-edithero-form__input
                     label(for='name') *Nombre de la Sesión:
                     input(type='text' name='name' id='name' placeholder='Sesión 1' required)
@@ -58,7 +58,7 @@ block content
     
     else
         .l-main-content
-            form.c-edithero-form(action='' method='post')
+            form.c-edithero-form(action='' method='post' autocomplete='off')
                 .c-edithero-form__input
                     label(for='name') *Nombre de la Sesión:
                     input(type='text' name='name' id='name' placeholder='Sesión 1' value=story.name required)
