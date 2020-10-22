@@ -10,18 +10,6 @@ function setEleDisplay(selector, display) {
 function showEle(selector) { setEleDisplay(selector, 'flex'); };
 function hideEle(selector) { setEleDisplay(selector, 'none'); };
 
-function buildSpellRows(rows, dropdowns) {
-    let output = [];
-    for(let i = 0; i < rows.length; i++){
-        const row = rows[i];
-        const dropdown = dropdowns[i];
-
-        output.push(row);
-        output.push(dropdown);
-    }
-    return output;
-};
-
 function searchSpells(username) {
     const searchName = document.getElementById('search-name');
     const searchLevel = document.getElementById('search-level');
@@ -35,12 +23,9 @@ function searchSpells(username) {
 
     ajax.onload = () => {
         hideEle('.c-loadingbg')
-        const responseData = JSON.parse(ajax.responseText);
-        const rowData = responseData.rows;
-        const dropdownData = responseData.dropdowns;
+        const rowData = JSON.parse(ajax.responseText);
         
-        const output = buildSpellRows(rowData, dropdownData);
-        document.querySelector('.l-spells').innerHTML = output.join('\r');
+        document.querySelector('.l-spells').innerHTML = rowData.join('\r');
         setupSpellTables();
     }
 

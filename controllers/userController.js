@@ -473,40 +473,6 @@ exports.editSpellPost = async (req, res, next) => {
     }
 };
 
-// exports.spellsSearch = async (req, res, next) => {
-//     try {
-//         const username = req.params.username;
-//         const searchQuery = req.body;
-//         let searchData = await Promise.all([
-//             Spell.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]),
-//             Spell.aggregate([ { $match: { $text: { $search: searchQuery.level.replace(/\s/g, '') } } } ]),
-//             Spell.aggregate([ { $match: { $text: { $search: searchQuery.school } } } ]),
-//         ]);
-
-//         searchData = searchData[0].concat(searchData[1], searchData[2]);
-
-//         const spells = Array.from(new Set(searchData.map(character => character._id.toString()))).map(id => {
-//             return searchData.find(spell => spell._id.toString() == id)
-//         });
-
-//         const spellsQuery = [];
-
-//         for(let i = 0; i < 10; i++) {
-//             const level = Spell.aggregate([
-//                 { $match: { level: i } },
-//                 { $sort: { name: 1 } }
-//             ]);
-//             spellsQuery.push(level);
-//         }
-
-//         const sortedSpells = await Promise.all(spellsQuery.map(level => level));
-        
-//         res.render('users/spells', { title: 'SideQuest - Spell Compendium: Search', username, spells, sortedSpells });
-//     } catch(error) {
-//         next(error);
-//     }
-// };
-
 const pug = require('pug');
 exports.spellsSearch = async (req, res, next) => {
     try {
@@ -549,31 +515,21 @@ exports.spellsSearch = async (req, res, next) => {
                 const html = pug.render('include _spell_row\n+spellRow(spell)', options);
                 return html;
             });
-            const dropdowns = spells.map(spell => {
-                const tmpfilename = path.join(__dirname, '../views/mixins/tmp.pug');
-                const options = { filename: tmpfilename, spell: spell }
-                const html = pug.render(`include _spell_dropdown\n+spellDropdown(spell, 'display')`, options);
-                return html;
-            });
             
-            res.send({rows: rows, dropdowns: dropdowns});
+            res.send(rows);
         } else {
             const searchData = await Spell.aggregate([{$sort:{level:1, name:1}}]);
-            // Functions takes too long to load (3s-5s)
+            // Function takes too long to load (3s-5s)
+            // console.time('pugfunction')
             const rows = searchData.map(spell => {
                 const tmpfilename = path.join(__dirname, '../views/mixins/tmp.pug');
                 const options = { filename: tmpfilename, spell: spell }
                 const html = pug.render('include _spell_row\n+spellRow(spell)', options);
                 return html;
             });
-            const dropdowns = searchData.map(spell => {
-                const tmpfilename = path.join(__dirname, '../views/mixins/tmp.pug');
-                const options = { filename: tmpfilename, spell: spell }
-                const html = pug.render(`include _spell_dropdown\n+spellDropdown(spell, 'display')`, options);
-                return html;
-            });
+            // console.timeEnd('pugfunction')
 
-            res.send({rows: rows, dropdowns: dropdowns});
+            res.send(rows);
         }
     } catch(error) {
         next(error);
