@@ -1,6 +1,5 @@
 extends layout
 include mixins/_text_editor
-include mixins/_spell_dropdown
 include mixins/_spell_row
 
 block content
@@ -275,8 +274,6 @@ block content
                 table.l-spells
                     each spell in level
                         +spellRow(spell)
-                        tr
-                            +spellDropdown(spell, 'display')
 
             if hero.class
                 h3 #{hero.class.name || 'Class'} spells:
@@ -290,8 +287,6 @@ block content
                 table.l-spells
                     each spell in level
                         +spellRow(spell)
-                        tr
-                            +spellDropdown(spell, 'display')
 
             h2 Sheets
             hr

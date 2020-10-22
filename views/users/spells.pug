@@ -1,5 +1,4 @@
 extends ../layout
-include ../mixins/_spell_dropdown
 include ../mixins/_spell_row
 include ../mixins/_spell_form
 
@@ -49,8 +48,6 @@ block content
         table.l-spells
             each spell in spells
                 +spellRow(spell)
-                tr
-                    +spellDropdown(spell, 'display')
 
     //- Modal Section
     .c-modalbg(data-modal='1')

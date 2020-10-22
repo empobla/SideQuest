@@ -1,12 +1,66 @@
-mixin spellRow(spell)
-    tr.c-spell.c-spell--display.m-clickable
+mixin spellRow(spell, options={ edit: false, dm: false, type: '' })
+    -
+        let rowClass = 'c-spell c-spell--display m-clickable';
+        let rowId = '';
+        if(options.edit) {
+            rowClass = `c-spell m-clickable js-spell-loaded js-spellidx_${options.index}`;
+            rowId = `js-racial_${spell._id}`;
+        }
+    tr(class=rowClass id=rowId)
         td
             img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
         - const spellLevelDict = {'0': 'Cantrip', '1': '1st', '2': '2nd', '3': '3rd', '4': '4th', '5': '5th', '6': '6th', '7': '7th', '8': '8th', '9': '9th'};
-        td.m-color-lightgray= spellLevelDict[spell.level]
+        if !options.edit
+            td.m-color-lightgray= spellLevelDict[spell.level]
         td= spell.name
             p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
-        td= spell.casting_time
-        td= spell.duration
+        if !options.dm
+            td= spell.casting_time
+            td= spell.duration
+        else
+            td.m-responsive-display--table= spell.casting_time
         td= spell.range
-        td.c-dropdown-button &nabla;
+        - let dropdownButtonClass = !options.edit ? 'c-dropdown-button' : 'c-dropdown-button js-dropdown-button-loaded';
+        td(class=dropdownButtonClass) &nabla;
+    - let dropdownRowClass = !options.edit ? '' : `js-spellidx_${options.index}`;
+    tr(class=dropdownRowClass)
+        -
+            let dropdownClass = 'c-spell-description';
+            let dropdownColspan = '7';
+            if (options.edit) { 
+                dropdownClass += ' js-spell-description-loaded';
+                dropdownColspan = '6';
+            }
+        td(class=`${dropdownClass}` colspan=`${dropdownColspan}`)
+            h4= spell.name
+            if spell.level === 0
+                em= `${spell.school} Cantrip ${spell.ritual ? '(ritual)' : ''} ${spell.concentration ? '(concentration)' : ''}`
+            else if spell.level === 1
+                em=`${spell.level}st-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''} ${spell.concentration ? '(concentration)' : ''}`
+            else if spell.level === 2
+                em=`${spell.level}nd-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''} ${spell.concentration ? '(concentration)' : ''}`
+            else if spell.level === 3
+                em=`${spell.level}rd-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''} ${spell.concentration ? '(concentration)' : ''}`
+            else
+                em=`${spell.level}th-level ${spell.school.toLowerCase()} ${spell.ritual ? '(ritual)' : ''} ${spell.concentration ? '(concentration)' : ''}`
+            
+            .l-margin--2
+            p <strong>Casting Time: </strong> #{spell.casting_time}
+            p <strong>Range: </strong> #{spell.range}
+            p <strong>Components: </strong>
+                span= `${spell.components.join(', ')}`
+                span= `${spell.materials != '' && spell.materials != undefined ? ` (${spell.materials})` : ''}`
+            p <strong>Duration: </strong> #{spell.duration}
+
+            .l-margin--2
+            if spell.description != '' && spell.description != undefined
+                - let spellDescLines = spell.description.split(/(\r\n|\r|\n)/g);
+                each line in spellDescLines
+                    p= `${line}`
+            
+            if options.edit
+                //- - let inputName = options.type == 'racial' ? 'spells.racial[]' : 'spells.class[]';
+                input(type='hidden' class='js-hiddenracialspells' name=`spells.${type}[]` id=`js-inputracial_${spell._id},${spell.level}` value=`${spell._id}`)
+                .l-margin--2
+                button(type='button' class='c-button m-clickable js-removebutton-loaded') Remove Spell
+

@@ -1,7 +1,7 @@
 extends ../layout
 include ../mixins/_text_editor
 include ../mixins/_spell_form
-include ../mixins/_spell_dropdown
+include ../mixins/_spell_row
 
 block content
     
@@ -373,20 +373,10 @@ block content
                                 table.l-spells
                                     tbody
                                         if i in heroSpells.racial
-                                            //- - let index = 0;
+                                            - let index = 0;
                                             each spell in heroSpells.racial[`${i}`]
-                                                tr(class=`c-spell m-clickable js-spell-loaded js-spellidx_${i}` id=`js-racial_${spell._id}`)
-                                                    td
-                                                        img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
-                                                    td= spell.name
-                                                        p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
-                                                    td= spell.casting_time
-                                                    td= spell.duration
-                                                    td= spell.range
-                                                    td.c-dropdown-button.js-dropdown-button-loaded &nabla;
-                                                tr(class=`js-spellidx_${i}`)
-                                                    +spellDropdown(spell, 'edit', 'racial')
-                                            //- - index++;
+                                                +spellRow(spell, { edit: true, type: 'racial', index: `${index}` })
+                                                - index++;
 
                     //- .js-racialspells.m-inactive
                     //-     h4(id='js-racial-cantrip') Cantrips
@@ -423,17 +413,7 @@ block content
                                         if i in heroSpells.class
                                             - let index = 0;
                                             each spell in heroSpells.class[i]
-                                                tr(class=`c-spell m-clickable js-spell-loaded js-spellidx_${index}` id=`js-racial_${spell._id}`)
-                                                    td
-                                                        img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
-                                                    td= spell.name
-                                                        p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
-                                                    td= spell.casting_time
-                                                    td= spell.duration
-                                                    td= spell.range
-                                                    td.c-dropdown-button.js-dropdown-button-loaded &nabla;
-                                                tr(class=`js-spellidx_${index}`)
-                                                    +spellDropdown(spell, 'edit', 'class')
+                                                +spellRow(spell, { edit: true, type: 'class', index: `${index}` })
                                                 - index++;
                                             
                     //- .js-classspells.m-inactive

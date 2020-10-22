@@ -1,7 +1,7 @@
 extends ../layout
 include ../mixins/_text_editor
 include ../mixins/_hero_dropdown
-include ../mixins/_spell_dropdown
+include ../mixins/_spell_row
 
 block content
 
@@ -135,19 +135,7 @@ block content
                         #l-main-content--note-compendium.c-tabs__content(data-tab='2')
                             table.l-spells
                                 each spell in spells
-                                    tr.c-spell.c-spell--display.m-clickable
-                                        td
-                                            img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
-                                        - const spellLevelDict = {'0': 'Cantrip', '1': '1st', '2': '2nd', '3': '3rd', '4': '4th', '5': '5th', '6': '6th', '7': '7th', '8': '8th', '9': '9th'};
-                                        td.m-color-lightgray= spellLevelDict[spell.level]
-                                        td= spell.name
-                                            p.m-color-lightgray= `${spell.school} • ${spell.components.join(', ')}`
-                                        td.m-responsive-display--table= spell.casting_time
-                                        //- td= spell.duration
-                                        td= spell.range
-                                        td.c-dropdown-button &nabla;
-                                    tr
-                                        +spellDropdown(spell, 'display')
+                                    +spellRow(spell, { dm: true })
     
     else if url.includes('/view/')
         .l-main-content
