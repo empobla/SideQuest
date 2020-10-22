@@ -263,30 +263,32 @@ block content
             h2 Poderes
             hr
             if hero.race
-                h3 #{hero.race.name || 'Racial'} spells:
+                h3.js-spelltypetab.m-clickable &nabla; #{hero.race.name || 'Racial'} spells:
             else
-                h3 Racial spells:
-            each level in heroSpells.racial
-                if level[0].level == 0
-                    h4.l-margin-bottom--0 Cantrips
-                else
-                    h4.l-margin-bottom--0= `Level ${level[0].level}`
-                table.l-spells
-                    each spell in level
-                        +spellRow(spell)
+                h3.js-spelltypetab.m-clickable Racial spells:
+            .js-spelltypespells
+                each level in heroSpells.racial
+                    if level[0].level == 0
+                        h4.l-margin-bottom--0 Cantrips
+                    else
+                        h4.l-margin-bottom--0= `Level ${level[0].level}`
+                    table.l-spells
+                        each spell in level
+                            +spellRow(spell)
 
             if hero.class
-                h3 #{hero.class.name || 'Class'} spells:
+                h3.js-spelltypetab.m-clickable &nabla; #{hero.class.name || 'Class'} spells:
             else
-                h3 Class spells:
-            each level in heroSpells.class
-                if level[0].level == 0
-                    h4.l-margin-bottom--0 Cantrips
-                else
-                    h4.l-margin-bottom--0= `Level ${level[0].level}`
-                table.l-spells
-                    each spell in level
-                        +spellRow(spell)
+                h3.js-spelltypetab.m-clickable Class spells:
+            .js-spelltypespells
+                each level in heroSpells.class
+                    if level[0].level == 0
+                        h4.l-margin-bottom--0 Cantrips
+                    else
+                        h4.l-margin-bottom--0= `Level ${level[0].level}`
+                    table.l-spells
+                        each spell in level
+                            +spellRow(spell)
 
             h2 Sheets
             hr
@@ -308,23 +310,43 @@ block content
                 a.c-button(href=urlSpell target='_blank') See Spell Sheet
 
     script.
-        const spellBar = document.querySelectorAll('.c-spell');
-        const dropdownButton = document.querySelectorAll('.c-dropdown-button');
-        const spellDescription = document.querySelectorAll('.c-spell-description');
+        function setupSpellTables() {
+            const spellBar = document.querySelectorAll('.c-spell');
+            const dropdownButton = document.querySelectorAll('.c-dropdown-button');
+            const spellDescription = document.querySelectorAll('.c-spell-description');
 
-        spellBar.forEach((element, index) => {
-            element.addEventListener('click', () => {
-                
-                spellDescription[index].style.display === '' || spellDescription[index].style.display === 'none'
-                    ? spellDescription[index].style.display = 'table-cell'
-                    : spellDescription[index].style.display = 'none';
-                
-                
-                dropdownButton[index].innerHTML === '∇'
-                    ? dropdownButton[index].innerHTML = '&Delta;'
-                    : dropdownButton[index].innerHTML = '&nabla;';
+            spellBar.forEach((element, index) => {
+                element.addEventListener('click', () => {
+                    
+                    spellDescription[index].style.display === '' || spellDescription[index].style.display === 'none'
+                        ? spellDescription[index].style.display = 'table-cell'
+                        : spellDescription[index].style.display = 'none';
+                    
+                    
+                    dropdownButton[index].innerHTML === '∇'
+                        ? dropdownButton[index].innerHTML = '&Delta;'
+                        : dropdownButton[index].innerHTML = '&nabla;';
+                });
             });
-        });
+        };
+
+        function setupSpellTypeTabs() {
+            const typeBar = document.querySelectorAll('.js-spelltypetab');
+            const typeSpells = document.querySelectorAll('.js-spelltypespells');
+
+            typeBar.forEach((element, index) => {
+                typeSpells[index].style.display = 'none';
+                element.addEventListener('click', () => {
+                    typeSpells[index].style.display === '' || typeSpells[index].style.display === 'none'
+                        ? typeSpells[index].style.display = 'block'
+                        : typeSpells[index].style.display = 'none';
+                    
+                    element.innerHTML.includes('∇')
+                        ? element.innerHTML = `&Delta; ${element.innerHTML.split(' ')[1]} ${element.innerHTML.split(' ')[2]}`
+                        : element.innerHTML = `&nabla; ${element.innerHTML.split(' ')[1]} ${element.innerHTML.split(' ')[2]}`;
+                });
+            });
+        };
 
         const racejson = document.querySelector('#js-racejson').value;
         if(racejson != 'false') {
@@ -332,6 +354,11 @@ block content
             const raceTraits = document.querySelector('#js-racetraits');
             raceTraits.innerHTML = race.traits.replace(/(\r\n|\r|\n)/g, '<br>');
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupSpellTables();
+            setupSpellTypeTabs();
+        });
 
 
     //-      -->        //- If user is on hero sheets page
