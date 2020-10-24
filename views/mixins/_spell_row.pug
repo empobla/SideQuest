@@ -60,7 +60,7 @@ mixin spellRow(spell, options={ edit: false, dm: false, type: '' })
             
             if options.edit
                 //- - let inputName = options.type == 'racial' ? 'spells.racial[]' : 'spells.class[]';
-                input(type='hidden' class='js-hiddenracialspells' name=`spells.${type}[]` id=`js-inputracial_${spell._id},${spell.level}` value=`${spell._id}`)
+                input(type='hidden' class='js-hiddenracialspells' name=`spells.${options.type}[]` id=`js-inputracial_${spell._id},${spell.level}` value=`${spell._id}`)
                 .l-margin--2
                 button(type='button' class='c-button m-clickable js-removebutton-loaded') Remove Spell
 
