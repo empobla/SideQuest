@@ -59,6 +59,43 @@ exports.notes = async (req, res, next) => {
     }
 };
 
+exports.notesSpellSearch = async (req, res, next) => {
+    try {
+        const searchQuery = req.query;
+        
+        const pug = require('pug');
+        const path = require('path');
+        if(searchQuery.name != '') {
+            const searchData = await Spell.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
+
+            const rows = searchData.map(spell => {
+                const tmpfilename = path.join(__dirname, '../views/mixins/tmp.pug');
+                const options = { filename: tmpfilename, spell: spell }
+                const html = pug.render('include _spell_row\n+spellRow(spell, { dm: true })', options);
+                return html;
+            });
+            
+            res.send(rows);
+        } else {
+            const searchData = await Spell.aggregate([{$sort:{level:1, name:1}}]);
+            
+            // Function takes too long to load (3s-5s)
+            // console.time('pugfunction')
+            const rows = searchData.map(spell => {
+                const tmpfilename = path.join(__dirname, '../views/mixins/tmp.pug');
+                const options = { filename: tmpfilename, spell: spell }
+                const html = pug.render('include _spell_row\n+spellRow(spell, { dm: true })', options);
+                return html;
+            });
+            // console.timeEnd('pugfunction')
+
+            res.send(rows);
+        }
+    } catch(error) {
+        next(error);
+    }
+};
+
 exports.notesSearch = async (req, res, next) => {
     try {
         const username = req.params.username;
@@ -110,7 +147,7 @@ exports.editNoteGet = async (req, res, next) => {
         });
         
         const heroesQuery = Promise.all(heroesArray);
-        const [note, heroes, characters, spells] = await Promise.all([Note.findOne({ _id: noteId }), heroesQuery, Character.find(), Spell.find()]);
+        const [note, heroes, characters, spells] = await Promise.all([Note.findOne({ _id: noteId }), heroesQuery, Character.find(), Spell.aggregate([{ $sort:{ level:1, name: 1 } }])]);
         heroes.forEach(hero => {
             hero.race = hero.race[0];
             hero.class = hero.class[0];

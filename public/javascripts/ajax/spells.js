@@ -37,3 +37,32 @@ function searchSpells(username) {
     ajax.send();
     showEle('.c-loadingbg')
 };
+
+function searchSpellsDM(username, route) {
+    const searchName = document.getElementById('search-name');
+
+    const url = `${route}?name=${searchName.value || ''}`;
+
+    const ajax = new XMLHttpRequest();
+
+    ajax.open("GET", url, true);
+
+    ajax.onload = () => {
+        hideEle('#js-spell-loading');
+        showEle('#js-spellbutton');
+        const rowData = JSON.parse(ajax.responseText);
+        
+        document.getElementById('js-spellsearch').innerHTML = rowData.join('\r');
+        setupSpellTables();
+    }
+
+    ajax.onerror = () => {
+        hideEle('#js-spell-loading');
+        showEle('#js-spellbutton');
+        console.log('error');
+    }
+
+    ajax.send();
+    showEle('#js-spell-loading');
+    hideEle('#js-spellbutton');
+};

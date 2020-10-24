@@ -133,7 +133,19 @@ block content
                                         +heroDropdown(character, 'character')
                         
                         #l-main-content--note-compendium.c-tabs__content(data-tab='2')
-                            table.l-spells
+                            script(src="/javascripts/ajax/spells.js")
+                                
+                            form.c-edithero-form(autocomplete='off')
+                                .c-edithero-form__input.c-edithero-form__input--stack
+                                    label(for='name') Spell name
+                                    input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
+
+                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/newnote/spellsearch')`) Search
+                                    .m-inactive#js-spell-loading
+                                        .c-loadingbg__animation.c-loadingbg__animation--small
+
+                            .l-margin--2
+                            table.l-spells#js-spellsearch
                                 each spell in spells
                                     +spellRow(spell, { dm: true })
     
@@ -209,22 +221,21 @@ block content
                                         +heroDropdown(character, 'character')
                         
                         #l-main-content--note-compendium.c-tabs__content(data-tab='2')
-                            table.l-spells
+                            script(src="/javascripts/ajax/spells.js")
+                                
+                            form.c-edithero-form(autocomplete='off')
+                                .c-edithero-form__input.c-edithero-form__input--stack
+                                    label(for='name') Spell name
+                                    input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
+
+                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/newnote/spellsearch')`) Search
+                                    .m-inactive#js-spell-loading
+                                        .c-loadingbg__animation.c-loadingbg__animation--small
+                                        
+                            .l-margin--2
+                            table.l-spells#js-spellsearch
                                 each spell in spells
-                                    tr.c-spell.c-spell--display.m-clickable
-                                        td
-                                            img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
-                                        - const spellLevelDict = {'cantrip': 'Cantrip', 'level1': '1st', 'level2': '2nd', 'level3': '3rd', 'level4': '4th', 'level5': '5th', 'level6': '6th', 'level7': '7th', 'level8': '8th', 'level9': '9th'};
-                                        td.m-color-lightgray= spellLevelDict[spell.level]
-                                        td= spell.name
-                                            - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
-                                            p.m-color-lightgray= `${spell.school} • ${components}`
-                                        td= spell.casting_time
-                                        //- td= spell.duration
-                                        td= spell.range
-                                        td.c-dropdown-button &nabla;
-                                    tr
-                                        +spellDropdown(spell, 'display')
+                                    +spellRow(spell, { dm: true })
     
     else
         .l-main-content
@@ -305,22 +316,21 @@ block content
                                         +heroDropdown(character, 'character')
                         
                         #l-main-content--note-compendium.c-tabs__content(data-tab='2')
-                            table.l-spells
+                            script(src="/javascripts/ajax/spells.js")
+                                
+                            form.c-edithero-form(autocomplete='off')
+                                .c-edithero-form__input.c-edithero-form__input--stack
+                                    label(for='name') Spell name
+                                    input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
+
+                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/newnote/spellsearch')`) Search
+                                    .m-inactive#js-spell-loading
+                                        .c-loadingbg__animation.c-loadingbg__animation--small
+                                        
+                            .l-margin--2
+                            table.l-spells#js-spellsearch
                                 each spell in spells
-                                    tr.c-spell.c-spell--display.m-clickable
-                                        td
-                                            img.c-spell__image(src=`/images/icons/schools/${spell.school.toLowerCase()}.png` alt=`${spell.school} school image`)
-                                        - const spellLevelDict = {'cantrip': 'Cantrip', 'level1': '1st', 'level2': '2nd', 'level3': '3rd', 'level4': '4th', 'level5': '5th', 'level6': '6th', 'level7': '7th', 'level8': '8th', 'level9': '9th'};
-                                        td.m-color-lightgray= spellLevelDict[spell.level]
-                                        td= spell.name
-                                            - const components = spell.components.map(component => { switch(component){ case'verbal': return 'V';break; case'somatic': return'S';break; default: return'M';break; } });
-                                            p.m-color-lightgray= `${spell.school} • ${components}`
-                                        td= spell.casting_time
-                                        //- td= spell.duration
-                                        td= spell.range
-                                        td.c-dropdown-button &nabla;
-                                    tr
-                                        +spellDropdown(spell, 'display')
+                                    +spellRow(spell, { dm: true })
             
     script.
         function setupNotesTabs() {
