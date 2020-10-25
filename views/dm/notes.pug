@@ -115,7 +115,19 @@ block content
                                         +heroDropdown(hero, 'hero')
                         
                         #l-main-content--note-compendium.c-tabs__content(data-tab='1')
-                            table.l-spells
+                            script(src="/javascripts/ajax/characters.js")
+                                
+                            form.c-edithero-form(autocomplete='off')
+                                .c-edithero-form__input.c-edithero-form__input--stack
+                                    label(for='name') Nombre del Personaje
+                                    input(type='text' name='name' id='search-charname' placeholder='Buscar personaje por nombre')
+
+                                    button.c-button.m-clickable#js-charbutton(type='button' onclick=`searchCharsDM('${user.username}', '/dm/${username}/notes/charactersearch')`) Search
+                                    .m-inactive#js-char-loading
+                                        .c-loadingbg__animation.c-loadingbg__animation--small
+                            
+                            .l-margin--2
+                            table.l-spells#js-charsearch
                                 each character in characters
                                     tr.c-spell.c-spell--display.m-clickable
                                         td
@@ -140,7 +152,7 @@ block content
                                     label(for='name') Spell name
                                     input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
 
-                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/newnote/spellsearch')`) Search
+                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/spellsearch')`) Search
                                     .m-inactive#js-spell-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
 
@@ -203,7 +215,19 @@ block content
                                         +heroDropdown(hero, 'hero')
                         
                         #l-main-content--note-compendium.c-tabs__content(data-tab='1')
-                            table.l-spells
+                            script(src="/javascripts/ajax/characters.js")
+                                
+                            form.c-edithero-form(autocomplete='off')
+                                .c-edithero-form__input.c-edithero-form__input--stack
+                                    label(for='name') Nombre del Personaje
+                                    input(type='text' name='name' id='search-charname' placeholder='Buscar personaje por nombre')
+
+                                    button.c-button.m-clickable#js-charbutton(type='button' onclick=`searchCharsDM('${user.username}', '/dm/${username}/notes/charactersearch')`) Search
+                                    .m-inactive#js-char-loading
+                                        .c-loadingbg__animation.c-loadingbg__animation--small
+                            
+                            .l-margin--2
+                            table.l-spells#js-charsearch
                                 each character in characters
                                     tr.c-spell.c-spell--display.m-clickable
                                         td
@@ -214,7 +238,7 @@ block content
                                         td= character.name
                                         td= `${character.race || '???'} ${character.class || '???'}`
                                             p.m-color-lightgray= `Size: ${character.size || '???'}`
-                                        td= `Met in ${character.place || '???'}`
+                                        td.m-responsive-display--table= `Met in ${character.place || '???'}`
                                         td= `Age: ${character.age || '???'}`
                                         td.c-dropdown-button &nabla;
                                     tr
@@ -228,7 +252,7 @@ block content
                                     label(for='name') Spell name
                                     input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
 
-                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/newnote/spellsearch')`) Search
+                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/spellsearch')`) Search
                                     .m-inactive#js-spell-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
                                         
@@ -298,7 +322,19 @@ block content
                                         +heroDropdown(hero, 'hero')
                         
                         #l-main-content--note-compendium.c-tabs__content(data-tab='1')
-                            table.l-spells
+                            script(src="/javascripts/ajax/characters.js")
+                                
+                            form.c-edithero-form(autocomplete='off')
+                                .c-edithero-form__input.c-edithero-form__input--stack
+                                    label(for='name') Nombre del Personaje
+                                    input(type='text' name='name' id='search-charname' placeholder='Buscar personaje por nombre')
+
+                                    button.c-button.m-clickable#js-charbutton(type='button' onclick=`searchCharsDM('${user.username}', '/dm/${username}/notes/charactersearch')`) Search
+                                    .m-inactive#js-char-loading
+                                        .c-loadingbg__animation.c-loadingbg__animation--small
+                            
+                            .l-margin--2
+                            table.l-spells#js-charsearch
                                 each character in characters
                                     tr.c-spell.c-spell--display.m-clickable
                                         td
@@ -309,7 +345,7 @@ block content
                                         td= character.name
                                         td= `${character.race || '???'} ${character.class || '???'}`
                                             p.m-color-lightgray= `Size: ${character.size || '???'}`
-                                        td= `Met in ${character.place || '???'}`
+                                        td.m-responsive-display--table= `Met in ${character.place || '???'}`
                                         td= `Age: ${character.age || '???'}`
                                         td.c-dropdown-button &nabla;
                                     tr
@@ -323,7 +359,7 @@ block content
                                     label(for='name') Spell name
                                     input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
 
-                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/newnote/spellsearch')`) Search
+                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/spellsearch')`) Search
                                     .m-inactive#js-spell-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
                                         

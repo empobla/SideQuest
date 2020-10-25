@@ -41,7 +41,7 @@ exports.notes = async (req, res, next) => {
             });
             
             const heroesQuery = Promise.all(heroesArray);
-            const [heroes, characters, spells] = await Promise.all([heroesQuery, Character.find(), Spell.aggregate([{ $sort:{ level:1, name: 1 } }])]);
+            const [heroes, characters, spells] = await Promise.all([heroesQuery, Character.aggregate([{ $sort: { name: 1 } }]), Spell.aggregate([{ $sort:{ level:1, name: 1 } }])]);
             heroes.forEach(hero => {
                 hero.race = hero.race[0];
                 hero.class = hero.class[0];
@@ -90,6 +90,43 @@ exports.notesSpellSearch = async (req, res, next) => {
             // console.timeEnd('pugfunction')
 
             res.send(rows);
+        }
+    } catch(error) {
+        next(error);
+    }
+};
+
+exports.notesCharsSearch = async (req, res, next) => {
+    try {
+        const searchQuery = req.query;
+        
+        const pug = require('pug');
+        const path = require('path');
+        if(searchQuery.name != '') {
+            const searchData = await Character.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
+
+            const dropdowns = searchData.map(character => {
+                const tmpfilename = path.join(__dirname, '../views/mixins/tmp.pug');
+                const options = { filename: tmpfilename, character: character }
+                const html = pug.render('include _hero_dropdown\n+heroDropdown(character, \'character\')', options);
+                return html;
+            });
+            
+            res.send({characters: searchData, dropdowns: dropdowns});
+        } else {
+            const searchData = await Character.aggregate([{$sort:{name:1}}]);
+            
+            // Function takes too long to load (3s-5s)
+            // console.time('pugfunction')
+            const dropdowns = searchData.map(character => {
+                const tmpfilename = path.join(__dirname, '../views/mixins/tmp.pug');
+                const options = { filename: tmpfilename, character: character }
+                const html = pug.render('include _hero_dropdown\n+heroDropdown(character, \'character\')', options);
+                return html;
+            });
+            // console.timeEnd('pugfunction')
+
+            res.send({characters: searchData, dropdowns: dropdowns});
         }
     } catch(error) {
         next(error);
@@ -147,7 +184,7 @@ exports.editNoteGet = async (req, res, next) => {
         });
         
         const heroesQuery = Promise.all(heroesArray);
-        const [note, heroes, characters, spells] = await Promise.all([Note.findOne({ _id: noteId }), heroesQuery, Character.find(), Spell.aggregate([{ $sort:{ level:1, name: 1 } }])]);
+        const [note, heroes, characters, spells] = await Promise.all([Note.findOne({ _id: noteId }), heroesQuery, Character.aggregate([{ $sort: { name: 1 } }]), Spell.aggregate([{ $sort:{ level:1, name: 1 } }])]);
         heroes.forEach(hero => {
             hero.race = hero.race[0];
             hero.class = hero.class[0];

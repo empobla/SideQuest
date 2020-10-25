@@ -27,7 +27,8 @@ router.post('/:username/announcements/edit/:announcementId', adminController.edi
 router.get('/:username/notes', dmController.notes);
 router.post('/:username/notes/search', dmController.notesSearch);
 router.get('/:username/notes/newnote', dmController.notes);
-router.get('/:username/notes/newnote/spellsearch', dmController.notesSpellSearch);
+router.get('/:username/notes/spellsearch', dmController.notesSpellSearch);
+router.get('/:username/notes/charactersearch', dmController.notesCharsSearch);
 router.post('/:username/notes/newnote', dmController.newNotePost);
 router.get('/:username/notes/view/:noteId', dmController.notes);
 router.get('/:username/notes/edit/:noteId', dmController.editNoteGet);

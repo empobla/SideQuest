@@ -62,3 +62,65 @@ function searchCharacters() {
     ajax.send();
     showEle('.c-loadingbg')
 };
+
+function buildCharRows(characters, dropdowns) {
+    let output = [];
+
+    for(let i = 0; i < characters.length; i++) {
+        const character = characters[i];
+        const dropdown = dropdowns[i];
+
+        output.push('<tr class="c-spell c-spell--display m-clickable">');
+        output.push('<td>');
+        character.image != '' && character.image != undefined
+            ? output.push(`<img class="c-spell__image c-spell__herotableimage" src="http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png" alt="${character.name}'s Image">`)
+            : output.push('<p>No Image</p>');
+        output.push('</td>');
+        output.push(`
+        <td>${character.name}</td>
+        <td>${character.race || '???'} ${character.class || '???'}<p class="m-color-lightgray">Size: ${character.size || '???'}</p></td>
+        <td class="m-responsive-display--table">Met in ${character.place || '???'}</td>
+        <td>Age: ${character.age || '???'}</td>
+        <td class="c-dropdown-button">&nabla;</td>
+        `);
+        output.push('</tr>');
+        output.push('<tr>');
+        output.push(dropdown);
+        output.push('</tr>');
+    }
+
+    return output;
+};
+
+function searchCharsDM(username, route) {
+    const searchName = document.getElementById('search-charname');
+
+    const url = `${route}?name=${searchName.value || ''}`;
+
+    const ajax = new XMLHttpRequest();
+
+    ajax.open("GET", url, true);
+
+    ajax.onload = () => {
+        hideEle('#js-char-loading');
+        showEle('#js-charbutton');
+
+        const responseData = JSON.parse(ajax.responseText);
+        const characterData = responseData.characters;
+        const dropdownData = responseData.dropdowns;
+        
+        const output = buildCharRows(characterData, dropdownData);
+        document.getElementById('js-charsearch').innerHTML = output.join('\r');
+        setupSpellTables();
+    }
+
+    ajax.onerror = () => {
+        hideEle('#js-char-loading');
+        showEle('#js-charbutton');
+        console.log('error');
+    }
+
+    ajax.send();
+    showEle('#js-char-loading');
+    hideEle('#js-charbutton');
+};
