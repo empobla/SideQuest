@@ -836,7 +836,8 @@ block content
                 }
                 
                 // Proficiencies
-                const newIdx = 9 + selectArray.length;
+                //- const newIdx = 9 + selectArray.length;  // Commented this as it seems that A&W and tool profs are always 2 indexes below in descChildren
+                const newIdx = 9 + 2;
                 descChildren[newIdx].querySelector('span').innerHTML = heroClass.armor_weapon_proficiencies || 'none';
                 descChildren[newIdx+1].querySelector('span').innerHTML = heroClass.tool_proficiencies || 'none';
             } else {
@@ -877,7 +878,8 @@ block content
                 }
 
                 // Proficiencies
-                const newIdx = 7 + selectArray.length;
+                //- const newIdx = 7 + selectArray.length;  // Commented this as it seems that A&W and tool profs are always 2 indexes below in descChildren
+                const newIdx = 7 + 2;
                 descChildren[newIdx].querySelector('span').innerHTML = heroClass.armor_weapon_proficiencies || 'none';
                 descChildren[newIdx+1].querySelector('span').innerHTML = heroClass.tool_proficiencies || 'none';
             }
