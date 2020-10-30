@@ -343,6 +343,7 @@ SideQuest D&D Alpha can no longer be found in this repository.
 <details>
 
 <summary markdown='span'>Images</summary>
+
 #### **Home Page**
 <p align='center'>
 <img src='public/images/readme/versions/alpha/home.png'>
