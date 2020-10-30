@@ -3,9 +3,28 @@ include ../mixins/_text_editor
 include ../mixins/_spell_form
 include ../mixins/_spell_row
 
+//- TODO:
+    * Onclick tab functions should be through event listeners and fetch info through AJAX:
+        - .c-tabs__button.m-clickable(data-for-tab=`${index}` onclick=`abilitiesTab(${JSON.stringify(races)})`)
+    * Hidden input to pass in race info could be done through ajax:
+        - input#js-racejson(type='hidden' value=`${JSON.stringify(races)}`)
+    * Hidden input to pass in class info could be done through ajax:
+        - input#js-classjson(type='hidden' value=`${JSON.stringify(classes)}`)
+        - input#js-heroClassSkillsjson(type='hidden' value=`${JSON.stringify(hero.class_proficiencies)}`)
+    * Hidden input for spells could be done through ajax:
+        - input#js-dbracial(type='hidden' value=`${JSON.stringify(hero.spells.racial)}`)
+    
+//- OPTIONAL TODO:
+    * Class:
+        - Add levelup
+        - Add class things on levelup (like eldritch invocation, etc)
+
 block content
     
+    //- User heroes main section
     if url.endsWith('/heroes')
+        
+        //- Header
         .l-margin-start
         .l-divider
             .c-divider__left
@@ -13,10 +32,7 @@ block content
             .c-divider__right
         
         .l-main-content
-            //- .l-margin--5
-            //- a.c-button--large.m-background-lightgray(type='' disabled) Crear Héroe
-
-            //- .l-margin--5
+            //- User heroes display
             .l-cards
                 each hero in userHeroes
                     a.c-card(href=`heroes/${hero._id}`)
@@ -28,6 +44,8 @@ block content
                             img.c-card__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${hero.image}.png` alt=`${hero.name}'s Image`)
                         else
                             img.c-card__image(src=tmpImg)
+                
+                //- Create hero card
                 a.c-card(href='heroes/newHero')
                     .c-card__header
                         .c-card__header-left
@@ -35,33 +53,41 @@ block content
                         .c-card__header-right
                     img.c-card__image(src='/images/resources/tortle.png' alt='Create Hero Image')
     
+    //- Hero creation and edit section
     else
+        //- Headers
         .l-margin-start
+        //- Admin header
         if url.includes('/admin/')
             a.l-divider(href=`/admin/${user.username}/heroes`)
                 .c-divider__left
                     h1 &#10525; Editar Héroe
                 .c-divider__right
+        //- User new hero and edit hero headers
         else
             a.l-divider(href=`/users/${user.username}/heroes`)
                 .c-divider__left
+                    //- New hero header
                     if url.endsWith('/newHero')
                         h1 &#10525; Crear Héroe
+                    //- Edit hero header
                     else
                         h1 &#10525; Editar Héroe
                 .c-divider__right
 
+        //- New/edit hero tabs
         .c-tabs
+            //- Tab Sidebar
             .c-tabs__sidebar
                 - const links = ['Race & Class', 'Abilities', 'STs & Skills', 'Description', 'Equipment'];
                 each link, index in links
-                    //- If Abilities Tab
+                    //- If Abilities Tab (to add onclick function)
                     if index == 1
                         .c-tabs__button.m-clickable(data-for-tab=`${index}` onclick=`abilitiesTab(${JSON.stringify(races)})`)
                             .c-tabs__button-left
                                 h2= `${index+1}. ${link}`
                             .c-tabs__button-right
-                    //- If Last Tab (Equipment)
+                    //- If Last Tab (Equipment) (to add onclick function)
                     else if index == 4
                         .c-tabs__button.m-clickable(data-for-tab=`${index}` onclick=`saveAbilities()`)
                             .c-tabs__button-left
@@ -80,27 +106,38 @@ block content
 
             //- Race & Class
             .l-margin--3
+            
+            //- Form actions for new hero and edit hero
             - let formAction = '';
             if url.endsWith('/newHero')
                 - formAction = `/users/${username}/heroes/newHero`;
             else
                 - formAction = `/users/${username}/heroes/${hero._id}`;
+            
+            //- Main form
             form.c-edithero-form(action=`${formAction}` method='post' enctype='multipart/form-data' autocomplete='off')
+                //- Hidden input for admin hero update
                 if url.includes('/admin/')
                     input(type='hidden' name='admin' value='true')
+                
+                //- Tab 1: Race and Class
                 #l-main-content--edit-hero.c-tabs__content.c-tabs__content--active(data-tab='0')
+                    //- Hero name
                     h2 Character Name
                     hr
                     .l-margin--3
                     input#hero-name(type='text' name='name' placeholder='Varian Wrynn' required value=(hero ? hero.name : null))
 
+                    //- Hero image
                     .l-margin--3
                     h2 Image
                     hr
                     .l-margin--3
+                    
                     if !hero
                         input(type='file' name='image' id='image')
                     else
+                        //- If hero exists and has an image, load it with a remove image option. Else, load normal image input.
                         if hero.image != '' && hero.image != undefined
                             .l-ability-points-grid.grid--2
                                 img.image-preview(src=`http://res.cloudinary.com/duezou4td/image/upload/${hero.image}.png`, alt=`${hero.name}'s Image`)
@@ -115,12 +152,18 @@ block content
                         else
                             input(type='file' name='image' id='image')
 
+                    //- Race
                     .l-margin--3
                     h2 Race
                     hr
                     .l-margin--3
                     input#js-racejson(type='hidden' value=`${JSON.stringify(races)}`)
+                    
+                    //- Hero race select
                     select#search_race(name='race' onchange=`raceUpdate(${JSON.stringify(races)})`)
+                        //- If no hero, default option is selected.
+                        //- Else if hero and no race, default option is selected.
+                        //- Else, hero race is selected.
                         if !hero
                             option(value='-1' selected) -----
                             each race, index in races
@@ -137,6 +180,7 @@ block content
                                 else
                                     option(value=`${index},${race._id}`)= race.name
                     
+                    //- Race info display (Filled by JS)
                     .l-margin--3
                     .c-description#race-description
                         h3 Race Name
@@ -156,18 +200,20 @@ block content
                         p Race Traits
                 
                     //- Class
-                    //- TODO:
-                        - Add levelup
-                        - Add class things on levelup (like eldritch invocation, etc)
-                    //- #l-main-content--edit-hero.c-tabs__content(data-tab='1')
                     .l-margin--3
                     h2 Class
                     hr
                     .l-margin--3
                     input#js-classjson(type='hidden' value=`${JSON.stringify(classes)}`)
+                    
                     if hero
                         input#js-heroClassSkillsjson(type='hidden' value=`${JSON.stringify(hero.class_proficiencies)}`)
+                    
+                    //- Hero class select
                     select#search_class(name='class' onchange=`displayClass(${JSON.stringify(classes)})`)
+                        //- If no hero, default option is selected.
+                        //- Else if hero and no class, default option is selected.
+                        //- Else, hero class is selected.
                         if !hero
                             option(value='-1' selected) -----
                             each heroClass, index in classes
@@ -184,6 +230,7 @@ block content
                                 else
                                     option(value=`${index},${heroClass._id}`)= heroClass.name
 
+                    //- Class info display (Filled by JS)
                     .l-margin--3
                     .c-description#class-description
                         h3 Class Name
@@ -216,7 +263,7 @@ block content
                         p <strong>Tool Proficiencies: </strong>
                             span Class Tool Proficiencies
                 
-                //- Abilities
+                //- Tab 2: Abilities
                 #l-main-content--edit-hero.c-tabs__content(data-tab='1')
                     h2 Physical Attributes
                     hr
@@ -247,6 +294,7 @@ block content
                     h2 Abilities
                     hr
 
+                    //- Ability Array
                     .l-margin--2
                     p.m-color-lightgray.m-align-center (Initial array of abilities)
                     .l-margin--2
@@ -267,6 +315,7 @@ block content
                                             else
                                                 option(value=`${score}`) #{score}
 
+                    //- Ability tables
                     .l-margin--3
                     .l-ability-grid
                         each ability in abilities
@@ -313,18 +362,14 @@ block content
                         input(type='hidden' name='abilities.proficiency_bonus' id='js-profbonus')
                         input(type='hidden' name='abilities.passive_perception' id='js-passiveperception')
 
+                    //- Spells
                     h2 Spells 
                     hr
                     .l-margin--2
                     p.m-color-lightgray.m-align-center (Can't find a spell? Create it in the spell section and add it to your character in the edit character section)
                     .l-margin--2
-                    //- .l-ability-points-grid.grid--3
-                    //-     .c-ability-points
-                    //-         button.c-button.m-clickable.js-modalbutton(type='button' data-for-modal='0') Create Spell
-                    //-     .c-ability-points
-                    //-         button.c-button.m-clickable.js-modalbutton(type='button' data-for-modal='1') Remove Spell from Character
-                    //-     .c-ability-points
-                    //-         button.c-button.m-clickable.js-modalbutton(type='button' data-for-modal='2') Edit Spell
+                    
+                    //- Spell select
                     .l-margin--3
                     .l-select-button.button--2#m-spells_selectbuttons
                         select(id='js-spellselect')
@@ -348,6 +393,7 @@ block content
                         button.c-button(type='button' onclick=`addSpell('racial',${JSON.stringify(spells)})`) +<br>Racial Spell
                         button.c-button(type='button' onclick=`addSpell('class',${JSON.stringify(spells)})`) +<br>Class Spell
 
+                    //- Racial spells (Constructed by JS)
                     .l-margin--2
                     - const levelNames = ['cantrip', 'level1', 'level2', 'level3', 'level4', 'level5', 'level6', 'level7', 'level8', 'level9'];
                     h3#js-racialtitle Racial Spells
@@ -378,6 +424,7 @@ block content
                                                 +spellRow(spell, { edit: true, type: 'racial', index: `${index}` })
                                                 - index++;
 
+                    //- This is more or less how JS constructs the spells
                     //- .js-racialspells.m-inactive
                     //-     h4(id='js-racial-cantrip') Cantrips
                     //-     table.l-spells
@@ -387,6 +434,7 @@ block content
                     //-                 td
                     //-                     input(type='hidden' name='spells_racial' id='js-hiddenracial')
                     
+                    //- Class spells (Constructed by JS)
                     .l-margin--2
                     h3#js-classtitle Class Spells
                     .l-margin--2
@@ -415,7 +463,8 @@ block content
                                             each spell in heroSpells.class[i]
                                                 +spellRow(spell, { edit: true, type: 'class', index: `${index}` })
                                                 - index++;
-                                            
+
+                    //- This is more or less how JS constructs the spells                
                     //- .js-classspells.m-inactive
                     //-     h4(id='js-racial-cantrip') Cantrips
                     //-     table.l-spells
@@ -427,11 +476,12 @@ block content
                     
 
 
-                //- STs & Skills
+                //- Tab 3: STs & Skills
                 #l-main-content--edit-hero.c-tabs__content(data-tab='2')
                     h2 Saving Throw Proficiencies
                     hr
 
+                    //- Saving throw prificiencies checkboxes
                     .l-margin--3
                     .l-ability-points-grid
                         each ability in abilities
@@ -442,7 +492,8 @@ block content
                                 else
                                     input(type='checkbox' name=`saving_throws.${ability.toLowerCase()}` id=`${ability.toLowerCase()}-saving_throws` value='true')
                                 
-
+                    
+                    //- Skill proficiencies checkboxes
                     .l-margin--3
                     - const skills = ['acrobatics', 'animal_handling', 'arcana', 'athletics', 'deception', 'history', 'insight', 'intimidation', 'investigation', 'medicine', 'nature', 'perception', 'performance', 'persuasion', 'religion', 'sleight_of_hand', 'stealth', 'survival'];
                     h2 Skill Proficiencies
@@ -462,7 +513,7 @@ block content
                                 else
                                     input(type='checkbox' name=`skills.${skill.toLowerCase()}` class='skillprofs-grid' id=`${skill.toLowerCase()}-skill` value='true')
                 
-                //- Description
+                //- Tab 4: Description
                 #l-main-content--edit-hero.c-tabs__content(data-tab='3')
                     h2 Description
                     hr
@@ -540,6 +591,8 @@ block content
                     .l-margin--3
                     h3 Notes
                     hr
+                    
+                    //- Organization notes
                     .l-margin--3
                     .c-edithero-form__input
                         label(for='description.notes.organization.name') Organization Name
@@ -567,6 +620,8 @@ block content
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='description.notes.organization.text') Organization Notes
                         textarea(name='description.notes.organization.text' placeholder='Write notes about your organization here' )=(hero ? hero.description.notes.organization.text : null)
+                    
+                    //- Allies, enemies, backstory, other
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='description.notes.allies') Allies
                         textarea(name='description.notes.allies' placeholder='Write notes about your allies here')=(hero ? hero.description.notes.allies : null)
@@ -584,11 +639,12 @@ block content
                         textarea(name='description.notes.other' placeholder='Write other notes here')=(hero ? hero.description.notes.other : null)
 
                     
-                //- Equipment
+                //- Tab 5: Equipment
                 #l-main-content--edit-hero.c-tabs__content(data-tab='4')
                     h2 Equipment
                     hr
-
+                    
+                    //- Currency
                     .l-margin--3
                     .l-ability-points-grid.grid--5
                         .c-ability-points
@@ -607,6 +663,7 @@ block content
                             label(for='equipment.money.platinum') Platinum
                             input(type='number' min='0' name='equipment.money.platinum' placeholder='--' value=(hero ? hero.equipment.money.platinum : null))
 
+                    //- Equipment, inventory, treasure
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='equipment.starting') Starting Equipment
                         textarea(name='equipment.starting' placeholder='Write your starting equipment here')=(hero ? hero.equipment.starting : null)
@@ -620,6 +677,7 @@ block content
                         label(for='equipment.treasure') Treasure
                         textarea(name='equipment.treasure' placeholder='Write your treasure here')=(hero ? hero.equipment.treasure : null)
                     
+                    //- Weapons
                     .l-margin--3
                     h3 Weapons
                     hr
@@ -641,6 +699,7 @@ block content
                         label(for='equipment.weapons.notes') Weapon Notes:
                         textarea(name='equipment.weapons.notes' placeholder="Large Crossbow - range: 80ft/320ft\nDagger - range 20ft/60ft\nDart - range 20ft/60ft")=(hero ? hero.equipment.weapons.notes : null)
 
+                    //- Save and delete buttons
                     .l-margin--3
                     if url.endsWith('/newHero')
                         button.c-button--large(type='submit') Save

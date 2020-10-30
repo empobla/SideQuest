@@ -2,15 +2,23 @@ extends layout
 include mixins/_text_editor
 include mixins/_spell_row
 
+//- TODO:
+    * Do through AJAX: input#js-racejson(type='hidden' value=`${JSON.stringify(hero.race)}`)
+    * Imrove hero max hp and starting hp calculation and display code: const startHPNum = parseInt(hero.class.hitpoints_start.split(' ')[0]);
+        - If improved, mixins/_hero_dropdown must also be changed
+
 block content
     
+    //- Heroes main page
     if url.endsWith('/heroes')
+        //- Header
         .l-margin-start
         .l-divider
             .c-divider__left
                 h1 Héroes
             .c-divider__right
 
+        //- Hero cards
         .l-main-content
             .l-cards
                 each hero in heroes
@@ -23,7 +31,10 @@ block content
                             img.c-card__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${hero.image}.png` alt=`${hero.name}'s Image`)
                         else
                             img.c-card__image(src=tmpImg)
+    
+    //- Viewing a hero
     else
+        //- Header
         .l-margin-start
         a.l-divider(href='/heroes')
             .c-divider__left
@@ -31,9 +42,13 @@ block content
             .c-divider__right
 
         .l-main-content
+            //- Hero image, summary, and physical characteristics sidebar
             .l-text-wrap
+                //- Hero image
                 if hero.image != '' && hero.image != undefined
                     img.l-text-wrap__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${hero.image}.png` alt=`${hero.name}'s Image`)
+                
+                //- Hero summary
                 .c-basic-info
                     h3 Resumen
                     p= `Lugar de Origen: ${hero.description.place_of_origin || '???'}`
@@ -48,6 +63,8 @@ block content
                         p= `Clase: ???`
                     p= `Background: ${hero.description.background || '???'}`
                     p= `Alineamiento: ${hero.description.alignment || '???'}`
+                
+                //- Hero physical characteristics
                 .c-basic-info
                     h3 Características Físicas
                     p= `Estatura: ${hero.description.physical.height || '???'}`
@@ -56,6 +73,7 @@ block content
                     p= `Ojos (Color): ${hero.description.physical.eye_color || '???'}`
                     p= `Pelo (Color): ${hero.description.physical.hair_color || '???'}`
             
+            //- Hero main section
             h2= `${hero.name} `
                 if hero.class
                     span#hero__classandlevel= `(${hero.class.name} nivel ${hero.level})`
@@ -69,6 +87,7 @@ block content
             else
                 p #{hero.name} no tiene backstory.
             
+            //- Hero personality
             h3 Personalidad
             p.m-color-gray <strong>Rasgos:</strong>
                 em= ` ${hero.description.personality.traits || '???'}`
@@ -79,22 +98,26 @@ block content
             p.m-color-gray <strong>Fallas:</strong>
                 em= ` ${hero.description.personality.flaws || '???'}`
             
+            //- Hero Allies and Organizations
             h3 Aliados y Organizaciones
             //- If there is an emblem image on DB, display it
             - const alliesOrgs = hero.description.notes.organization;
             if alliesOrgs.emblem != '' && alliesOrgs.emblem != undefined
                 .l-text-wrap--right
                     img.l-text-wrap__image#hero__organization-banner(src=`http://res.cloudinary.com/duezou4td/image/upload/${alliesOrgs.emblem}.png`, alt=`${hero.name}'s organization's emblem`)
+            
             //- If hero isn't in an organization, tell user. Else, display its name.
             if alliesOrgs.name === '' || alliesOrgs.name === undefined
                 p #{hero.name} no forma parte de ninguna organización hasta ahora.
             else
                 p #{hero.name} forma parte de #{alliesOrgs.name}.
+            
             //- Display hero.allies_and_organizations text with line breaks where they're supposed to go
             - const parts = (alliesOrgs.text != undefined) ? alliesOrgs.text.split(/(\r\n)/g) : [];
             each part in parts
                 p= part
             
+            //- Hero Race info
             if hero.race
                 h2 #{hero.race.name}
                 hr
@@ -103,6 +126,8 @@ block content
                 p <strong>Alignment:</strong> #{hero.race.alignment}
                 p <strong>Speed:</strong> #{hero.race.speed}
                 p <strong>Languages:</strong> #{hero.race.languages}
+                
+                //- Race Ability Score Improvements
                 - let raceAI = '';
                 - for(const increase of hero.race.ability_increase) {
                 -   increase.increase > 0 ? raceAI += `+${increase.increase} ` : raceAI += `${increase.increase} `;
@@ -110,6 +135,8 @@ block content
                 - }
                 - raceAI = raceAI.substring(0,raceAI.length-2);
                 p <strong>Ability Score Improvements:</strong> #{raceAI}
+                
+                //- Race traits
                 h3 Traits
                 input#js-racejson(type='hidden' value=`${JSON.stringify(hero.race)}`)
                 p#js-racetraits Race Traits
@@ -118,6 +145,7 @@ block content
                 input#js-racejson(type='hidden' value='false')
                 p #{hero.name} no tiene raza.
 
+            //- Hero Class info
             if hero.class
                 h2 #{hero.class.name}
                 hr
@@ -127,22 +155,26 @@ block content
                 p <strong>Hit Points at 1st Level:</strong> #{hero.class.hitpoints_start}
                 p <strong>Hit Points at Higher Levels:</strong> #{hero.class.hitpoints_higherlvls}
                 
+                //- Class Abilities
                 h3 Abilities
                 - let classPA = '';
                 - for(const ability of hero.class.abilities) { classPA += ability[0].toUpperCase() + ability.substring(1) + ', '; }
                 - classPA = classPA.substring(0, classPA.length-2);
                 p <strong>Primary Abilities:</strong> #{classPA}
                 
+                //- Class Saving Throw Proficiencies
                 - let classSP = '';
                 - for(const ability of hero.class.st_proficiencies) { classSP += ability[0].toUpperCase() + ability.substring(1) + ', '; }
                 - classSP = classSP.substring(0, classSP.length-2);
                 p <strong>Saving Throw Proficiencies:</strong> #{classSP}
                 
+                //- Class Spellcasting
                 if hero.class.spell_ability != '' && hero.class.spell_ability != undefined
                     - const classSA = `${hero.class.spell_ability[0].toUpperCase() + hero.class.spell_ability.substring(1)}`;
                     p <strong>Spell Save DC =</strong> 8 + your proficiency bonus + your #{classSA} modifier
                     p <strong>Spell Attack Modifier =</strong> your proficiency bonus + your #{classSA} modifier
                 
+                //- Class Proficiencies
                 h3 Proficiencies
                 - let classSK = '';
                 - for(const skill of hero.class.skills.skills) { classSK += skill[0].toUpperCase() + skill.substring(1) + ', '; }
@@ -155,10 +187,11 @@ block content
                 h2 Clase
                 p #{hero.name} no tiene clase.
             
-
+        //- Main statistics section
         .l-main-content.l-clearleft
             h2 Statistics
             hr
+            //- Stat cards
             .l-stat-cards
                 - const ab = hero.abilities;
                 - const physAtt = hero.physical_attributes;
@@ -209,6 +242,7 @@ block content
                     h3 Speed
                     p #{hero.physical_attributes.speed} ft
             
+            //- Ability Score Table
             h3 Ability Scores
             - const st = hero.saving_throws;
             - const abNameArr = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma'];
@@ -236,6 +270,7 @@ block content
                             else
                                 td= abModArr[i] > 0 ? `+${abModArr[i]}` : abModArr[i]
 
+            //- Skills Table
             .l-margin--3
             h3 Skills
             - const sk = hero.skills;
@@ -259,37 +294,44 @@ block content
                                     td
                                     td= skDict[skNameArr[i]] > 0 ? `+${skDict[skNameArr[i]]}` : skDict[skNameArr[i]]
                                 td= skNameArr[i]
+            
+            //- Hero Spells
+            if hero.class.spell_ability != '' && hero.class.spell_ability != undefined
+                h2 Poderes
+                hr
+                //- Racial spells
+                if hero.race
+                    h3.js-spelltypetab.m-clickable &nabla; #{hero.race.name || 'Racial'} spells:
+                else
+                    h3.js-spelltypetab.m-clickable Racial spells:
+                
+                .js-spelltypespells
+                    each level in heroSpells.racial
+                        if level[0].level == 0
+                            h4.l-margin-bottom--0 Cantrips
+                        else
+                            h4.l-margin-bottom--0= `Level ${level[0].level}`
+                        table.l-spells
+                            each spell in level
+                                +spellRow(spell)
 
-            h2 Poderes
-            hr
-            if hero.race
-                h3.js-spelltypetab.m-clickable &nabla; #{hero.race.name || 'Racial'} spells:
-            else
-                h3.js-spelltypetab.m-clickable Racial spells:
-            .js-spelltypespells
-                each level in heroSpells.racial
-                    if level[0].level == 0
-                        h4.l-margin-bottom--0 Cantrips
-                    else
-                        h4.l-margin-bottom--0= `Level ${level[0].level}`
-                    table.l-spells
-                        each spell in level
-                            +spellRow(spell)
+                //- Class spells
+                if hero.class
+                    h3.js-spelltypetab.m-clickable &nabla; #{hero.class.name || 'Class'} spells:
+                else
+                    h3.js-spelltypetab.m-clickable Class spells:
+                
+                .js-spelltypespells
+                    each level in heroSpells.class
+                        if level[0].level == 0
+                            h4.l-margin-bottom--0 Cantrips
+                        else
+                            h4.l-margin-bottom--0= `Level ${level[0].level}`
+                        table.l-spells
+                            each spell in level
+                                +spellRow(spell)
 
-            if hero.class
-                h3.js-spelltypetab.m-clickable &nabla; #{hero.class.name || 'Class'} spells:
-            else
-                h3.js-spelltypetab.m-clickable Class spells:
-            .js-spelltypespells
-                each level in heroSpells.class
-                    if level[0].level == 0
-                        h4.l-margin-bottom--0 Cantrips
-                    else
-                        h4.l-margin-bottom--0= `Level ${level[0].level}`
-                    table.l-spells
-                        each spell in level
-                            +spellRow(spell)
-
+            //- Character sheet pdf display
             h2 Sheets
             hr
             - const urlSheet = `/heroes/${hero.name}/charactersheet/charactersheet`;
@@ -359,21 +401,3 @@ block content
             setupSpellTables();
             setupSpellTypeTabs();
         });
-
-
-    //-      -->        //- If user is on hero sheets page
-    //-                 else if url.endsWith('/sheets')
-    //-                     - const urlSheet = `/heroes/${hero.name}/charactersheet/charactersheet`;
-    //-                     - const urlDetails = `/heroes/${hero.name}/charactersheet/characterdetails`;
-    //-                     - const urlSpell = `/heroes/${hero.name}/charactersheet/spellcasting`;
-    //-                     iframe(src=`${urlSheet}#toolbar=0` type="application/pdf" frameborder="0")
-    //-                     iframe(src=`${urlDetails}#toolbar=0` type="application/pdf" frameborder="0")
-    //-                     iframe(src=`${urlSpell}#toolbar=0` type="application/pdf" frameborder="0")
-    //-                     hr
-    //-                     .stat_grid
-    //-                         .stat_block
-    //-                             a.button_small(href=urlSheet target='_blank') See Character Sheet
-    //-                         .stat_block
-    //-                             a.button_small(href=urlDetails target='_blank') See Details Sheet
-    //-                         .stat_block
-    //-                             a.button_small(href=urlSpell target='_blank') See Spell Sheet

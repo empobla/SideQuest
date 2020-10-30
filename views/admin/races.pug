@@ -3,25 +3,33 @@ include ../mixins/_text_editor
 
 block content
 
+    //- Headers
     .l-margin-start
+    //- Main races header
     if url.endsWith('/races')
         a.l-divider(href=`/admin/${user.username}`)
             .c-divider__left
                 h1 &#10525; Races
             .c-divider__right
+    //- New, edit, and search race headers
     else
         a.l-divider(href=`/admin/${user.username}/races`)
             .c-divider__left
+                //- New race header
                 if url.endsWith('/newrace')
                     h1 &#10525; New Race
+                //- Search race header
                 else if url.endsWith('/search')
                     h1 &#10525; Races: Search
+                //- Edit race header
                 else
                     h1 &#10525; Edit Race: #{race.name}
             .c-divider__right
     
+    //- Main and search races section
     if url.endsWith('/races') || url.endsWith('/search')
         .l-main-content
+            //- Race search bar
             .l-search
                 form.c-search(action=`/admin/${username}/races/search` method='post' autocomplete='off')
                     .c-search__input
@@ -29,13 +37,15 @@ block content
                         input(type='text' name='name' id='name' placeholder='Search for race by name')
                     .c-search__input--button
                         button.c-button--large.m-clickable(type='submit') Search
-        
+
+            //- New race button
             .l-margin--2
             .l-ability-points-grid.grid--3
                 div
                 a.c-button--large.m-clickable(href=`/admin/${username}/races/newrace`) New Race
                 div
         
+        //- Race table display
         .l-margin--3
         .l-main-content
             table.l-spells
@@ -44,15 +54,21 @@ block content
                         td.m-align-left
                             a.m-color-black(href=`/admin/${username}/races/edit/${race._id}`) #{race.name}
 
+    //- New race section
     else if url.endsWith('/newrace')
         .l-main-content
             form.c-edithero-form(action='' method='post' autocomplete='off')
+                //- Name
                 .c-edithero-form__input
                     label(for='name') *Race Name:
                     input(type='text' name='name' placeholder='Human' required)
+                
+                //- Description
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='description') Description:
                     textarea(name='description' placeholder='Write race description here.')
+                
+                //- Ability increase
                 .l-margin--2
                 h2 Ability Increase
                 hr
@@ -68,6 +84,8 @@ block content
                 .l-margin--3
                 hr
                 .l-margin--2
+                
+                //- Speed, alignment, size, and languages
                 .c-edithero-form__input
                     label(for='speed') Speed (ft):
                     input(type='number' name='speed' min='0' placeholder='30')
@@ -80,22 +98,32 @@ block content
                 
                     label(for='languages') Languages:
                     input(type='text' name='languages' placeholder='Common, Human')
+                
+                //- Traits
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='traits') Traits:
                     //- textarea(name='traits' placeholder='Write race traits here.')
                     +textEditor('editor', '', 'Write race traits here.', 'traits')
+                
+                //- Create race button
                 .l-margin--3
                 button.c-button--large.m-clickable(type='submit') Create Race
     
+    //- Edit race section
     else
         .l-main-content
             form.c-edithero-form(action='' method='post' autocomplete='off')
+                //- Name
                 .c-edithero-form__input
                     label(for='name') *Race Name:
                     input(type='text' name='name' placeholder='Human' value=race.name required)
+                
+                //- Description
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='description') Description:
                     textarea(name='description' placeholder='Write race description here.')=(race.description || null)
+                
+                //- Ability increase
                 .l-margin--2
                 h2 Ability Increase
                 hr
@@ -119,6 +147,8 @@ block content
                 .l-margin--3
                 hr
                 .l-margin--2
+                
+                //- Speed, alignment, size, and languages
                 .c-edithero-form__input
                     label(for='speed') Speed (ft):
                     input(type='number' name='speed' min='0' placeholder='30' value=(race.speed || null))
@@ -131,10 +161,14 @@ block content
                 
                     label(for='languages') Languages:
                     input(type='text' name='languages' placeholder='Common, Human' value=(race.languages || null))
+                
+                //- Traits
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='traits') Traits:
                     //- textarea(name='traits' placeholder='Write race traits here.')=(race.traits || null)
                     +textEditor('editor', race.traits, 'Write race traits here.', 'traits')
+                
+                //- Update race and delete race buttons
                 .l-margin--3
                 .l-ability-points-grid.grid--2
                     button.c-button--large.m-clickable(type='submit' name='deleterace' value='false') Update Race

@@ -1,6 +1,11 @@
+//- Dropdown for DM Notes that mimics spell view behaviour with hero or character info
 mixin heroDropdown(hero, type='')
+    
     td(class='c-spell-description' colspan='6')
+        
+        //- Hero Dropdown
         if type == 'hero'
+            //- Hero statistics Table
             h3 Statistics
             - const ab = hero.abilities;
             - const physAtt = hero.physical_attributes;
@@ -73,6 +78,7 @@ mixin heroDropdown(hero, type='')
                         td #{hero.physical_attributes.speed} ft
                         td Speed
             
+            //- Hero Ability scores table
             .l-margin--3
             h3 Ability Scores
             - const st = hero.saving_throws;
@@ -101,6 +107,7 @@ mixin heroDropdown(hero, type='')
                             else
                                 td= abModArr[i] > 0 ? `+${abModArr[i]}` : abModArr[i]
 
+            //- Hero Skills table
             .l-margin--3
             h3 Skills
             - const sk = hero.skills;
@@ -125,6 +132,7 @@ mixin heroDropdown(hero, type='')
                                     td= skDict[skNameArr[i]] > 0 ? `+${skDict[skNameArr[i]]}` : skDict[skNameArr[i]]
                                 td= skNameArr[i]
         
+        //- Character Dropdown
         else if type == 'character'
             - const character = hero
             h3= character.name

@@ -1,20 +1,24 @@
 extends ../layout
 
 block content
-
+    
+    //- Header
     .l-margin-start
     .l-divider
         .c-divider__left
             h1 Crear Cuenta
         .c-divider__right
 
+    //- Error section for flash messages (UNIMPLEMENTED)
     if errors
         ul
             for error in errors
                 li= error.msg
     
+    //- Main signup section
     .l-main-content
         .l-margin--7
+        //- Signup form
         .l-login
             form.c-login-form(action="" method="POST" autocomplete='off')
                 .c-login-form__input
@@ -28,4 +32,5 @@ block content
                     input(type="password" name="confirm_password" id="confirm_password" placeholder="Confirma tu contraseña..." required)
                 .c-login-form__input
                     button.c-button--white(type="submit") Crear Cuenta
+            //- Website logo image
             img#login__logo(src='/images/logos/sidequestlogo.png' alt='SideQuest logo')

@@ -2,21 +2,26 @@ extends ../layout
 
 block content
 
+    //- Headers
     .l-margin-start
+    //- Main manage users header
     if url.endsWith('/users')
         a.l-divider(href=`/admin/${user.username}`)
             .c-divider__left
                 h1 &#10525; Manage Users
             .c-divider__right
+    //- Edit users header
     else
         a.l-divider(href=`/admin/${user.username}/users`)
             .c-divider__left
                 h1 &#10525; Edit #{userEdit.username}
             .c-divider__right
 
+    //- Main manage users section
     if url.endsWith('/users')
         .l-main-content
             .l-manageusers-grid
+                //- Admin user list
                 div
                     h2.m-align-center Admins
                     hr
@@ -26,6 +31,7 @@ block content
                             if user.isAdmin
                                 li
                                     a.c-button(href=`/admin/${username}/users/${user._id}`)= user.username
+                //- DM user list
                 div
                     h2.m-align-center DMs
                     hr
@@ -35,6 +41,7 @@ block content
                             if user.isDM
                                 li
                                     a.c-button(href=`/admin/${username}/users/${user._id}`)= user.username
+                //- Default user list
                 div
                     h2.m-align-center Users
                     hr
@@ -45,10 +52,12 @@ block content
                                 li
                                     a.c-button(href=`/admin/${username}/users/${user._id}`)= user.username
     
+    //- Edit user section
     else
         .l-main-content
             form(action='' method='post' autocomplete='off')
                 .l-manageusers-grid
+                    //- Account level
                     div
                         h2.m-align-center Account level
                         hr
@@ -68,6 +77,8 @@ block content
                                         input(type='checkbox' name='isDM' value='true' checked)
                                     else
                                         input(type='checkbox' name='isDM' value='true')
+                    
+                    //- Username and password
                     div
                         h2.m-align-center Edit username / password
                         hr
@@ -83,6 +94,8 @@ block content
                             .c-adminuser-form__input
                                 label(for="confirm_password") Confirm Password:
                                 input(type="password" name="confirm_password" id="confirm_password" placeholder="Input new password..." required disabled)
+                    
+                    //- Hero transfer
                     div
                         h2.m-align-center Heroes
                         hr

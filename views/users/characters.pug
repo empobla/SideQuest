@@ -3,25 +3,33 @@ include ../mixins/_text_editor
 
 block content
 
+    //- Header
     .l-margin-start
+    //- Edit character main section header
     if url.endsWith('/characters')
         .l-divider
             .c-divider__left
                 h1 Editar Personajes
             .c-divider__right
+    //- New, edit and character search headers
     else
         a.l-divider(href=`/users/${user.username}/characters`)
             .c-divider__left
+                //- New character header
                 if url.endsWith('/newcharacter')
                     h1 &#10525; Personaje Nuevo
+                //- Search character header
                 else if url.endsWith('/search')
                     h1 &#10525; Editar Personajes: Búsqueda
+                //- Edit character header
                 else
                     h1 &#10525; Editar Personajes: #{character.name}
             .c-divider__right
 
+    //- Main and search character sections
     if url.endsWith('/characters') || url.endsWith('/search')
         .l-main-content
+                //- Edit character search bar
                 .l-search
                     form.c-search(action=`/users/${username}/characters/search` method='post' autocomplete='off')
                         .c-search__input
@@ -39,12 +47,14 @@ block content
                         .c-search__input
                             button.c-button--large.m-clickable(type='submit') Buscar
 
+                //- Create character button
                 .l-margin--2
                 .l-ability-points-grid.grid--3
                     div
                     a.c-button--large.m-clickable(href=`/users/${username}/characters/newcharacter`) Nuevo Personaje
                     div
                 
+                //- Character display cards
                 .l-margin--3
                 .l-cards--4
                     each character in characters
@@ -58,12 +68,16 @@ block content
                             else
                                 img.c-card__image(src=tmpImg)
 
+    //- New character section
     else if url.endsWith('/newcharacter')
         form.c-editchar-form(action='' method='post' enctype='multipart/form-data' autocomplete='off')
             .l-main-content.l-editchar-grid
+                //- Character image, summary, and appearance sidebar
                 .l-text-wrap
                     label.l-margin-right--1(for='image') Subir imagen:
                     input(type='file' name='image')
+                    
+                    //- Character summary
                     .c-basic-info
                         h3 Resumen
                         .c-editchar-form__input
@@ -87,25 +101,32 @@ block content
                         .c-editchar-form__input
                             label(for='size') Tamaño:
                             input(type='text' name='size' placeholder='Small/Chico')
+                    
+                    //- Character appearance
                     .c-basic-info
                         h3 Apariencia
                         .c-editchar-form__input
                             textarea(name='appearance' rows='5' placeholder='Enano sin ropa, tiene una barba metálica larga que le cubre el cuerpo.')
 
+                //- Character name and description section
                 div
                     input#charnameinput(type='text' name='name' placeholder='Nombre del Personaje' required)
 
                     .c-editchar-form__input
                         +textEditor('editor', '', 'Escribe el resumen o la historia de este personaje aquí.', 'summary')
-                
+            
+            //- Create character button
             .l-main-content.l-clearleft       
                 .l-margin--2
                 button.c-button--large.m-clickable(type='submit') Crear Personaje
     
+    //- Edit character section
     else
         form.c-editchar-form(action='' method='post' enctype='multipart/form-data' autocomplete='off')
             .l-main-content.l-editchar-grid
+                //- Character image, summary, and appearance sidebar
                 .l-text-wrap
+                    //- If character image exists, display it. Else, just display upload option
                     if character.image != '' && character.image != undefined
                         img.l-text-wrap__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png` alt=`${character.name}'s Image`)
                         .l-margin--2
@@ -114,6 +135,8 @@ block content
                     else
                         label.l-margin-right--1(for='image') Subir imagen:
                         input(type='file' name='image')
+                    
+                    //- Character summary
                     .c-basic-info
                         h3 Resumen
                         .c-editchar-form__input
@@ -137,17 +160,21 @@ block content
                         .c-editchar-form__input
                             label(for='size') Tamaño:
                             input(type='text' name='size' placeholder='Small/Chico' value=(character.size || null))
+                    
+                    //- Character appearance
                     .c-basic-info
                         h3 Apariencia
                         .c-editchar-form__input
                             textarea(name='appearance' rows='5' placeholder='Enano sin ropa, tiene una barba metálica larga que le cubre el cuerpo.')=(character.appearance || null)
 
+                //- Character name and description section
                 div
                     input#charnameinput(type='text' name='name' placeholder='Onorim' value=(character.name) required)
 
                     .c-editchar-form__input
                         +textEditor('editor', character.summary, 'Escribe el resumen o la historia de este personaje aquí.', 'summary')
             
+            //- Save changes and delete character buttons
             .l-main-content.l-clearleft       
                 .l-margin--2
                 button.c-button--large.m-clickable.l-margin-right--1(type='submit' name='deletecharacter' value='false') Guardar Cambios

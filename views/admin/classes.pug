@@ -3,25 +3,33 @@ include ../mixins/_text_editor
 
 block content
     
+    //- Header
     .l-margin-start
+    //- Main classes header
     if url.endsWith('/classes')
         a.l-divider(href=`/admin/${user.username}`)
             .c-divider__left
                 h1 &#10525; Classes
             .c-divider__right
+    //- New, edit, and search classes header
     else
         a.l-divider(href=`/admin/${user.username}/classes`)
             .c-divider__left
+                //- New class header
                 if url.endsWith('/newclass')
                     h1 &#10525; New Class
+                //- Search class header
                 else if url.endsWith('/search')
                     h1 &#10525; Classes: Search
+                //- Edit class header
                 else
                     h1 &#10525; Edit Class: #{heroClass.name}
             .c-divider__right
     
+    //- Main and search class section
     if url.endsWith('/classes') || url.endsWith('/search')
         .l-main-content
+            //- Class search bar
             .l-search
                 form.c-search(action=`/admin/${username}/classes/search` method='post' autocomplete='off')
                     .c-search__input
@@ -30,12 +38,14 @@ block content
                     .c-search__input--button
                         button.c-button--large.m-clickable(type='submit') Search
         
+            //- New class button
             .l-margin--2
             .l-ability-points-grid.grid--3
                 div
                 a.c-button--large.m-clickable(href=`/admin/${username}/classes/newclass`) New Class
                 div
         
+        //- Class table display 
         .l-margin--3
         .l-main-content
             table.l-spells
@@ -44,15 +54,21 @@ block content
                         td.m-align-left
                             a.m-color-black(href=`/admin/${username}/classes/edit/${heroClass._id}`) #{heroClass.name}
 
+    //- New class section
     else if url.endsWith('/newclass')
         .l-main-content
             form.c-edithero-form(action='' method='post' autocomplete='off')
+                //- Class name
                 .c-edithero-form__input
                     label(for='name') *Class Name:
                     input(type='text' name='name' placeholder='Monk' required)
+                
+                //- Class description
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='description') Description:
                     textarea(name='description' placeholder='Write class description here.')
+                
+                //- Class hit die, hitpoints at first level, and hitpoints at higher levels
                 .l-margin--2
                 .c-edithero-form__input
                     label(for='hit_die') Hit Die:
@@ -64,6 +80,7 @@ block content
                     label(for='hitpoints_higherlvls') Hit Points at Higher Levels:
                     input(type='text' name='hitpoints_higherlvls' placeholder='1d8 (or 5) + your Constitution modifier per Monk level after 1st')
                 
+                //- Class primary abilities
                 .l-margin--2
                 h2 Primary Abilities
                 hr
@@ -75,6 +92,7 @@ block content
                             label= ability.toUpperCase()
                             input(type='checkbox' name=`abilities[]` value=`${ability}`)
                 
+                //- Class saving throw proficiencies
                 .l-margin--3
                 h2 Saving Throw Proficiencies
                 hr
@@ -85,6 +103,7 @@ block content
                             label= ability.toUpperCase()
                             input(type='checkbox' name=`st_proficiencies[]` value=`${ability}`)
 
+                //- Skill proficiencies
                 .l-margin--3
                 h2 Skill Proficiencies (Pick from):
                 hr
@@ -105,6 +124,7 @@ block content
                     label(for='skills[choose]') Choose:
                     input(type='number' name='skills[choose]' placeholder='--')
 
+                //- Spell ability
                 .l-margin--3
                 h2 Spell Ability (if spellcaster class)
                 hr
@@ -118,24 +138,34 @@ block content
                 hr
                 .l-margin--2
                 
+                //- Armor and weapon proficiencies
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='armor_weapon_proficiencies') Armor and Weapon Proficiencies:
                     textarea(name='armor_weapon_proficiencies' placeholder='Write class armor and weapon proficiencies here.')
+                
+                //- Tool proficiencies
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='tool_proficiencies') Tool Proficiencies
                     textarea(name='tool_proficiencies' placeholder='Write class tool proficiencies here.')
+                
+                //- Create class button
                 .l-margin--3
                 button.c-button--large.m-clickable(type='submit') Create Class
     
+    //- Edit class section
     else
         .l-main-content
             form.c-edithero-form(action='' method='post' autocomplete='off')
+                //- Class name
                 .c-edithero-form__input
                     label(for='name') *Class Name:
                     input(type='text' name='name' placeholder='Monk' value=heroClass.name required)
+                //- Class description
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='description') Description:
                     textarea(name='description' placeholder='Write class description here.')=(heroClass.description || null)
+                
+                //- Class hit die, hp at first level, hp at higher levels
                 .l-margin--2
                 .c-edithero-form__input
                     label(for='hit_die') Hit Die:
@@ -147,6 +177,7 @@ block content
                     label(for='hitpoints_higherlvls') Hit Points at Higher Levels:
                     input(type='text' name='hitpoints_higherlvls' placeholder='1d8 (or 5) + your Constitution modifier per Monk level after 1st' value=(heroClass.hitpoints_higherlvls || null))
                 
+                //- Primary abilities
                 .l-margin--2
                 h2 Primary Abilities
                 hr
@@ -161,6 +192,7 @@ block content
                             else
                                 input(type='checkbox' name=`abilities[]` value=`${ability}`)
                 
+                //- Saving throw proficiencies
                 .l-margin--3
                 h2 Saving Throw Proficiencies
                 hr
@@ -174,6 +206,7 @@ block content
                             else
                                 input(type='checkbox' name=`st_proficiencies[]` value=`${ability}`)
 
+                //- Skill proficiencies
                 .l-margin--3
                 h2 Skill Proficiencies (Pick from):
                 hr
@@ -197,6 +230,7 @@ block content
                     label(for='skills[choose]') Choose:
                     input(type='number' name='skills[choose]' placeholder='--' value=(heroClass.skills.choose || null))
                 
+                //- Spell ability
                 .l-margin--3
                 h2 Spell Ability (if spellcaster class)
                 hr
@@ -214,12 +248,17 @@ block content
                 hr
                 .l-margin--2
                 
+                //- Armor and weapon proficiencies
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='armor_weapon_proficiencies') Armor and Weapon Proficiencies:
                     textarea(name='armor_weapon_proficiencies' placeholder='Write class armor and weapon proficiencies here.')=(heroClass.armor_weapon_proficiencies || null)
+                
+                //- Tool proficiencies
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='tool_proficiencies') Tool Proficiencies
                     textarea(name='tool_proficiencies' placeholder='Write class tool proficiencies here.')=(heroClass.tool_proficiencies || null)
+                
+                //- Save changes and delete class buttons
                 .l-margin--3
                 .l-ability-points-grid.grid--2
                     button.c-button--large.m-clickable(type='submit' name='deleteclass' value='false') Save Changes

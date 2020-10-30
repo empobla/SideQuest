@@ -49,11 +49,11 @@ html(lang='es')
                   a(href=`/users/${user.username}/story`) Historias
                 li
                   a(href=`/users/${user.username}/maps`) Mapas
+                //- If user is admin or dm
                 if user.isAdmin
                   li
-                    //- a(href=`/users/${user.username}/temprace`) Admin
                     a(href=`/admin`) Admin
-                else if user.isDM
+                if user.isDM
                   li
                     a(href='/dm') DM
             li

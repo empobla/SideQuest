@@ -2,14 +2,17 @@ extends ../layout
 
 block content
 
+    //- Header
     .l-margin-start
     .l-divider
         .c-divider__left
             h1 Ingreso
         .c-divider__right
 
+    //- Main login section
     .l-main-content
         .l-margin--7
+        //- Login form
         .l-login
             form.c-login-form(action='' method='post' autocomplete='off')
                 .c-login-form__input
@@ -20,17 +23,5 @@ block content
                     input(type="password" name="password" id="password" placeholder="Ingresa tu contraseña..." required)
                 .c-login-form__input
                     button.c-button--white(type="submit") Ingresar
+            //- Website logo image
             img#login__logo(src='/images/logos/sidequestlogo.png' alt='SideQuest logo')
-
-    //- .outer_wrapper
-    //-     .form_wrapper
-    //-         form.credentials(action="" method="POST")
-    //-             h2 Ingreso
-    //-             .form_input
-    //-                 label(for="username") Usuario:
-    //-                 input(type="text" name="username" id="username" placeholder="Ingresa tu usuario..." required)
-    //-             .form_input
-    //-                 label(for="username") Contraseña:
-    //-                 input(type="password" name="password" id="password" placeholder="Ingresa tu contraseña..." required)
-    //-             .form_input
-    //-                 button.button_small(type="submit") Ingresar

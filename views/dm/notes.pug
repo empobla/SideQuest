@@ -5,25 +5,33 @@ include ../mixins/_spell_row
 
 block content
 
+    //- Header
     .l-margin-start
+    //- Main notes header
     if url.endsWith('/notes')
         a.l-divider(href=`/dm/${user.username}`)
             .c-divider__left
                 h1 &#10525; Notas
             .c-divider__right
+    //- New, edit, view, and search note headers
     else
         a.l-divider(href=`/dm/${user.username}/notes`)
             .c-divider__left
+                //- New note header
                 if url.endsWith('/newnote')
                     h1 &#10525; Nota Nueva
+                //- Search note header
                 else if url.endsWith('/search')
                     h1 &#10525; Notas: Búsqueda
+                //- Edit note header
                 else
                     h1 &#10525; Editar Nota: #{note.name}
             .c-divider__right
     
+    //- Main and search note section
     if url.endsWith('/notes') || url.endsWith('/search')
         .l-main-content
+            //- Note search bar
             .l-search
                 form.c-search(action=`/dm/${username}/notes/search` method='post' autocomplete='off')
                     .c-search__input
@@ -31,13 +39,15 @@ block content
                         input(type='text' name='name' id='name' placeholder='Buscar nota por nombre')
                     .c-search__input--button
                         button.c-button--large.m-clickable(type='submit') Buscar
-        
+
+            //- New note button
             .l-margin--2
             .l-ability-points-grid.grid--3
                 div
                 a.c-button--large.m-clickable(href=`/dm/${username}/notes/newnote`) Nota Nueva
                 div
         
+        //- Note table display
         .l-margin--3
         .l-main-content
             table.l-spells
@@ -55,9 +65,11 @@ block content
                             a(href=`/dm/${username}/notes/edit/${note._id}`)
                                 img.c-table__image(src='/images/icons/edit.svg' alt='Edit icon')
     
+    //- New note section
     else if url.endsWith('/newnote')
         .l-main-content
             .l-notes
+                //- Note creation form
                 .c-notes-section
                     h2.m-align-center Nota
                     hr
@@ -72,6 +84,8 @@ block content
                         .l-margin--2
                         .m-align-center
                             button.c-button--large.m-clickable.l-margin-right--1(type='submit') Crear Nota
+                
+                //- Website compendium section
                 .c-notes-section
                     h2.m-align-center Compendio
                     hr
@@ -88,7 +102,9 @@ block content
                                         .c-tabs__button-left
                                             h2= link
                         
+                        //- Tab 1: Heroes
                         #l-main-content--note-compendium.c-tabs__content.c-tabs__content--active(data-tab='0')
+                            //- Display heroes in spell row format
                             table.l-spells
                                 each hero in heroes
                                     tr.c-spell.c-spell--display.m-clickable
@@ -114,18 +130,23 @@ block content
                                     tr
                                         +heroDropdown(hero, 'hero')
                         
+                        //- Tab 2: Characters
                         #l-main-content--note-compendium.c-tabs__content(data-tab='1')
+                            //- Character AJAX search functionality import
                             script(src="/javascripts/ajax/characters.js")
-                                
+
+                            //- Character search bar
                             form.c-edithero-form(autocomplete='off')
                                 .c-edithero-form__input.c-edithero-form__input--stack
                                     label(for='name') Nombre del Personaje
                                     input(type='text' name='name' id='search-charname' placeholder='Buscar personaje por nombre')
 
                                     button.c-button.m-clickable#js-charbutton(type='button' onclick=`searchCharsDM('${user.username}', '/dm/${username}/notes/charactersearch')`) Search
+                                    //- Search loading animation
                                     .m-inactive#js-char-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
                             
+                            //- Display characters in spell row format
                             .l-margin--2
                             table.l-spells#js-charsearch
                                 each character in characters
@@ -144,26 +165,33 @@ block content
                                     tr
                                         +heroDropdown(character, 'character')
                         
+                        //- Tab 3: Spells
                         #l-main-content--note-compendium.c-tabs__content(data-tab='2')
+                            //- Spell AJAX search functionality import
                             script(src="/javascripts/ajax/spells.js")
-                                
+                            
+                            //- Spell search bar
                             form.c-edithero-form(autocomplete='off')
                                 .c-edithero-form__input.c-edithero-form__input--stack
                                     label(for='name') Spell name
                                     input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
 
                                     button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/spellsearch')`) Search
+                                    //- Search loading animation
                                     .m-inactive#js-spell-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
 
+                            //- Spells display
                             .l-margin--2
                             table.l-spells#js-spellsearch
                                 each spell in spells
                                     +spellRow(spell, { dm: true })
     
+    //- View note section
     else if url.includes('/view/')
         .l-main-content
             .l-notes
+                //- Note view section
                 .c-notes-section
                     h2.m-align-center Nota
                     hr
@@ -172,6 +200,7 @@ block content
                     .l-margin--2
                     +textEditor('view', note.notes)
                 
+                //- Website compendium section
                 .c-notes-section
                     h2.m-align-center Compendio
                     hr
@@ -188,7 +217,9 @@ block content
                                         .c-tabs__button-left
                                             h2= link
                         
+                        //- Tab 1: Heroes
                         #l-main-content--note-compendium.c-tabs__content.c-tabs__content--active(data-tab='0')
+                            //- Display heroes in spell row format
                             table.l-spells
                                 each hero in heroes
                                     tr.c-spell.c-spell--display.m-clickable
@@ -214,18 +245,23 @@ block content
                                     tr
                                         +heroDropdown(hero, 'hero')
                         
+                        //- Tab 2: Characters
                         #l-main-content--note-compendium.c-tabs__content(data-tab='1')
+                            //- Character AJAX search functionality import
                             script(src="/javascripts/ajax/characters.js")
-                                
+
+                            //- Character search bar
                             form.c-edithero-form(autocomplete='off')
                                 .c-edithero-form__input.c-edithero-form__input--stack
                                     label(for='name') Nombre del Personaje
                                     input(type='text' name='name' id='search-charname' placeholder='Buscar personaje por nombre')
 
                                     button.c-button.m-clickable#js-charbutton(type='button' onclick=`searchCharsDM('${user.username}', '/dm/${username}/notes/charactersearch')`) Search
+                                    //- Search loading animation
                                     .m-inactive#js-char-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
                             
+                            //- Display characters in spell row format
                             .l-margin--2
                             table.l-spells#js-charsearch
                                 each character in characters
@@ -244,26 +280,33 @@ block content
                                     tr
                                         +heroDropdown(character, 'character')
                         
+                        //- Tab 3: Spells
                         #l-main-content--note-compendium.c-tabs__content(data-tab='2')
+                            //- Spell AJAX search functionality import
                             script(src="/javascripts/ajax/spells.js")
-                                
+
+                            //- Spell search bar
                             form.c-edithero-form(autocomplete='off')
                                 .c-edithero-form__input.c-edithero-form__input--stack
                                     label(for='name') Spell name
                                     input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
 
                                     button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/spellsearch')`) Search
+                                    //- Search loading animation
                                     .m-inactive#js-spell-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
-                                        
+
+                            //- Spell display
                             .l-margin--2
                             table.l-spells#js-spellsearch
                                 each spell in spells
                                     +spellRow(spell, { dm: true })
     
+    //- Note edit section
     else
         .l-main-content
             .l-notes
+                //- Note edit form
                 .c-notes-section
                     h2.m-align-center Nota
                     hr
@@ -279,6 +322,8 @@ block content
                         .m-align-center
                             button.c-button--large.m-clickable.l-margin-right--1(type='submit' name='deletenote' value='false') Guardar Nota
                             button.c-button--large.m-clickable.m-background-red.l-margin-right--1(type='submit' name='deletenote' value='true') Borrar Nota
+                
+                //- Website compendium section
                 .c-notes-section
                     h2.m-align-center Compendio
                     hr
@@ -295,7 +340,9 @@ block content
                                         .c-tabs__button-left
                                             h2= link
                         
+                        //- Tab 1: Heroes
                         #l-main-content--note-compendium.c-tabs__content.c-tabs__content--active(data-tab='0')
+                            //- Display heroes in spell row format
                             table.l-spells
                                 each hero in heroes
                                     tr.c-spell.c-spell--display.m-clickable
@@ -321,18 +368,23 @@ block content
                                     tr
                                         +heroDropdown(hero, 'hero')
                         
+                        //- Tab 2: Characters
                         #l-main-content--note-compendium.c-tabs__content(data-tab='1')
+                            //- Character AJAX search functionality import
                             script(src="/javascripts/ajax/characters.js")
-                                
+
+                            //- Character search bar
                             form.c-edithero-form(autocomplete='off')
                                 .c-edithero-form__input.c-edithero-form__input--stack
                                     label(for='name') Nombre del Personaje
                                     input(type='text' name='name' id='search-charname' placeholder='Buscar personaje por nombre')
 
                                     button.c-button.m-clickable#js-charbutton(type='button' onclick=`searchCharsDM('${user.username}', '/dm/${username}/notes/charactersearch')`) Search
+                                    //- Search loading animation
                                     .m-inactive#js-char-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
                             
+                            //- Display characters in spell row format
                             .l-margin--2
                             table.l-spells#js-charsearch
                                 each character in characters
@@ -351,18 +403,23 @@ block content
                                     tr
                                         +heroDropdown(character, 'character')
                         
+                        //- Tab 3: Spells
                         #l-main-content--note-compendium.c-tabs__content(data-tab='2')
+                            //- Spell AJAX search functionality import
                             script(src="/javascripts/ajax/spells.js")
-                                
+
+                            //- Spell search bar
                             form.c-edithero-form(autocomplete='off')
                                 .c-edithero-form__input.c-edithero-form__input--stack
                                     label(for='name') Spell name
                                     input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
 
                                     button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/spellsearch')`) Search
+                                    //- Search loading animation
                                     .m-inactive#js-spell-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
-                                        
+
+                            //- Spell display
                             .l-margin--2
                             table.l-spells#js-spellsearch
                                 each spell in spells

@@ -4,27 +4,32 @@ include mixins/_text_editor
 block content
     
     .l-margin-start
+    //- Map header
     if url.endsWith('/maps')
         .l-divider
             .c-divider__left
                 h1 Mapas
             .c-divider__right
+    //- Map view header
     else
         a.l-divider(href=`/maps`)
             .c-divider__left
                 h1 &#10525; Mapas
             .c-divider__right
         
+    //- Map main and search sections
     if url.endsWith('/maps') || url.endsWith('/search')
         .l-main-content
+                //- Map search bar
                 .l-search
                     form.c-search(action=`/maps/search` method='post' autocomplete='off')
                         .c-search__input
                             label(for='name') Nombre
                             input(type='text' name='name' id='name' placeholder='Buscar mapa por nombre')
-                        .c-search__input
+                        .c-search__input--button
                             button.c-button--large.m-clickable(type='submit') Buscar
                 
+                //- Map Cards
                 .l-margin--3
                 .l-cards--4
                     each map in maps
@@ -35,6 +40,7 @@ block content
                                 .c-card__header-right
                             img.c-card__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${map.image}.png` alt=`${map.name} Image`)
     
+    //- Map view section
     else
         .l-main-content
             h2= map.name
@@ -44,21 +50,26 @@ block content
                 img(src=`http://res.cloudinary.com/duezou4td/image/upload/${map.image}.png` alt=`${map.name} Image`)
             if map.description != undefined && map.description != ''
                 +textEditor('view', map.description)
-            
+
+        //- Map comments
         .l-main-content
             h2 Comentarios
             hr
+
+            //- If user is logged in, allow him to comment. Else, prompt him to login to comment.
             if user
                 .l-content-box
                     .c-content-box
                         img.c-content-box__image(src='/images/logos/favicon.png' alt='SideQuest Logo')
         
                         .l-content-box__content
+                            //- Comment header
                             .c-content-box__title
                                 h3 #{user.username}
                                 - const date = new Date()
                                 em.l-content-box__title--info= `Posted ${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()}`
                             
+                            //- Comment text
                             .l-content-box__text
                                 form.c-edithero-form(action=`/maps/${map._id}/createcomment` method='post' autocomplete='off')
                                     .c-edithero-form__input.c-edithero-form__input--stack
@@ -67,6 +78,7 @@ block content
                                         textarea(name='text' placeholder='Escribe tu comentario aquí.')
                                         button.c-button.m-clickable(type='submit') Comentar
             
+            //- Display map comments
             //- If map comments exist, display them with appropriate line breaks
             if map.comments != '' && map.comments != undefined
                 each comment in map.comments
@@ -75,16 +87,19 @@ block content
                             img.c-content-box__image(src='/images/logos/favicon.png' alt='')
 
                             .l-content-box__content
+                                //- Comment header
                                 .c-content-box__title
                                     h4 #{comment.username}
                                     - const dateComment = new Date(comment.date)
                                     em.l-content-box__title--info= `Posted ${String(dateComment.getDate()).padStart(2,'0')}/${String(dateComment.getMonth() + 1).padStart(2,'0')}/${dateComment.getFullYear()}`
                                 
+                                //- Comment text
                                 .l-content-box__text
                                     - const lines = comment.text.split(/(\r\n|\r|\n)/g);
                                     each line in lines
                                         p= line
                                 
+                                //- Allow user to delete own comments, allow admin to delete all comments
                                 if user && user.isAdmin
                                     .l-margin--3
                                     form(action=`/maps/${map._id}/deletecomment/${comment._id}` method='post')
