@@ -8,14 +8,14 @@ SideQuest D&D website repository for tracking changes and pushing to production.
 ---
 ## Index
 - [Setup](#setup)
-    - [Files Setup](#files%20setup)
-- [Deploying with Heroku](#deploying%20with%20heroku)
-- [Dependency List](#dependency%20list)
-- [Useful Git Commands](#useful%20git%20commands)
-- [Using WSL and NPM](#using%20wsl%20and%20npm)
+    - [Files Setup](#files-setup)
+- [Deploying with Heroku](#deploying-with-heroku)
+- [Dependency List](#dependency-list)
+- [Useful Git Commands](#useful-git-commands)
+- [Using WSL and NPM](#using-wsl-and-npm)
 - [Versions](#versions)
-    - [Alpha](#sidequest%20d&d%20alpha)
-    - [Release 1.0](#sidequest%20d&d%20release%201.0)
+    - [Alpha](#sidequest-dd-alpha)
+    - [Release 1.0](#sidequest-dd-release-10)
 ---
 
 ## Setup
@@ -351,9 +351,10 @@ SideQuest D&D Alpha can no longer be found in this repository.
 <img src='public/images/readme/versions/alpha/hero/hero1.jpeg'>
 <img src='public/images/readme/versions/alpha/hero/hero2.jpeg'>
 </p> -->
-| 1 | 2 | 3 |
-|------------|-------------|-------------|
-| <img src='public/images/readme/versions/alpha/hero/hero0.png' width='100%'> | <img src='public/images/readme/versions/alpha/hero/hero1.jpeg' width='100%'> | <img src='public/images/readme/versions/alpha/hero/hero2.jpeg' width='100%'> |
+|  |  |
+|------------|-------------|
+| <img src='public/images/readme/versions/alpha/hero/hero0.png' width='100%'> | <img src='public/images/readme/versions/alpha/hero/hero1.jpeg' width='100%'> | 
+| <img src='public/images/readme/versions/alpha/hero/hero2.jpeg' width='100%'> | |
 
 
 
@@ -387,6 +388,6 @@ SideQuest D&D Alpha can no longer be found in this repository.
 ---
 ([Back to top](#index))
 
-This is the current stable released version of SideQuest D&D. It has a completely reworked UI and has many more features than the [alpha](#sidequest%20d&d%20alpha) version offered. Users liked this version a lot and used it much more.
+This is the current stable released version of SideQuest D&D. It has a completely reworked UI and has many more features than the [alpha](#sidequest-dd-alpha) version offered. Users liked this version a lot and used it much more.
 
 The most popular pages of this release are the Characters and Story pages.
