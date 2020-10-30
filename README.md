@@ -361,24 +361,16 @@ SideQuest D&D Alpha can no longer be found in this repository.
 
 
 #### **Story View**
-<p align='center'>
 <img src='public/images/readme/versions/alpha/story/0.jpeg'>
-<img src='public/images/readme/versions/alpha/story/1.jpeg'>
-</p>
 
 #### **Edit Hero Spells**
-<p align='center'>
-<img src='public/images/readme/versions/alpha/edit_spells/0.png'>
-<img src='public/images/readme/versions/alpha/edit_spells/1.png'>
-<img src='public/images/readme/versions/alpha/edit_spells/2.png'>
-<img src='public/images/readme/versions/alpha/edit_spells/3.png'>
-</p>
+|  |  |
+|------------|-------------|
+| <img src='public/images/readme/versions/alpha/edit_spells/0.png'> | <img src='public/images/readme/versions/alpha/edit_spells/1.png'>
+| <img src='public/images/readme/versions/alpha/edit_spells/2.png'> | <img src='public/images/readme/versions/alpha/edit_spells/3.png'>
 
 #### **Edit Story**
-<p align='center'>
 <img src='public/images/readme/versions/alpha/edit_story/0.jpeg'>
-<img src='public/images/readme/versions/alpha/edit_story/1.jpeg'>
-</p>
 
 ### SideQuest D&D Release 1.0
 ---
