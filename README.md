@@ -346,11 +346,16 @@ SideQuest D&D Alpha can no longer be found in this repository.
 </p>
 
 #### **Hero View**
-<p align='center'>
+<!-- <p align='center'>
 <img src='public/images/readme/versions/alpha/hero/hero0.png'>
 <img src='public/images/readme/versions/alpha/hero/hero1.jpeg'>
 <img src='public/images/readme/versions/alpha/hero/hero2.jpeg'>
-</p>
+</p> -->
+| 1 | 2 | 3 |
+|------------|-------------|-------------|
+| <img src='public/images/readme/versions/alpha/hero/hero0.png' width='100%'> | <img src='public/images/readme/versions/alpha/hero/hero1.jpeg' width='100%'> | <img src='public/images/readme/versions/alpha/hero/hero2.jpeg' width='100%'> |
+
+
 
 #### **Hero Spells View**
 <p align='center'>
