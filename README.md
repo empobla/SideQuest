@@ -350,7 +350,7 @@ SideQuest D&D Alpha can no longer be found in this repository.
 </p>
 
 #### **Hero View**
-<div style='height: 500px;overflow: scroll;'>
+<div style='height: 100px; overflow: scroll;'>
 <img src='public/images/readme/versions/alpha/hero/hero0.png'>
 <img src='public/images/readme/versions/alpha/hero/hero0.png'>
 </div>
