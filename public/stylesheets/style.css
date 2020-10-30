@@ -163,22 +163,6 @@ main {
     margin-bottom: 1em;
 }
 
-/* .c-carousel__divider {
-    position: absolute;
-    z-index: -1;
-    left: 33%;
-    height: 35%;
-    border-left: 1px solid #b5b5b5;
-}
-
-.c-carousel__divider--second {
-    position: absolute;
-    z-index: -1;
-    left: 66%;
-    height: 35%;
-    border-left: 1px solid #b5b5b5;
-} */
-
 /*****************************************/
 /******* Section divider Styling *********/
 /*****************************************/

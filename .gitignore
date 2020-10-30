@@ -4,5 +4,7 @@ node_modules/
 controllers/_learning
 public/images/test
 public/images/characters
-public/javascripts/test.js
+public/javascripts/testpagedown.js
 views/test
+samplereadme.md
+samplereadme2.md
