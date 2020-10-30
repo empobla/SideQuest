@@ -340,6 +340,9 @@ This was the first release of SideQuest D&D. It was released August 4, 2020. Thi
 
 SideQuest D&D Alpha can no longer be found in this repository.
 
+<details>
+
+<summary markdown='span'>Images</summary>
 #### **Home Page**
 <p align='center'>
 <img src='public/images/readme/versions/alpha/home.png'>
@@ -371,6 +374,8 @@ SideQuest D&D Alpha can no longer be found in this repository.
 
 #### **Edit Story**
 <img src='public/images/readme/versions/alpha/edit_story/0.jpeg'>
+
+</details>
 
 ### SideQuest D&D Release 1.0
 ---
