@@ -1,10 +1,10 @@
 .env
 .DS_Store
+
 node_modules/
-controllers/_learning
-public/images/test
+_samplereadmes/
+
 public/images/characters
 public/javascripts/testpagedown.js
+
 views/test
-samplereadme.md
-samplereadme2.md
