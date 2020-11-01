@@ -351,53 +351,17 @@ block content
                 a.c-button(href=urlDetails target='_blank') See Details Sheet
                 a.c-button(href=urlSpell target='_blank') See Spell Sheet
 
+    script(src="/javascripts/script.js")
     script.
-        function setupSpellTables() {
-            const spellBar = document.querySelectorAll('.c-spell');
-            const dropdownButton = document.querySelectorAll('.c-dropdown-button');
-            const spellDescription = document.querySelectorAll('.c-spell-description');
-
-            spellBar.forEach((element, index) => {
-                element.addEventListener('click', () => {
-                    
-                    spellDescription[index].style.display === '' || spellDescription[index].style.display === 'none'
-                        ? spellDescription[index].style.display = 'table-cell'
-                        : spellDescription[index].style.display = 'none';
-                    
-                    
-                    dropdownButton[index].innerHTML === '∇'
-                        ? dropdownButton[index].innerHTML = '&Delta;'
-                        : dropdownButton[index].innerHTML = '&nabla;';
-                });
-            });
-        };
-
-        function setupSpellTypeTabs() {
-            const typeBar = document.querySelectorAll('.js-spelltypetab');
-            const typeSpells = document.querySelectorAll('.js-spelltypespells');
-
-            typeBar.forEach((element, index) => {
-                typeSpells[index].style.display = 'none';
-                element.addEventListener('click', () => {
-                    typeSpells[index].style.display === '' || typeSpells[index].style.display === 'none'
-                        ? typeSpells[index].style.display = 'block'
-                        : typeSpells[index].style.display = 'none';
-                    
-                    element.innerHTML.includes('∇')
-                        ? element.innerHTML = `&Delta; ${element.innerHTML.split(' ')[1]} ${element.innerHTML.split(' ')[2]}`
-                        : element.innerHTML = `&nabla; ${element.innerHTML.split(' ')[1]} ${element.innerHTML.split(' ')[2]}`;
-                });
-            });
-        };
-
-        const racejson = document.querySelector('#js-racejson').value;
-        if(racejson != 'false') {
-            const race = JSON.parse(racejson);
-            const raceTraits = document.querySelector('#js-racetraits');
-            raceTraits.innerHTML = race.traits.replace(/(\r\n|\r|\n)/g, '<br>');
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             setupSpellTables();
             setupSpellTypeTabs();
+
+            // Load race traits
+            const racejson = document.querySelector('#js-racejson').value;
+            if(racejson != 'false') {
+                const race = JSON.parse(racejson);
+                const raceTraits = document.querySelector('#js-racetraits');
+                raceTraits.innerHTML = race.traits.replace(/(\r\n|\r|\n)/g, '<br>');
+            }
         });
