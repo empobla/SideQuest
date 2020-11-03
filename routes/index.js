@@ -48,33 +48,8 @@ router.post('/signup',
     userController.loginPost
 );
 
+/* Logout */
 router.get('/logout', userController.logout);
-
-/* TEST */
-// router.get('/test/pagedown', (req, res) => res.render('test/testpagedown'));
-// const learningPdfLib = require('../controllers/learningPdfLib');
-// router.get('/test', learningPdfLib.pdf);
-// router.get('/test2', (req, res) => res.render('test'));
-
-/*router.get('/testform', (req, res) => {
-  // req.session.tmpTest = [];
-  res.render('testform');
-});
-router.get('/testform2', (req, res) => {
-  const test = req.session.tmpTest;
-  console.log(req.session.tmpTest);
-  console.log(test);
-  res.render('testform', {test});
-});
-
-router.post('/data', (req, res) => {
-
-  req.session.tmpTest.firstname = req.body.firstname;
-  req.session.tmpTest.lastname = req.body.lastname;
-  console.log(req.session.tmpTest);
-  res.redirect('/testform2');
-});*/
-
 
 
 module.exports = router;

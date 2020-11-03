@@ -47,12 +47,4 @@ router.post('/:username/classes/newclass', adminController.newClassPost);
 router.get('/:username/classes/edit/:classId', adminController.editClassGet);
 router.post('/:username/classes/edit/:classId', adminController.editClassPost);
 
-// // Story Delete
-// router.get('/story', adminController.accountView);
-// router.post('/story', adminController.storyPost);
-
-// // Characters Delete
-// router.get('/characters', adminController.accountView);
-// router.post('/characters', adminController.charactersPost);
-
 module.exports = router;

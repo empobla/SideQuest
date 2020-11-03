@@ -10,6 +10,7 @@ exports.index = async (req, res, next) => {
     try {
         const announcements = await Announcements.find();
 
+        // Sort announcements from newest to oldest
         announcements.sort((a, b) => {
             var keyA = new Date(a.date);
             var keyB = new Date(b.date);
