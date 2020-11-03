@@ -423,3 +423,5 @@ This release offered the following functionalities:
 - Templatable code
 - Improved security
 - GitHub deployment
+
+**Fun Fact**: This website is composed of 10,532 lines of code.
