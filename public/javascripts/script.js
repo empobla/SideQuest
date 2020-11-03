@@ -68,8 +68,14 @@ function setupTabs() {
             // Change style of all tab buttons to look as unopened tabs
             sideBar.querySelectorAll('.c-tabs__button').forEach(button => {
                 const buttonParts = button.children;
-                buttonParts[0].classList.remove('c-tabs__button-left--active');
-                buttonParts[1].classList.remove('c-tabs__button-right--active');
+                // If button is flag-button, then remove active from both parts of button. Else, just remove it from the
+                // square part.
+                if(buttonParts.length > 1) {
+                    buttonParts[0].classList.remove('c-tabs__button-left--active');
+                    buttonParts[1].classList.remove('c-tabs__button-right--active');
+                } else {
+                    buttonParts[0].classList.remove('c-tabs__button-left--active');
+                }
             });
             
             // Deactivate tab content for all tabs
@@ -79,8 +85,12 @@ function setupTabs() {
 
             // Change style of clicked tab button to look as opened tab
             const buttonParts = button.children;
-            buttonParts[0].classList.add('c-tabs__button-left--active');
-            buttonParts[1].classList.add('c-tabs__button-right--active');
+            if(buttonParts.length > 1) {
+                buttonParts[0].classList.add('c-tabs__button-left--active');
+                buttonParts[1].classList.add('c-tabs__button-right--active');
+            } else {
+                buttonParts[0].classList.add('c-tabs__button-left--active');
+            }
 
             // Activate tab content for clicked tab number
             tabToActivate.classList.add('c-tabs__content--active');
@@ -256,43 +266,4 @@ function loadSpell(spells) {
     // Fill in spell description
     const description = document.getElementById('description');
     description.value = spell.description;
-};
-
-/******************** DM Notes ********************/
-// Sets up dm notes compendium tabs
-function setupNotesTabs() {
-    // For every tab button, add an on-click event listener
-    document.querySelectorAll('.c-tabs__button').forEach(button => {
-        button.addEventListener('click', () => {
-            const sideBar = button.parentElement;
-            const tabsContainer = sideBar.parentElement;
-            const tabNumber = button.dataset.forTab;    // Get tab number from clicked tab button
-            
-            // Get tab to activate by finding tab content that has the same tab number as clicked tab button
-            const tabToActivate = tabsContainer.querySelector(`.c-tabs__content[data-tab='${tabNumber}']`);
-
-            // Change style of all tab buttons to look as unopened tabs
-            sideBar.querySelectorAll('.c-tabs__button').forEach(button => {
-                const buttonParts = button.children;
-                for(const part of buttonParts) {
-                    part.classList.remove('c-tabs__button-left--active');
-                }
-            });
-
-            // Deactivate tab content for all tabs
-            tabsContainer.querySelectorAll('.c-tabs__content').forEach(tab => {
-                tab.classList.remove('c-tabs__content--active');
-            });
-
-            // Change style of clicked tab button to look as opened tab
-            const buttonParts = button.children;
-            for(const part of buttonParts) {
-                part.classList.add('c-tabs__button-left--active');
-            }
-
-            // Activate tab content for clicked tab number
-            tabToActivate.classList.add('c-tabs__content--active');
-
-        });
-    });
 };

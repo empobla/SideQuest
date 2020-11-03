@@ -662,14 +662,8 @@ main {
 }
 
 .c-tabs__button-left--active {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-
     background-color: #000;
     color: #fff;
-    padding: 1em 2em;
 }
 
 .c-tabs__button-right {
@@ -682,12 +676,7 @@ main {
 }
 
 .c-tabs__button-right--active {
-    border-width: 2em;
-    border-right-width: 0;
-    
-    border-color: transparent;
     border-left-color: #000;
-    border-style: solid;
 }
 
 .c-tabs__content {
