@@ -1,8 +1,3 @@
-/*
-    * Index: pagedown script
-    * Incompatibility in setupTabs() and setupNotesTabs() comes from css of flag button and square button.
-        - Must make both css' compatible before combining both functions into one
-*/
 /******************** Heroes ********************/
 // Sets up spell tables
 function setupSpellTables() {
