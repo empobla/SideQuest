@@ -338,6 +338,22 @@ These are the versions that have existed for SideQuest D&D website, with some pi
 ### SideQuest D&D Alpha
 This was the first release of SideQuest D&D. It was released August 4, 2020. This version of the website was not very popular and was in a primitively functional state.
 
+This release offered the following functionalities:
+- Announcement creation and display in homepage
+- Hero creation and modification
+- Story creation and modification
+- Character creation and modification
+- Spell creation and modification
+- Markdown text editor (pagedown)
+- PDF generation and display of character sheet
+- Superficial admin user management
+
+This release had the following problems:
+- DM had to create heroes for the users
+- Hero creation UI was non-intuitive and 100% manual
+- UI overall was ugly
+- Admin section was unintuitive and had very restricted functionality
+
 SideQuest D&D Alpha can no longer be found in this repository.
 
 <details>
@@ -385,3 +401,25 @@ SideQuest D&D Alpha can no longer be found in this repository.
 This is the current stable released version of SideQuest D&D. It has a completely reworked UI and has many more features than the [alpha](#sidequest-dd-alpha) version offered. Users liked this version a lot and used it much more.
 
 The most popular pages of this release are the Characters and Story pages.
+
+This release offered the following functionalities:
+- Improved UI:
+    - Responsive design for all screens
+    - Improved hero view UI
+    - Improved character view UI
+    - Improved story view UI
+- New additions:
+    - Race and Class creation
+    - Map section
+    - DM Notes section
+    - Comment section
+    - Search bar for stories, characters, maps, spells, races, classes, and notes
+    - Dedicated DM and Admin Sections
+- Re-designed hero schema
+- More intutive character creation, many things were made automatic
+- Dedicated spell page for spell creation, lookup, and editing
+- Ajax implementation for spells
+- More expansive Admin permisions and functionality
+- Templatable code
+- Improved security
+- GitHub deployment
