@@ -20,7 +20,7 @@ exports.index = async (req, res, next) => {
             return 0;
         });
 
-        res.render('index', { title: 'SideQuest DnD - Inicio', announcements });
+        res.render('index', { title: `${res.locals.siteName} - Inicio`, announcements });
     } catch(error) {
         next(error);
     }
@@ -30,7 +30,7 @@ exports.index = async (req, res, next) => {
 exports.heroes = async (req, res, next) => {
     try{
         const heroes = await Hero.aggregate([ { $sort: { name: 1 } } ]);
-        res.render('heroes', { title: 'SideQuest - Heroes', heroes });
+        res.render('heroes', { title: `${res.locals.siteAlias} - Heroes`, heroes });
     } catch(error) {
         next(error);
     }
@@ -102,7 +102,7 @@ exports.heroSummary = async (req, res, next) => {
 
         const heroSpells = {racial: racialSpells, class: classSpells};
 
-        res.render('heroes', { title: `SideQuest - ${heroName}`, heroes, hero, heroSpells });
+        res.render('heroes', { title: `${res.locals.siteAlias} - ${heroName}`, heroes, hero, heroSpells });
     } catch(error) {
         next(error);
     }
@@ -119,7 +119,7 @@ exports.story = async (req, res, next) => {
 
 
         const title = res.locals.url.endsWith('/story') ? 'Historia' : `Historia: ${story.name}`;
-        res.render('story', { title: `SideQuest - ${title}`, stories, story })
+        res.render('story', { title: `${res.locals.siteAlias} - ${title}`, stories, story })
     } catch(error) {
         next(error);
     }
@@ -130,7 +130,7 @@ exports.storySearch = async (req, res, next) => {
         const searchQuery = req.body;
         const stories = await Story.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
         
-        res.render('story', { title: 'SideQuest - Historia: Búsqueda', stories });
+        res.render('story', { title: `${res.locals.siteAlias} - Historia: Búsqueda`, stories });
     } catch(error) {
         next(error);
     }
@@ -146,7 +146,7 @@ exports.characters = async (req, res, next) => {
         const [characters, character] = await Promise.all([charactersQuery, characterQuery]);
 
         const title = res.locals.url.endsWith('/characters') ? 'Personajes' : `Personajes: ${character.name}`
-        res.render('characters', { title: `SideQuest - ${title}`, characters, character });
+        res.render('characters', { title: `${res.locals.siteAlias} - ${title}`, characters, character });
     } catch(error) {
         next(error);
     }
@@ -233,7 +233,7 @@ exports.charactersSearch = async (req, res, next) => {
             return searchData.find(character => character._id.toString() == id)
         });
         
-        res.render('characters', { title: 'SideQuest - Personajes: Búsqueda', characters });
+        res.render('characters', { title: `${res.locals.siteAlias} - Personajes: Búsqueda`, characters });
     } catch(error) {
         next(error);
     }
@@ -247,7 +247,7 @@ exports.maps = async (req, res, next) => {
         const [maps, map] = await Promise.all([mapsQuery, mapQuery]);
 
         const title = res.locals.url.endsWith('/maps') ? 'Mapas' : `Mapa: ${map.name}`
-        res.render('maps', { title: `SideQuest - ${title}`, maps, map });
+        res.render('maps', { title: `${res.locals.siteAlias} - ${title}`, maps, map });
     } catch(error) {
         next(error);
     }
@@ -258,7 +258,7 @@ exports.mapsSearch = async (req, res, next) => {
         const searchQuery = req.body;
         const maps = await Map.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
 
-        res.render('maps', { title: 'SideQuest - Mapas: Búsqueda', maps });
+        res.render('maps', { title: `${res.locals.siteAlias} - Mapas: Búsqueda`, maps });
     } catch(error) {
         next(error);
     }

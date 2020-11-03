@@ -7,7 +7,7 @@ const Note = require('../models/note');
 // DM Account View
 exports.dmView = (req, res) => {
     const username = req.user.username;
-    res.render('dm/account_view', { title: 'SideQuest - Dungeon Master', username });
+    res.render('dm/account_view', { title: `${res.locals.siteAlias} - Dungeon Master`, username });
 };
 
 // Notes
@@ -17,7 +17,7 @@ exports.notes = async (req, res, next) => {
 
         if(res.locals.url.endsWith('/notes')) {
             const notes = await Note.aggregate([ { $sort: { date: -1 } } ]);
-            res.render('dm/notes', { title: 'SideQuest DM - Notas', username, notes });
+            res.render('dm/notes', { title: `${res.locals.siteAlias} DM - Notas`, username, notes });
         } else {
             const tmpHeroes = await Hero.find();
             const heroesArray = [];
@@ -49,9 +49,9 @@ exports.notes = async (req, res, next) => {
 
             if(res.locals.url.includes('/view/')) {
                 const note = await Note.findOne({ _id: req.params.noteId });
-                res.render('dm/notes', { title: 'SideQuest DM - Notas', username, note, heroes, characters, spells });
+                res.render('dm/notes', { title: `${res.locals.siteAlias} DM - Notas`, username, note, heroes, characters, spells });
             } else {
-                res.render('dm/notes', { title: 'SideQuest DM - Nota Nueva', username, heroes, characters, spells });
+                res.render('dm/notes', { title: `${res.locals.siteAlias} DM - Nota Nueva`, username, heroes, characters, spells });
             }
         }
     } catch(error) {
@@ -139,7 +139,7 @@ exports.notesSearch = async (req, res, next) => {
         const searchQuery = req.body;
         const notes = await Note.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
         
-        res.render('dm/notes', { title: 'SideQuest DM - Notas: Búsqueda', username, notes });
+        res.render('dm/notes', { title: `${res.locals.siteAlias} DM - Notas: Búsqueda`, username, notes });
     } catch(error) {
         next(error);
     }
@@ -190,7 +190,7 @@ exports.editNoteGet = async (req, res, next) => {
             hero.class = hero.class[0];
         });
 
-        res.render('dm/notes', { title: 'SideQuest DM - Editar Nota', username, note, heroes, characters, spells });
+        res.render('dm/notes', { title: `${res.locals.siteAlias} DM - Editar Nota`, username, note, heroes, characters, spells });
     } catch(error) {
         next(error);
     }

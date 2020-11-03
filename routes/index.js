@@ -2,40 +2,40 @@ var express = require('express');
 var router = express.Router();
 
 // Require controller modules
-const sideQuestController = require('../controllers/sideQuestController');
+const indexController = require('../controllers/indexController');
 const userController = require('../controllers/userController');
 const characterSheet = require('../controllers/characterSheet');
 
 /* GET home page. */
-router.get('/', sideQuestController.index);
+router.get('/', indexController.index);
 
 /* Heroes */
-router.get('/heroes', sideQuestController.heroes);
-router.get('/heroes/:heroName', sideQuestController.heroSummary);
+router.get('/heroes', indexController.heroes);
+router.get('/heroes/:heroName', indexController.heroSummary);
 
 /* Character Sheets Routes */
 router.get('/heroes/:hero/charactersheet/:selector', characterSheet.fillPdf);
 
 /* Characters */
-router.get('/characters', sideQuestController.characters);
-router.get('/characters/:characterName', sideQuestController.characters);
-router.post('/characters/:characterName/createcomment', sideQuestController.addCommentPost);
-router.post('/characters/:characterName/deletecomment/:commentId', sideQuestController.deleteCommentPost);
-router.post('/characters/search', sideQuestController.charactersSearch);
+router.get('/characters', indexController.characters);
+router.get('/characters/:characterName', indexController.characters);
+router.post('/characters/:characterName/createcomment', indexController.addCommentPost);
+router.post('/characters/:characterName/deletecomment/:commentId', indexController.deleteCommentPost);
+router.post('/characters/search', indexController.charactersSearch);
 
 /* Story */
-router.get('/story', sideQuestController.story);
-router.get('/story/:storyId', sideQuestController.story);
-router.post('/story/:storyId/createcomment', sideQuestController.addCommentPost);
-router.post('/story/:storyId/deletecomment/:commentId', sideQuestController.deleteCommentPost);
-router.post('/story/search', sideQuestController.storySearch);
+router.get('/story', indexController.story);
+router.get('/story/:storyId', indexController.story);
+router.post('/story/:storyId/createcomment', indexController.addCommentPost);
+router.post('/story/:storyId/deletecomment/:commentId', indexController.deleteCommentPost);
+router.post('/story/search', indexController.storySearch);
 
 /* Maps */
-router.get('/maps', sideQuestController.maps);
-router.get('/maps/:mapId', sideQuestController.maps);
-router.post('/maps/:mapId/createcomment', sideQuestController.addCommentPost);
-router.post('/maps/:mapId/deletecomment/:commentId', sideQuestController.deleteCommentPost);
-router.post('/maps/search', sideQuestController.mapsSearch);
+router.get('/maps', indexController.maps);
+router.get('/maps/:mapId', indexController.maps);
+router.post('/maps/:mapId/createcomment', indexController.addCommentPost);
+router.post('/maps/:mapId/deletecomment/:commentId', indexController.deleteCommentPost);
+router.post('/maps/search', indexController.mapsSearch);
 
 /* Login */
 router.get('/login', userController.loginGet);

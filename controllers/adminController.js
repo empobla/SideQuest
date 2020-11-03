@@ -11,7 +11,7 @@ const Announcement = require('../models/announcement');
 exports.adminView = async (req, res, next) => {
     try {
         const username = req.user.username;
-        res.render('admin/account_view', { title: 'SideQuest - Admin', username });
+        res.render('admin/account_view', { title: `${res.locals.siteAlias} - Admin`, username });
     } catch(error) {
         next(error);
     }
@@ -22,7 +22,7 @@ exports.users = async (req, res, next) => {
     try {
         const username = req.params.username;
         const users = await User.find();
-        res.render('admin/users', { title: 'SideQuest Admin - Manage Users', username, users });
+        res.render('admin/users', { title: `${res.locals.siteAlias} Admin - Manage Users`, username, users });
     } catch(error) {
         next(error);
     }
@@ -43,7 +43,7 @@ exports.editUserGet = async (req, res, next) => {
                 as: 'characters'
             } }
         ]).then(result => result[0].characters);
-        res.render('admin/users', { title: 'SideQuest Admin - Edit User', username, userEdit, userHeroes, users});
+        res.render('admin/users', { title: `${res.locals.siteAlias} Admin - Edit User`, username, userEdit, userHeroes, users});
     } catch(error) {
         next(error);
     }
@@ -97,12 +97,12 @@ exports.announcements = async (req, res, next) => {
 
         if(res.locals.url.includes('/admin/')){
             res.locals.url.endsWith('/newannouncement')
-                ? res.render('admin/announcements', { title: 'SideQuest Admin - Anuncio Nuevo' })
-                : res.render('admin/announcements', { title: 'SideQuest Admin - Anuncios', username, announcements });
+                ? res.render('admin/announcements', { title: `${res.locals.siteAlias} Admin - Anuncio Nuevo` })
+                : res.render('admin/announcements', { title: `${res.locals.siteAlias} Admin - Anuncios`, username, announcements });
         } else {
             res.locals.url.endsWith('/newannouncement')
-            ? res.render('admin/announcements', { title: 'SideQuest DM - Anuncio Nuevo' })
-            : res.render('admin/announcements', { title: 'SideQuest DM - Anuncios', username, announcements });
+            ? res.render('admin/announcements', { title: `${res.locals.siteAlias} DM - Anuncio Nuevo` })
+            : res.render('admin/announcements', { title: `${res.locals.siteAlias} DM - Anuncios`, username, announcements });
         }
     } catch(error) {
         next(error);
@@ -116,8 +116,8 @@ exports.announcementsSearch = async (req, res, next) => {
         const announcements = await Announcement.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
         
         res.locals.url.includes('/admin/')
-            ? res.render('admin/announcements', { title: 'SideQuest Admin - Anuncios: Búsqueda', username, announcements })
-            : res.render('admin/announcements', { title: 'SideQuest DM - Anuncios: Búsqueda', username, announcements });
+            ? res.render('admin/announcements', { title: `${res.locals.siteAlias} Admin - Anuncios: Búsqueda`, username, announcements })
+            : res.render('admin/announcements', { title: `${res.locals.siteAlias} DM - Anuncios: Búsqueda`, username, announcements });
     } catch(error) {
         next(error);
     }
@@ -144,8 +144,8 @@ exports.editAnnouncementGet = async (req, res, next) => {
         const announcement = await Announcement.findOne({ _id: req.params.announcementId });
 
         res.locals.url.includes('/admin/')
-            ? res.render('admin/announcements', { title: 'SideQuest Admin - Editar Anuncio', username, announcement })
-            : res.render('admin/announcements', { title: 'SideQuest DM - Editar Anuncio', username, announcement });
+            ? res.render('admin/announcements', { title: `${res.locals.siteAlias} Admin - Editar Anuncio`, username, announcement })
+            : res.render('admin/announcements', { title: `${res.locals.siteAlias} DM - Editar Anuncio`, username, announcement });
     } catch(error) {
         next(error);
     }
@@ -178,7 +178,7 @@ exports.heroes = async (req, res, next) => {
         const username = req.params.username;
         const heroes = await Hero.find();
 
-        res.render('admin/heroes', { title: 'SideQuest Admin - Manage Heroes', username, heroes });
+        res.render('admin/heroes', { title: `${res.locals.siteAlias} Admin - Manage Heroes`, username, heroes });
     } catch(error) {
         next(error);
     }
@@ -191,8 +191,8 @@ exports.races = async (req, res, next) => {
         const races = await Race.find();
         
         res.locals.url.endsWith('/newrace')
-            ? res.render('admin/races', { title: 'SideQuest Admin - New Race' })
-            : res.render('admin/races', { title: 'SideQuest Admin - Manage Races', username, races });
+            ? res.render('admin/races', { title: `${res.locals.siteAlias} Admin - New Race` })
+            : res.render('admin/races', { title: `${res.locals.siteAlias} Admin - Manage Races`, username, races });
     } catch(error) {
         next(error);
     }
@@ -204,7 +204,7 @@ exports.racesSearch = async (req, res, next) => {
         const searchQuery = req.body;
         const races = await Race.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
         
-        res.render('admin/races', { title: 'SideQuest Admin - Races: Search', username, races });
+        res.render('admin/races', { title: `${res.locals.siteAlias} Admin - Races: Search`, username, races });
     } catch(error) {
         next(error);
     }
@@ -246,7 +246,7 @@ exports.editRaceGet = async (req, res, next) => {
     try {
         const race = await Race.findOne({ _id: req.params.raceId });
 
-        res.render('admin/races', { title: 'SideQuest Admin - Edit Race', race });
+        res.render('admin/races', { title: `${res.locals.siteAlias} Admin - Edit Race`, race });
     } catch(error) {
         next(error);
     }
@@ -297,8 +297,8 @@ exports.classes = async (req, res, next) => {
         const classes = await Class.find();
         
         res.locals.url.endsWith('/newclass')
-            ? res.render('admin/classes', { title: 'SideQuest Admin - New Class' })
-            : res.render('admin/classes', { title: 'SideQuest Admin - Manage Classes', username, classes });
+            ? res.render('admin/classes', { title: `${res.locals.siteAlias} Admin - New Class` })
+            : res.render('admin/classes', { title: `${res.locals.siteAlias} Admin - Manage Classes`, username, classes });
     } catch(error) {
         next(error);
     }
@@ -310,7 +310,7 @@ exports.classesSearch = async (req, res, next) => {
         const searchQuery = req.body;
         const classes = await Class.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
         
-        res.render('admin/classes', { title: 'SideQuest Admin - Classes: Search', username, classes });
+        res.render('admin/classes', { title: `${res.locals.siteAlias} Admin - Classes: Search`, username, classes });
     } catch(error) {
         next(error);
     }
@@ -333,7 +333,7 @@ exports.editClassGet = async (req, res, next) => {
         const classId = req.params.classId;
         const heroClass = await Class.findOne({ _id: classId });
 
-        res.render('admin/classes', { title: 'SideQuest Admin - Edit Class', heroClass });
+        res.render('admin/classes', { title: `${res.locals.siteAlias} Admin - Edit Class`, heroClass });
     } catch(error) {
         next(error);
     }

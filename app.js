@@ -96,6 +96,9 @@ app.use((req, res, next) => {
   res.locals.user = req.user;
   res.locals.url = req.path;
   res.locals.flash = req.flash();
+  res.locals.siteName = 'SideQuest DnD';
+  res.locals.siteAlias = 'SideQuest';
+  res.locals.cloudinaryFolder = 'sideQuest';
   next();
 });
 

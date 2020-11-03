@@ -38,7 +38,7 @@ exports.pushToCloudinary = async (req, res, next) => {
         if(res.locals.url.includes('/heroes/')) {
             if(req.files.image != undefined){
                 await Cloudinary.v2.uploader.upload(req.files.image[0].path, {
-                    folder: 'sideQuest/heroImages'
+                    folder: `${res.locals.cloudinaryFolder}/heroImages`
                 })
                 .then((result) => {
                     req.body.image = result.public_id;
@@ -57,7 +57,7 @@ exports.pushToCloudinary = async (req, res, next) => {
             
             if(req.files.emblem_image != undefined) {
                 await Cloudinary.v2.uploader.upload(req.files.emblem_image[0].path || null, {
-                    folder: 'sideQuest/heroOrganizationEmblems'
+                    folder: `${res.locals.cloudinaryFolder}/heroOrganizationEmblems`
                 })
                 .then((result) => {
                     req.body.emblem_image = result.public_id;
@@ -79,7 +79,7 @@ exports.pushToCloudinary = async (req, res, next) => {
         } else if(res.locals.url.includes('/characters/')) {
             if(req.files.image == undefined) next();
             Cloudinary.v2.uploader.upload(req.files.image[0].path || null, {
-                folder: 'sideQuest/characterImages'
+                folder: `${res.locals.cloudinaryFolder}/characterImages`
             })
             .then((result) => {
                 req.body.image = result.public_id;
@@ -96,7 +96,7 @@ exports.pushToCloudinary = async (req, res, next) => {
         } else if(res.locals.url.includes('/maps/')) {
             if(req.files.image == undefined) next();
             Cloudinary.v2.uploader.upload(req.files.image[0].path || null, {
-                folder: 'sideQuest/mapImages'
+                folder: `${res.locals.cloudinaryFolder}/mapImages`
             })
             .then(result => {
                 req.body.image = result.public_id;
@@ -111,7 +111,7 @@ exports.pushToCloudinary = async (req, res, next) => {
             })
         } else {
             Cloudinary.v2.uploader.upload(req.file.path, {
-                folder: 'sideQuest'
+                folder: `${res.locals.cloudinaryFolder}`
             })
             .then((result) => {
                 req.body.image = result.public_id;
@@ -139,7 +139,7 @@ const e = require('express');
 
 // Sign up
 exports.signUpGet = (req, res) => {
-    res.render('users/signup', { title: 'SideQuest - Crear Usuario' });
+    res.render('users/signup', { title: `${res.locals.siteAlias} - Crear Usuario` });
 };
 
 exports.signUpPost = [
@@ -179,7 +179,7 @@ exports.signUpPost = [
 
 // Login/Logout
 exports.loginGet = (req, res) => {
-    res.render('users/login', { title: 'SideQuest - Ingreso' });
+    res.render('users/login', { title: `${res.locals.siteAlias} - Ingreso` });
 };
 
 exports.loginPost = Passport.authenticate('local', {
@@ -233,7 +233,7 @@ exports.accountView = async (req, res, next) => {
     try{
         const user = req.user;
         const heroes = await Hero.find()
-        res.render('users/account_view', { title: `SideQuest - ${user.username}` , user, heroes });
+        res.render('users/account_view', { title: `${res.locals.siteAlias} - ${user.username}` , user, heroes });
     } catch(error) {
         next(error);
     }
@@ -255,7 +255,7 @@ exports.heroes = async (req, res, next) => {
             } }
         ]).then(result => result[0].characters);
 
-        res.render('users/heroes', { title: 'SideQuest - Mis Héroes', username, userHeroes });
+        res.render('users/heroes', { title: `${res.locals.siteAlias} - Mis Héroes`, username, userHeroes });
     } catch(error) {
         next(error);
     }
@@ -335,8 +335,8 @@ exports.newHeroGet = async (req, res, next) => {
         }
         
         res.locals.url.endsWith('/newHero')
-            ? res.render('users/heroes', { title: 'SideQuest - Crear Héroe', username, races, classes, spells })
-            : res.render('users/heroes', { title: 'SideQuest - Editar Héroe', username, races, classes, spells, hero, heroSpells });
+            ? res.render('users/heroes', { title: `${res.locals.siteAlias} - Crear Héroe`, username, races, classes, spells })
+            : res.render('users/heroes', { title: `${res.locals.siteAlias} - Editar Héroe`, username, races, classes, spells, hero, heroSpells });
     } catch(error) {
         next(error);
     }
@@ -445,7 +445,7 @@ exports.spells = async (req, res, next) => {
 
         const sortedSpells = await Promise.all(spellsQuery.map(level => level));
 
-        res.render('users/spells', { title: 'SideQuest - Spell Compendium', spells, sortedSpells });
+        res.render('users/spells', { title: `${res.locals.siteAlias} - Spell Compendium`, spells, sortedSpells });
     } catch(error) {
         next(error);
     }
@@ -541,7 +541,7 @@ exports.story = async (req, res, next) => {
     try {
         const username = req.params.username;
         const stories = await Story.aggregate([ { $sort: { name: -1 } } ]);
-        res.render('users/story', { title: 'SideQuest - Editar Historia', username, stories });
+        res.render('users/story', { title: `${res.locals.siteAlias} - Editar Historia`, username, stories });
     } catch(error) {
         next(error);
     }
@@ -553,7 +553,7 @@ exports.storySearch = async (req, res, next) => {
         const searchQuery = req.body;
         const stories = await Story.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
         
-        res.render('users/story', { title: 'SideQuest - Editar Historia: Búsqueda', username, stories });
+        res.render('users/story', { title: `${res.locals.siteAlias} - Editar Historia: Búsqueda`, username, stories });
     } catch(error) {
         next(error);
     }
@@ -562,7 +562,7 @@ exports.storySearch = async (req, res, next) => {
 exports.newStoryGet = async (req, res, next) => {
     try {
         const username = req.params.username;
-        res.render('users/story', { title: 'SideQuest: Nueva Historia', username });
+        res.render('users/story', { title: `${res.locals.siteAlias}: Nueva Historia`, username });
     } catch(error) {
         next(error);
     }
@@ -585,7 +585,7 @@ exports.editStoryGet = async (req, res, next) => {
         const username = req.params.username;
         const story = await Story.findOne({ _id: req.params.storyId });
 
-        res.render('users/story', { title: 'SideQuest - Editar Historia', username, story });
+        res.render('users/story', { title: `${res.locals.siteAlias} - Editar Historia`, username, story });
     } catch(error) {
         next(error);
     }
@@ -614,7 +614,7 @@ exports.characters = async (req, res, next) => {
         const username = req.params.username;
         const characters = await Character.aggregate([ { $sort: { name: 1 } } ]);
 
-        res.render('users/characters', { title: 'SideQuest - Editar Personajes', username, characters });
+        res.render('users/characters', { title: `${res.locals.siteAlias} - Editar Personajes`, username, characters });
     } catch(error) {
         next(error);
     }
@@ -637,7 +637,7 @@ exports.charactersSearch = async (req, res, next) => {
             return searchData.find(character => character._id.toString() == id)
         });
         
-        res.render('users/characters', { title: 'SideQuest - Editar Personajes: Búsqueda', username, characters });
+        res.render('users/characters', { title: `${res.locals.siteAlias} - Editar Personajes: Búsqueda`, username, characters });
     } catch(error) {
         next(error);
     }
@@ -645,7 +645,7 @@ exports.charactersSearch = async (req, res, next) => {
 
 exports.newCharacterGet = async (req, res, next) => {
     try {
-        res.render('users/characters', { title: 'SideQuest - Personaje Nuevo' })
+        res.render('users/characters', { title: `${res.locals.siteAlias} - Personaje Nuevo` })
     } catch(error) {
         next(error);
     }
@@ -668,7 +668,7 @@ exports.editCharacterGet = async (req, res, next) => {
         const characterId = req.params.characterId;
         const character = await Character.findOne({ _id: characterId });
 
-        res.render('users/characters', { title: `SideQuest - Editar a ${character.name}`, character });
+        res.render('users/characters', { title: `${res.locals.siteAlias} - Editar a ${character.name}`, character });
     } catch(error) {
         next(error);
     }
@@ -697,7 +697,7 @@ exports.maps = async (req, res, next) => {
         const username = req.params.username;
         const maps = await Map.aggregate([{ $sort: { name: 1 } }]);
 
-        res.render('users/maps', { title: 'SideQuest - Editar Mapas', username, maps });
+        res.render('users/maps', { title: `${res.locals.siteAlias} - Editar Mapas`, username, maps });
     } catch(error) {
         next(error);
     }
@@ -709,7 +709,7 @@ exports.mapsSearch = async (req, res, next) => {
         const searchQuery = req.body;
         const maps = await Map.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
 
-        res.render('users/maps', { title: 'SideQuest - Editar Mapas: Búsqueda', username, maps });
+        res.render('users/maps', { title: `${res.locals.siteAlias} - Editar Mapas: Búsqueda`, username, maps });
     } catch(error) {
         next(error);
     }
@@ -718,7 +718,7 @@ exports.mapsSearch = async (req, res, next) => {
 exports.newMapGet = async (req, res, next) => {
     try {
         const username = req.params.username;
-        res.render('users/maps', { title: 'SideQuest - Mapa Nuevo' });
+        res.render('users/maps', { title: `${res.locals.siteAlias} - Mapa Nuevo` });
     } catch(error) {
         next(error);
     }
@@ -742,7 +742,7 @@ exports.editMapGet = async (req, res, next) => {
         const mapId = req.params.mapId;
         const map = await Map.findOne({ _id: mapId });
 
-        res.render('users/maps', { title: 'SideQuest - Editar Mapa', username, map });
+        res.render('users/maps', { title: `${res.locals.siteAlias} - Editar Mapa`, username, map });
     } catch(error) {
         next(error);
     }

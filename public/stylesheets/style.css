@@ -1,4 +1,23 @@
 /*****************************************/
+/************* Color Pallette ************/
+/*****************************************/
+/*
+    * [Black] Primary Color: #000000
+    * [Dark Red] Secondary Color: #a50000
+    * [Red] Nav Border Color: #d00000
+    * [Dark Gray] Nav Dropdown Color: #242527
+    * [Gray] Checkbox Background: #555
+    * [Black] Button Color: #000000
+*/
+:root {
+    --main-color: #000000;
+    --secondary-color: #a50000;
+    --nav-border-color: #d00000;
+    --nav-dropdown: #242527;
+    --checkbox-background: #555;
+    --button-color: #000000;
+}
+/*****************************************/
 /************* Global Styling ************/
 /*****************************************/
 body {
@@ -14,7 +33,7 @@ a {
 }
 
 hr {
-    border: 1px solid #a50000;
+    border: 1px solid var(--secondary-color);
 }
 
 table {
@@ -66,8 +85,8 @@ nav {
     padding: 0 1em 5px 52px;
     /* height: 80px; */
 
-    background-color: #000;
-    border-bottom: 5px solid #d00000;
+    background-color: var(--main-color);
+    border-bottom: 5px solid var(--nav-border-color);
 }
 
 nav a {
@@ -110,7 +129,7 @@ nav li {
     display: none;
     flex-direction: column;
     position: absolute;
-    background-color: #000;
+    background-color: var(--main-color);
     margin: 0;
     padding: 0;
     padding-top: 1.6em;
@@ -126,7 +145,7 @@ nav li {
 }
 
 .c-dropdown li:hover {
-    background-color: #242527;
+    background-color: var(--nav-dropdown);
 }
 
 main {
@@ -177,7 +196,7 @@ main {
     flex-direction: column;
     justify-content: center;
 
-    background-color: #000;
+    background-color: var(--main-color);
     color: #fff;
     padding: 1em 4em;
 }
@@ -188,7 +207,7 @@ main {
 
 .c-divider__right {
     border-color: transparent;
-    border-left-color: #000;
+    border-left-color: var(--main-color);
     border-style: solid;
     border-width: 5em;
     border-top-width: 0px;
@@ -559,7 +578,7 @@ main {
 }
 
 .c-login-form {
-    background-color: #000;
+    background-color: var(--main-color);
     color: #fff;
     padding: 5em;
     justify-self: flex-start;
@@ -795,13 +814,13 @@ main {
     margin-top: 1em;
     width: 2em;;
     height: 2em;
-    background: #555;
+    background: var(--checkbox-background);
     border-radius: 5px;
-    border: 2px solid #232426;
+    border: 2px solid var(--main-color);
 }
 
 .c-ability-points input[type='checkbox']:checked {
-    background: #a50000;
+    background: var(--secondary-color);
 }
 
 .c-ability-points input[type='checkbox']:focus {
@@ -813,13 +832,13 @@ main {
     margin-top: 1em;
     width: 2em;;
     height: 2em;
-    background: #555;
+    background: var(--checkbox-background);
     border-radius: 50px;
-    border: 2px solid #232426;
+    border: 2px solid var(--main-color);
 }
 
 .c-ability-points input[type='radio']:checked {
-    background: #a50000;
+    background: var(--secondary-color);
 }
 
 .c-ability-points input[type='radio']:focus {
@@ -839,7 +858,7 @@ main {
 }
 
 .c-ability__header {
-    background-color: #242528;
+    background-color: var(--main-color);
     text-align: left;
     vertical-align: baseline;
 }
@@ -891,8 +910,8 @@ main {
 }
 
 .c-loadingbg__animation {
-    border: 16px solid #000;
-    border-top: 16px solid #d00000;
+    border: 16px solid var(--main-color);
+    border-top: 16px solid var(--nav-border-color);
     border-radius: 100%;
     width: 120px;
     height: 120px;
@@ -1019,7 +1038,7 @@ main {
     padding-top: 1em;
     
     background: inherit;
-    border-bottom: 3px solid #a50000;
+    border-bottom: 3px solid var(--secondary-color);
 }
 
 .c-modal__header p {
@@ -1086,13 +1105,13 @@ main {
     margin-top: 1em;
     width: 2em;;
     height: 2em;
-    background: #555;
+    background: var(--checkbox-background);
     border-radius: 5px;
-    border: 2px solid #232426;
+    border: 2px solid var(--main-color);
 }
 
 .c-checkbox input[type='checkbox']:checked {
-    background: #a50000;
+    background: var(--secondary-color);
 }
 
 .c-checkbox input[type='checkbox']:focus {
@@ -1155,7 +1174,7 @@ main {
 }
 
 .c-button {
-    background-color: #000;
+    background-color: var(--button-color);
     padding: 1em;
     box-shadow: 0 0 2em 0 rgba(0, 0, 0, 0.4);
     border: none;
@@ -1172,7 +1191,7 @@ main {
 
 .c-button--large {
     color: #fff;
-    background-color: #000;
+    background-color: var(--button-color);
     padding: 1em 2em;
     box-shadow: 0 0 2em 0 rgba(0, 0, 0, 0.4);
     border: none;
@@ -1257,7 +1276,7 @@ main {
 }
 
 .m-background-red {
-    background-color: #a50000;
+    background-color: var(--secondary-color);
 }
 
 .m-align-left {
