@@ -415,13 +415,14 @@ This release offered the following functionalities:
     - Comment section
     - Search bar for stories, characters, maps, spells, races, classes, and notes
     - Dedicated DM and Admin Sections
+- Improved security:
+ - Validation and sanitization of all input fields
 - Re-designed hero schema
 - More intutive character creation, many things were made automatic
 - Dedicated spell page for spell creation, lookup, and editing
 - Ajax implementation for spells
 - More expansive Admin permisions and functionality
 - Templatable code
-- Improved security
 - GitHub deployment
 
-**Fun Fact**: This website is composed of 10,532 lines of code.
+**Fun Fact**: This project is composed of 10,532 lines of code.
