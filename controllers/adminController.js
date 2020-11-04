@@ -7,6 +7,8 @@ const Story = require('../models/story');
 const Character = require('../models/character');
 const Announcement = require('../models/announcement');
 
+const { check, body, validationResult } = require('express-validator');
+
 // Admin Account View
 exports.adminView = async (req, res, next) => {
     try {
@@ -49,45 +51,92 @@ exports.editUserGet = async (req, res, next) => {
     }
 };
 
-exports.editUserPost = async (req, res, next) => {
-    try {
-        const user = await User.findOne({ _id: req.params.userId });
+exports.editUserPost = [
+    // Validate user input data
+    check('username').isLength({ min: 3, max: 20 }).withMessage('Username must be from 3 to 20 characters long.')
+    .isAlphanumeric().withMessage('Username must be alphanumeric.'),
 
-        req.body.isAdmin
-            ? user.isAdmin = true
-            : user.isAdmin = false;
-        req.body.isDM
-            ? user.isDM = true
-            : user.isDM = false;
-        
-        const updatedHeroes = [];
-        if(req.body.transfer) {
-            let heroIdx = 0;
-            for(const change of req.body.transfer) {
-                if(change != -1) {
-                    const heroId = change.split(',')[0];
-                    const userId = change.split(',')[1]
-                    
-                    user.characters.splice(heroIdx, 1);
-                    const heroTransfer = await User.findOne({ _id: userId });
-                    heroTransfer.characters.push(heroId);
-                    updatedHeroes.push(heroTransfer);
-                } else {
-                    heroIdx++;
+    check('password')
+    .custom((value, { req }) => {
+        if(value && value.length >= 6){ return true; }
+        else if(!value) { return true; }
+        else { return false; }
+    }).withMessage('Invalid password, passwords must be a minimum of 6 characters long.'),
+
+    check('confirm_password')
+    .custom((value, { req }) => value === req.body.password)
+    .withMessage('Passwords do not match.'),
+
+    // Sanitize user input data
+    check('*').trim().escape(),
+    check('transfer').toArray(),
+
+    async (req, res, next) => {
+        try {
+            var user = await User.findOne({ _id: req.params.userId });
+
+            const errors = validationResult(req);
+            if(!errors.isEmpty()) {
+                // There are errors
+                console.log('gothere')
+                const usersQuery = User.find();
+                const userHeroesQuery = User.aggregate([
+                    { $match: { _id: user._id } },
+                    { $lookup: {
+                        from: 'heros',
+                        localField: 'characters',
+                        foreignField: '_id',
+                        as: 'characters'
+                    } }
+                ]).then(result => result[0].characters);
+                const [users, userHeroes] = await Promise.all([usersQuery, userHeroesQuery]);
+                res.render('admin/users', { title: `${res.locals.siteAlias} Admin - Edit User`, errors: errors.array(), username: req.params.username, users, userEdit: user, userHeroes });
+                return;
+            } else {
+                // No errors
+                user = await User.findByUsername(user.username).then(async user => {
+                    if(user.username != req.body.username) user.username = req.body.username;
+                    if(req.body.password) await user.setPassword(req.body.password);
+                    await user.save();
+                    return user;
+                });
+            }
+            
+            req.body.isAdmin
+                ? user.isAdmin = true
+                : user.isAdmin = false;
+            req.body.isDM
+                ? user.isDM = true
+                : user.isDM = false;
+            
+            const updatedHeroes = [];
+            if(req.body.transfer) {
+                let heroIdx = 0;
+                for(const change of req.body.transfer) {
+                    if(change != -1) {
+                        const heroId = change.split(',')[0];
+                        const userId = change.split(',')[1]
+                        
+                        user.characters.splice(heroIdx, 1);
+                        const heroTransfer = await User.findOne({ _id: userId });
+                        heroTransfer.characters.push(heroId);
+                        updatedHeroes.push(heroTransfer);
+                    } else {
+                        heroIdx++;
+                    }
                 }
             }
-        }
 
-        await User.findByIdAndUpdate(user._id, user, { new: true });
-        for(const updatedUser of updatedHeroes) {
-            await User.findByIdAndUpdate(updatedUser._id, updatedUser, { new: true });
-        }
+            await User.findByIdAndUpdate(user._id, user, { new: true });
+            for(const updatedUser of updatedHeroes) {
+                await User.findByIdAndUpdate(updatedUser._id, updatedUser, { new: true });
+            }
 
-        res.redirect(`/admin/${req.params.username}/users`);
-    } catch(error) {
-        next(error);
-    }
-};
+            res.redirect(`/admin/${req.params.username}/users`);
+        } catch(error) {
+            next(error);
+        }
+}];
 
 // Announcements
 exports.announcements = async (req, res, next) => {

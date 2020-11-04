@@ -1271,6 +1271,10 @@ main {
     color: #858585;
 }
 
+.m-color-red {
+    color: var(--secondary-color);
+}
+
 .m-background-lightgray {
     background-color: #858585;
 }

@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
 /* Account View Routes */
 router.get('/*', userController.isAuth);
 router.get('/:username', userController.accountView);
-router.get('/:username/changepassword', userController.accountView); // Must add post for editing password
+router.post('/:username', userController.accountViewPost);
 
 // Hero
 router.get('/:username/heroes', userController.heroes);

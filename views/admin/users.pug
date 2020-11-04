@@ -55,6 +55,12 @@ block content
     //- Edit user section
     else
         .l-main-content
+            if errors
+                h2 Please fix the following errors:
+                ul
+                    each error in errors
+                        li= error.msg
+
             form(action='' method='post' autocomplete='off')
                 .l-manageusers-grid
                     //- Account level
@@ -87,13 +93,13 @@ block content
                         .c-adminuser-form
                             .c-adminuser-form__input
                                 label(for="username") Username:
-                                input(type="text" name="username" id="username" placeholder="Input new username..." required value=userEdit.username disabled)
+                                input(type="text" name="username" id="username" placeholder="Input new username..." required value=userEdit.username)
                             .c-adminuser-form__input
                                 label(for="password") New Password:
-                                input(type="password" name="password" id="password" placeholder="Input new password..." required disabled)
+                                input(type="password" name="password" id="password" placeholder="Input new password...")
                             .c-adminuser-form__input
                                 label(for="confirm_password") Confirm Password:
-                                input(type="password" name="confirm_password" id="confirm_password" placeholder="Input new password..." required disabled)
+                                input(type="password" name="confirm_password" id="confirm_password" placeholder="Input new password...")
                     
                     //- Hero transfer
                     div

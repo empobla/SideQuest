@@ -134,8 +134,6 @@ exports.pushToCloudinary = async (req, res, next) => {
 /******************************************/
 // Express Validator
 const { check, validationResult } = require('express-validator');
-const { sanitize } = require('express-validator');
-const e = require('express');
 
 // Sign up
 exports.signUpGet = (req, res) => {
@@ -144,7 +142,7 @@ exports.signUpGet = (req, res) => {
 
 exports.signUpPost = [
     // Validate user's data
-    check('username').isLength({ min: 1 }).withMessage('Username must be specified')
+    check('username').isLength({ min: 3, max: 20 }).withMessage('Username must be from 3 to 20 characters long.')
     .isAlphanumeric().withMessage('Username must be alphanumeric'),
 
     check('password').isLength({ min: 6 }).withMessage('Invalid password, passwords must be a minimum of 6 characters long'),
@@ -232,12 +230,53 @@ exports.isDMorAdmin = (req, res, next) => {
 exports.accountView = async (req, res, next) => {
     try{
         const user = req.user;
-        const heroes = await Hero.find()
-        res.render('users/account_view', { title: `${res.locals.siteAlias} - ${user.username}` , user, heroes });
+        res.render('users/account_view', { title: `${res.locals.siteAlias} - ${user.username}` , user });
     } catch(error) {
         next(error);
     }
 };
+
+exports.accountViewPost = [
+    // Validate user input data
+    check('username').isLength({ min: 3, max: 20 }).withMessage('Username must be from 3 to 20 characters long.')
+    .isAlphanumeric().withMessage('Username must be alphanumeric.'),
+
+    check('password')
+    .custom((value, { req }) => {
+        if(value && value.length >= 6){ return true; }
+        else if(!value) { return true; }
+        else { return false; }
+    }).withMessage('Invalid password, passwords must be a minimum of 6 characters long.'),
+
+    check('confirm_password')
+    .custom((value, { req }) => value === req.body.password)
+    .withMessage('Passwords do not match.'),
+
+    // Sanitize user input data
+    check('*').trim().escape(),
+
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        if(!errors.isEmpty()) {
+            // There are errors
+            res.render('users/account_view', { title: `${res.locals.siteAlias} - ${res.locals.user.username}`, errors: errors.array() });
+            return;
+        } else {
+            // No errors
+            User.findByUsername(res.locals.user.username).then(async user => {
+                const successUser = user.username != req.body.username ? true : false;
+                if(user.username != req.body.username) user.username = req.body.username;
+
+                const successPass = req.body.password ? true : false;
+                if(req.body.password) await user.setPassword(req.body.password);
+                
+                user.save();
+                res.render('users/account_view', { title: `${res.locals.siteAlias} - ${user.username}`, user, successUser, successPass });
+            });
+        }
+    }
+];
 
 // Heroes
 exports.heroes = async (req, res, next) => {
