@@ -341,10 +341,10 @@ exports.detailsFillFields = (pdfDoc, fieldNames, hero, font) => {
 exports.sheetFillFields = (pdfDoc, fieldNames, hero, user, font) => {
     // Basic Info/Header
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.header.name, hero.name, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.header.classAndLevel, `${hero.class.name || '???'}, ${hero.level}`, font);
+    if(hero.class) PdfEdit.fillInField(pdfDoc, fieldNames.header.classAndLevel, `${hero.class.name || '???'}, ${hero.level}`, font);
     PdfEdit.fillInField(pdfDoc, fieldNames.header.background, `${hero.description.background || ''}`, font);
     PdfEdit.fillInField(pdfDoc, fieldNames.header.playerName, user.username, font);
-    PdfEdit.fillInField(pdfDoc, fieldNames.header.race, `${hero.race.name || ''}`, font);
+    if(hero.race) PdfEdit.fillInField(pdfDoc, fieldNames.header.race, `${hero.race.name || ''}`, font);
     PdfEdit.fillInField(pdfDoc, fieldNames.header.alignment, `${hero.description.alignment || ''}`, font);
     PdfEdit.fillInField(pdfDoc, fieldNames.header.xp, 'N/A', font);
 
@@ -368,26 +368,28 @@ exports.sheetFillFields = (pdfDoc, fieldNames, hero, user, font) => {
     PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.attributes.charismaMod, `${hero.abilities.charisma.modifier > 0 ? '+' + hero.abilities.charisma.modifier : hero.abilities.charisma.modifier}`, font);
 
     // Physical Attributes
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.armorClass, `${hero.physical_attributes.ac}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.initiative, `${hero.physical_attributes.initiative > 0 ? '+' + hero.physical_attributes.initiative : hero.physical_attributes.initiative}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.speed, `${hero.physical_attributes.speed}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.armorClass, `${hero.physical_attributes.ac || ''}`, font);
+    if(hero.physical_attributes.initiative) PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.initiative, `${hero.physical_attributes.initiative > 0 ? '+' + hero.physical_attributes.initiative : hero.physical_attributes.initiative}`, font);
+    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.speed, `${hero.physical_attributes.speed || ''}`, font);
     
-    const startHPNum = parseInt(hero.class.hitpoints_start.substring(0, 1));
-    const maxHPString = hero.class.hitpoints_higherlvls.split(')')[0];
-    const classHPNum = parseInt(maxHPString.substring(maxHPString.length-1));
-    let finalMaxHPString = '';
-    (hero.level == 1)
-        ? finalMaxHPString = startHPNum + hero.abilities.constitution.modifier
-        : finalMaxHPString = (hero.level-1) * (classHPNum + hero.abilities.constitution.modifier) + startHPNum + hero.abilities.constitution.modifier;
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.maxHitPoints, `${finalMaxHPString}`, font);
+    if(hero.class) {
+        const startHPNum = parseInt(hero.class.hitpoints_start.substring(0, 1));
+        const maxHPString = hero.class.hitpoints_higherlvls.split(')')[0];
+        const classHPNum = parseInt(maxHPString.substring(maxHPString.length-1));
+        let finalMaxHPString = '';
+        (hero.level == 1)
+            ? finalMaxHPString = startHPNum + hero.abilities.constitution.modifier
+            : finalMaxHPString = (hero.level-1) * (classHPNum + hero.abilities.constitution.modifier) + startHPNum + hero.abilities.constitution.modifier;
+        PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.maxHitPoints, `${finalMaxHPString}`, font);
     
-    // PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.currentHitPoints, `${hero.physical_attributes.current_hp}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.currentHitPoints, `${finalMaxHPString}`, font);
-    // PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.tempHitPoints, `${hero.physical_attributes.temp_hp}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.tempHitPoints, '', font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.totalHitDie, `${hero.level}${hero.class.hit_die}`, font);
-    // PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.hitDie, `${hero.physical_attributes.current_hitdie}`, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.hitDie, `${hero.level}${hero.class.hit_die}`, font);
+        // PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.currentHitPoints, `${hero.physical_attributes.current_hp}`, font);
+        PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.currentHitPoints, `${finalMaxHPString}`, font);
+        // PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.tempHitPoints, `${hero.physical_attributes.temp_hp}`, font);
+        PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.tempHitPoints, '', font);
+        PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.totalHitDie, `${hero.level}${hero.class.hit_die}`, font);
+        // PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.hitDie, `${hero.physical_attributes.current_hitdie}`, font);
+        PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.physicalAttributes.hitDie, `${hero.level}${hero.class.hit_die}`, font);
+    }
     
     // Death Saving Throws
     PdfEdit.fillInRadio(pdfDoc, fieldNames.physicalAttributes.savingThrows.success.first, 'No');
@@ -517,28 +519,30 @@ exports.spellFillFields = (pdfDoc, fieldNames, hero, heroSpells, font) => {
     // PdfEdit.fillInField(pdfDoc, fieldNames.test0, '0', font);
 
     // Spell Casting Info/Header
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.spellcastingClass, `${hero.class.name || ''}`, font);
-    let scAbility = '', ssDC = '', saBonus = '';
-    if(hero.class.name != '' && hero.class.name != undefined){
-        switch(hero.class.name.toLowerCase()){
-            case 'sorcerer':
-            case 'paladin':
-            case 'warlock':
-                scAbility = 'Charisma';
-                ssDC = '' + (8 + hero.abilities.proficiency_bonus + hero.abilities.charisma.modifier);
-                saBonus = '+' + (hero.abilities.proficiency_bonus + hero.abilities.charisma.modifier);
-                break;
-            case 'monk':
-                scAbility = 'Ki';
-                ssDC = '' + (8 + hero.abilities.proficiency_bonus + hero.abilities.wisdom.modifier);
-                break;
-            default:
-                break;
+    if(hero.class) {
+        PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.spellcastingClass, `${hero.class.name || ''}`, font);
+        let scAbility = '', ssDC = '', saBonus = '';
+        if(hero.class.name != '' && hero.class.name != undefined){
+            switch(hero.class.name.toLowerCase()){
+                case 'sorcerer':
+                case 'paladin':
+                case 'warlock':
+                    scAbility = 'Charisma';
+                    ssDC = '' + (8 + hero.abilities.proficiency_bonus + hero.abilities.charisma.modifier);
+                    saBonus = '+' + (hero.abilities.proficiency_bonus + hero.abilities.charisma.modifier);
+                    break;
+                case 'monk':
+                    scAbility = 'Ki';
+                    ssDC = '' + (8 + hero.abilities.proficiency_bonus + hero.abilities.wisdom.modifier);
+                    break;
+                default:
+                    break;
+            }
         }
+        PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.spellcastingAbility, scAbility, font);
+        PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.spellSaveDC, ssDC, font);
+        PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.spellAttackBonus, saBonus, font);
     }
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.spellcastingAbility, scAbility, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.spellSaveDC, ssDC, font);
-    PdfEdit.fillInFieldCenter(pdfDoc, fieldNames.spellAttackBonus, saBonus, font);
 
     // Cantrips
     fillLevel(pdfDoc, font, heroSpells, fieldNames.cantrips, 0);
