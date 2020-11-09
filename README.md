@@ -1,5 +1,5 @@
 <p align='center'>
-<img src='public/images/logos/sidequestlogo.png'>
+<img src='public/images/logos/logo.png'>
 </p>
 
 # SideQuest D&D
