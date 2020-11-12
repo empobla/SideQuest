@@ -1,5 +1,4 @@
 extends ../layout
-include ../mixins/_text_editor
 include ../mixins/_spell_form
 include ../mixins/_spell_row
 
@@ -580,13 +579,13 @@ block content
                     .l-margin--3
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='additional_info.proficiencies_and_languages') Proficiencies and Languages
-                        textarea(name='additional_info.proficiencies_and_languages' id='js-languages' placeholder='Write your proficiencies and languages here')=(hero ? hero.additional_info.proficiencies_and_languages : null)
+                        textarea.js-ckeditor(name='additional_info.proficiencies_and_languages' id='js-languages' data-ckeditor='herodesc' placeholder='Write your proficiencies and languages here')=(hero ? hero.additional_info.proficiencies_and_languages : null)
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='additional_info.features_and_traits') Features and Traits
-                        textarea(name='additional_info.features_and_traits' placeholder='Write your features and traits here (not including racial traits)')=(hero ? hero.additional_info.features_and_traits : null)
+                        textarea.js-ckeditor(name='additional_info.features_and_traits' data-ckeditor='herodesc' placeholder='Write your features and traits here (not including racial traits)')=(hero ? hero.additional_info.features_and_traits : null)
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='additional_info.additional_features_traits') Additional Features and Traits
-                        textarea(name='additional_info.additional_features_traits' placeholder='Write additional features and traits here (not including racial traits)')=(hero ? hero.additional_info.additional_features_traits : null)
+                        textarea.js-ckeditor(name='additional_info.additional_features_traits' data-ckeditor='herodesc' placeholder='Write additional features and traits here (not including racial traits)')=(hero ? hero.additional_info.additional_features_traits : null)
 
                     .l-margin--3
                     h3 Notes
@@ -619,9 +618,11 @@ block content
                         //- input(type='file' name='description.notes.organization.emblem')
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='description.notes.organization.text') Organization Notes
-                        textarea(name='description.notes.organization.text' placeholder='Write notes about your organization here' )=(hero ? hero.description.notes.organization.text : null)
+                        textarea.js-ckeditor(name='description.notes.organization.text' data-ckeditor='herodesc' placeholder='Write notes about your organization here' )=(hero ? hero.description.notes.organization.text : null)
                     
                     //- Allies, enemies, backstory, other
+                    .l-margin--2
+                    hr
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='description.notes.allies') Allies
                         textarea(name='description.notes.allies' placeholder='Write notes about your allies here')=(hero ? hero.description.notes.allies : null)
@@ -631,9 +632,9 @@ block content
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='description.notes.backstory') Backstory
                         if !hero
-                            +textEditor('editor', '', 'Write your backstory here', 'description.notes.backstory')
+                            textarea.js-ckeditor(name='description.notes.backstory' data-ckeditor='default' placeholder='Write your backstory here')
                         else
-                            +textEditor('editor', hero.description.notes.backstory, 'Write your backstory here', 'description.notes.backstory')
+                            textarea.js-ckeditor(name='description.notes.backstory' data-ckeditor='default' placeholder='Write your backstory here')= hero.description.notes.backstory
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='description.notes.other') Other
                         textarea(name='description.notes.other' placeholder='Write other notes here')=(hero ? hero.description.notes.other : null)
@@ -666,16 +667,16 @@ block content
                     //- Equipment, inventory, treasure
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='equipment.starting') Starting Equipment
-                        textarea(name='equipment.starting' placeholder='Write your starting equipment here')=(hero ? hero.equipment.starting : null)
+                        textarea.js-ckeditor(name='equipment.starting' data-ckeditor='herodesc' placeholder='Write your starting equipment here')=(hero ? hero.equipment.starting : null)
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='equipment.active') Active Equipment
-                        textarea(name='equipment.active' placeholder='Write your active equipment here')=(hero ? hero.equipment.active : null)
+                        textarea.js-ckeditor(name='equipment.active' data-ckeditor='herodesc' placeholder='Write your active equipment here')=(hero ? hero.equipment.active : null)
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='equipment.inventory') Inventory
-                        textarea(name='equipment.inventory' placeholder='Write your inventory here')=(hero ? hero.equipment.inventory : null)
+                        textarea.js-ckeditor(name='equipment.inventory' data-ckeditor='herodesc' placeholder='Write your inventory here')=(hero ? hero.equipment.inventory : null)
                     .c-edithero-form__input.c-edithero-form__input--stack
                         label(for='equipment.treasure') Treasure
-                        textarea(name='equipment.treasure' placeholder='Write your treasure here')=(hero ? hero.equipment.treasure : null)
+                        textarea.js-ckeditor(name='equipment.treasure' data-ckeditor='herodesc' placeholder='Write your treasure here')=(hero ? hero.equipment.treasure : null)
                     
                     //- Weapons
                     .l-margin--3
@@ -697,7 +698,7 @@ block content
                     
                     .c-edithero-form__input.c-edithero-form__input--stack       
                         label(for='equipment.weapons.notes') Weapon Notes:
-                        textarea(name='equipment.weapons.notes' placeholder="Large Crossbow - range: 80ft/320ft\nDagger - range 20ft/60ft\nDart - range 20ft/60ft")=(hero ? hero.equipment.weapons.notes : null)
+                        textarea.js-ckeditor(name='equipment.weapons.notes' data-ckeditor='herodesc' placeholder="Large Crossbow - range: 80ft/320ft\nDagger - range 20ft/60ft\nDart - range 20ft/60ft")=(hero ? hero.equipment.weapons.notes : null)
 
                     //- Save and delete buttons
                     .l-margin--3

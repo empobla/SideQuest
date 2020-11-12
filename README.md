@@ -11,6 +11,7 @@ SideQuest D&D website repository for tracking changes and pushing to production.
     - [Files Setup](#files-setup)
 - [Deploying with Heroku](#deploying-with-heroku)
 - [Dependency List](#dependency-list)
+- [CKEditor5](#ckeditor5)
 - [Useful Git Commands](#useful-git-commands)
 - [Using WSL and NPM](#using-wsl-and-npm)
 - [Versions](#versions)
@@ -206,6 +207,36 @@ At the end (when exporting to production):
 
 ### Flash messages:
 - **connect-flash**: Provides methods for flash messages
+
+## CKEditor5
+---
+([Back to top](#index))
+
+To create a text field with CKEditor5, the text field element must:
+1. Have the `.js-ckeditor` class.
+2. Have a data attribute.
+    - For comments: `data-ckeditor='comment'`
+    - For characters, backstory, announcements, notes, story, maps: `data-ckeditor='default'`
+    - For hero description that dont need images: `data-ckeditor='herodesc'`
+
+Also, `/javascripts/ckeditor/dist/ckeditor_bundle.js` must be linked.
+
+To display this info, in pug, write `p !{info}`.
+
+If changes to `/javascripts/ckeditor/ckeditor.js` occur, you must compile the JS file first before the changes are reflected:
+```sh
+npm rn wpbuild
+```
+
+To export to production, in `webpack.config.js` change `mode: 'development'` to `mode: 'production'`.
+
+Useful Links:
+- [Quick Start](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/quick-start.html)
+- [Advanced Setup](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html)
+- [Configuration](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/configuration.html)
+- [Config Class](https://ckeditor.com/docs/ckeditor5/latest/api/module_utils_config-Config.html)
+- [Getting and Saving Data](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/saving-data.html)
+- [WebPack](https://ui.dev/webpack/)
 
 ## Useful Git Commands
 ---

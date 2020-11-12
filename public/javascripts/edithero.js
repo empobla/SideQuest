@@ -48,7 +48,8 @@ function displayRace(races, option) {
     }
     descChildren[6].querySelector('span').innerHTML = abilityString;    // Set race ability score improvements
 
-    descChildren[9].innerHTML = race.traits.replace(/(\r\n|\r|\n)/g, '<br>');   // Set race traits
+    // descChildren[9].innerHTML = race.traits.replace(/(\r\n|\r|\n)/g, '<br>');   // Set race traits
+    descChildren[9].innerHTML = race.traits;   // Set race traits
 };
 
 // Displays class description depending on dropdown

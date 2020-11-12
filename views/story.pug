@@ -1,5 +1,4 @@
 extends layout
-include mixins/_text_editor
 include mixins/_comments
 
 block content
@@ -52,7 +51,7 @@ block content
         .l-main-content
             h2= story.name
             hr
-            +textEditor('view', story.summary)
+            p !{story.summary}
 
         //- Story comments
         .l-main-content.l-clearleft

@@ -1,5 +1,4 @@
 extends ../layout
-include ../mixins/_text_editor
 include ../mixins/_hero_dropdown
 include ../mixins/_spell_row
 
@@ -80,7 +79,7 @@ block content
                             input(type='text' name='name' id='name' placeholder='Sesión 1: Notas' required)
                         .c-edithero-form__input.c-edithero-form__input--stack
                             label(for='notes') Nota:
-                            +textEditor('editor', '', 'Escribe las notas aquí.', 'notes')
+                            textarea.js-ckeditor(name='notes' data-ckeditor='default' placeholder='Escribe las notas aquí.')
                         .l-margin--2
                         .m-align-center
                             button.c-button--large.m-clickable.l-margin-right--1(type='submit') Crear Nota
@@ -198,7 +197,7 @@ block content
                     .l-margin--2
                     h3.m-align-center= note.name
                     .l-margin--2
-                    +textEditor('view', note.notes)
+                    p !{note.notes}
                 
                 //- Website compendium section
                 .c-notes-section
@@ -317,7 +316,7 @@ block content
                             input(type='text' name='name' id='name' placeholder='Sesión 1: Notas' value=note.name required)
                         .c-edithero-form__input.c-edithero-form__input--stack
                             label(for='notes') Nota:
-                            +textEditor('editor', note.notes || '', 'Escribe las notas aquí.', 'notes')
+                            textarea.js-ckeditor(name='notes' data-ckeditor='default' placeholder='Escribe las notas aquí.')= note.notes || ''
                         .l-margin--2
                         .m-align-center
                             button.c-button--large.m-clickable.l-margin-right--1(type='submit' name='deletenote' value='false') Guardar Nota

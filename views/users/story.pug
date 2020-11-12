@@ -1,5 +1,4 @@
 extends ../layout
-include ../mixins/_text_editor
 
 block content
     
@@ -64,7 +63,7 @@ block content
                     input(type='text' name='name' id='name' placeholder='Sesión 1' required)
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='summary') Resumen:
-                    +textEditor('editor', '', 'Escribe el resumen principal de la sesión aquí.', 'summary')
+                    textarea.js-ckeditor(name='summary' data-ckeditor='default' placeholder='Escribe el resumen principal de la sesión aquí.')
                 .l-margin--2
                 button.c-button--large.m-clickable(type='submit') Crear Nueva Historia
     
@@ -78,7 +77,7 @@ block content
                     input(type='text' name='name' id='name' placeholder='Sesión 1' value=story.name required)
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='summary') Resumen:
-                    +textEditor('editor', story.summary || '', 'Escribe el resumen principal de la sesión aquí.', 'summary')
+                    textarea.js-ckeditor(name='summary' data-ckeditor='default' placeholder='Escribe el resumen principal de la sesión aquí.')= story.summary || ''
                 //- Save changes and delete story buttons
                 .l-margin--2
                 button.c-button--large.m-clickable.l-margin-right--1(type='submit' name='deletestory' value='false') Guardar Cambios

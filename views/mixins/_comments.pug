@@ -26,7 +26,7 @@ mixin comments(comments={}, identifier='', route='')
                             .c-edithero-form__input.c-edithero-form__input--stack
                                 input(type='hidden' name='user_id' value=user._id)
                                 input(type='hidden' name='username' value=user.username)
-                                textarea(name='text' placeholder='Escribe tu comentario aquí.')
+                                textarea.js-ckeditor(name='text' data-ckeditor='comment' placeholder='Escribe tu comentario aquí.')
                                 button.c-button.m-clickable(type='submit') Comentar
     
     //- Display comments
@@ -46,9 +46,7 @@ mixin comments(comments={}, identifier='', route='')
                         
                         //- Comment text
                         .l-content-box__text
-                            - const lines = comment.text.split(/(\r\n|\r|\n)/g);
-                            each line in lines
-                                p= line
+                            p !{comment.text}
                         
                         //- Allow user to delete own comments, allow admin to delete all comments
                         if user && user.isAdmin

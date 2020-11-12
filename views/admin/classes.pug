@@ -66,7 +66,7 @@ block content
                 //- Class description
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='description') Description:
-                    textarea(name='description' placeholder='Write class description here.')
+                    textarea.js-ckeditor(name='description' data-ckeditor='herodesc' placeholder='Write class description here.')
                 
                 //- Class hit die, hitpoints at first level, and hitpoints at higher levels
                 .l-margin--2
@@ -163,7 +163,7 @@ block content
                 //- Class description
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='description') Description:
-                    textarea(name='description' placeholder='Write class description here.')=(heroClass.description || null)
+                    textarea.js-ckeditor(name='description' data-ckeditor='herodesc' placeholder='Write class description here.')=(heroClass.description || null)
                 
                 //- Class hit die, hp at first level, hp at higher levels
                 .l-margin--2

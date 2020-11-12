@@ -252,7 +252,7 @@ function loadSpell(spells) {
     
     // Fill in spell materials
     const materials = document.getElementById('materials');
-    materials.value = spell.materials;
+    materials.value = spell.materials || '';
     
     // Fill in spell duration
     const duration = document.getElementById('duration');

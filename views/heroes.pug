@@ -1,5 +1,4 @@
 extends layout
-include mixins/_text_editor
 include mixins/_spell_row
 
 //- TODO:
@@ -82,7 +81,7 @@ block content
             
             //- If hero has a backstory in DB, display it
             if hero.description.notes.backstory != '' && hero.description.notes.backstory != undefined
-                +textEditor('view', hero.description.notes.backstory)
+                p !{hero.description.notes.backstory}
             //- Else if no hero backstory is found, tell user
             else
                 p #{hero.name} no tiene backstory.
@@ -121,7 +120,7 @@ block content
             if hero.race
                 h2 #{hero.race.name}
                 hr
-                p.m-align-justify= hero.race.description
+                p.m-align-justify !{hero.race.description}
                 h3 Features
                 p <strong>Alignment:</strong> #{hero.race.alignment}
                 p <strong>Speed:</strong> #{hero.race.speed}
@@ -149,7 +148,7 @@ block content
             if hero.class
                 h2 #{hero.class.name}
                 hr
-                p.m-align-justify= hero.class.description
+                p.m-align-justify !{hero.class.description}
                 h3 Hit Points
                 p <strong>Hit Die:</strong> #{hero.class.hit_die}
                 p <strong>Hit Points at 1st Level:</strong> #{hero.class.hitpoints_start}
@@ -362,6 +361,7 @@ block content
             if(racejson != 'false') {
                 const race = JSON.parse(racejson);
                 const raceTraits = document.querySelector('#js-racetraits');
-                raceTraits.innerHTML = race.traits.replace(/(\r\n|\r|\n)/g, '<br>');
+                //- raceTraits.innerHTML = race.traits.replace(/(\r\n|\r|\n)/g, '<br>');
+                raceTraits.innerHTML = race.traits;
             }
         });

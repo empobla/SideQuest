@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "devstart": "nodemon ./bin/www"
+    "devstart": "nodemon ./bin/www",
+    "wpbuild": "webpack"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -32,7 +33,36 @@
     "pug": "^3.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "@ckeditor/ckeditor5-adapter-ckfinder": "^23.1.0",
+    "@ckeditor/ckeditor5-autoformat": "^23.1.0",
+    "@ckeditor/ckeditor5-basic-styles": "^23.1.0",
+    "@ckeditor/ckeditor5-block-quote": "^23.1.0",
+    "@ckeditor/ckeditor5-ckfinder": "^23.1.0",
+    "@ckeditor/ckeditor5-dev-utils": "^23.6.1",
+    "@ckeditor/ckeditor5-easy-image": "^23.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "^23.1.0",
+    "@ckeditor/ckeditor5-essentials": "^23.1.0",
+    "@ckeditor/ckeditor5-heading": "^23.1.0",
+    "@ckeditor/ckeditor5-image": "^23.1.0",
+    "@ckeditor/ckeditor5-image-via-url": "file:plugins/ckeditor/ckeditor5-image-via-url",
+    "@ckeditor/ckeditor5-indent": "^23.1.0",
+    "@ckeditor/ckeditor5-link": "^23.1.0",
+    "@ckeditor/ckeditor5-list": "^23.1.0",
+    "@ckeditor/ckeditor5-media-embed": "^23.1.0",
+    "@ckeditor/ckeditor5-paragraph": "^23.1.0",
+    "@ckeditor/ckeditor5-paste-from-office": "^23.1.0",
+    "@ckeditor/ckeditor5-table": "^23.1.0",
+    "@ckeditor/ckeditor5-theme-lark": "^23.1.0",
+    "@ckeditor/ckeditor5-typing": "^23.1.0",
+    "@ckeditor/ckeditor5-ui": "file:plugins/ckeditor/ckeditor5-ui",
+    "css-loader": "^5.0.1",
+    "nodemon": "^2.0.6",
+    "postcss": "^8.1.7",
+    "postcss-loader": "^3.0.0",
+    "raw-loader": "^3.1.0",
+    "style-loader": "^1.3.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   },
   "engines": {
     "node": "14.5.0"

@@ -1,5 +1,4 @@
 extends layout
-include mixins/_text_editor
 include mixins/_comments
 
 block content
@@ -50,7 +49,7 @@ block content
             .c-mapimage
                 img(src=`http://res.cloudinary.com/duezou4td/image/upload/${map.image}.png` alt=`${map.name} Image`)
             if map.description != undefined && map.description != ''
-                +textEditor('view', map.description)
+                p !{map.description}
 
         //- Map comments
         .l-main-content

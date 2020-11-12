@@ -1,5 +1,4 @@
 extends layout
-include mixins/_text_editor
 include mixins/_comments
 
 block content
@@ -37,7 +36,7 @@ block content
                     .c-search__input
                         label(for='race') Raza
                         input(type='text' name='race' id='race' placeholder='Buscar personaje por raza')
-                    .c-search__input
+                    .c-search__input--button
                         button.c-button--large.m-clickable(type='submit') Buscar
             
             //- Character cards
@@ -95,7 +94,7 @@ block content
 
             //- Character summary
             if character.summary != '' && character.summary != undefined
-                +textEditor('view', character.summary)
+                p !{character.summary}
             else
                 p #{character.name} no tiene historia/resumen.
 

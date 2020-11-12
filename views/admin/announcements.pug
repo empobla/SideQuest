@@ -1,5 +1,4 @@
 extends ../layout
-include ../mixins/_text_editor
 
 block content
     //- If accessed through /admin, use admin route. Else, use dm route
@@ -68,7 +67,7 @@ block content
                     input(type='text' name='name' id='name' placeholder='Anuncio 1' required)
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='summary') Anuncio:
-                    +textEditor('editor', '', 'Escribe el anuncio aquí.', 'summary')
+                    textarea.js-ckeditor(name='summary' data-ckeditor='default' placeholder='Escribe el anuncio aquí.')
                 .l-margin--2
                 button.c-button--large.m-clickable.l-margin-right--1(type='submit') Crear Anuncio
     
@@ -81,7 +80,7 @@ block content
                     input(type='text' name='name' id='name' placeholder='Anuncio 1' value=announcement.name required)
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='summary') Anuncio:
-                    +textEditor('editor', announcement.summary || '', 'Escribe el anuncio aquí.', 'summary')
+                    textarea.js-ckeditor(name='summary' data-ckeditor='default' placeholder='Escribe el anuncio aquí.')= announcement.summary || ''
                 .l-margin--2
                 button.c-button--large.m-clickable.l-margin-right--1(type='submit' name='deleteannouncement' value='false') Guardar Cambios
                 button.c-button--large.m-clickable.m-background-red(type='submit' name='deleteannouncement' value='true') Borrar Anuncio

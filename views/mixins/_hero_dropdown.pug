@@ -156,6 +156,6 @@ mixin heroDropdown(hero, type='')
             .l-margin--2
             strong Resumen
             if character.summary != '' && character.summary != undefined
-                p= character.summary
+                p !{character.summary}
             else
                 p #{character.name} no tiene historia/resumen.

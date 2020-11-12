@@ -1,5 +1,4 @@
 extends ../layout
-include ../mixins/_text_editor
 
 block content
 
@@ -111,9 +110,10 @@ block content
                 //- Character name and description section
                 div
                     input#charnameinput(type='text' name='name' placeholder='Nombre del Personaje' required)
-
+                    
+                    .l-margin--2
                     .c-editchar-form__input
-                        +textEditor('editor', '', 'Escribe el resumen o la historia de este personaje aquí.', 'summary')
+                        textarea.js-ckeditor(name='summary' placeholder='Escribe el resumen o la historia de este personaje aquí.' data-ckeditor='default')
             
             //- Create character button
             .l-main-content.l-clearleft       
@@ -171,8 +171,9 @@ block content
                 div
                     input#charnameinput(type='text' name='name' placeholder='Onorim' value=(character.name) required)
 
+                    .l-margin--2
                     .c-editchar-form__input
-                        +textEditor('editor', character.summary, 'Escribe el resumen o la historia de este personaje aquí.', 'summary')
+                        textarea.js-ckeditor(name='summary' placeholder='Escribe el resumen o la historia de este personaje aquí.' data-ckeditor='default')= character.summary || ''
             
             //- Save changes and delete character buttons
             .l-main-content.l-clearleft       

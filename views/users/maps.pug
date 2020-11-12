@@ -1,5 +1,4 @@
 extends ../layout
-include ../mixins/_text_editor
 
 block content
 
@@ -69,9 +68,10 @@ block content
                     input(type='file' name='image' required)
 
                     label(for='description') Descripción del Mapa (opcional):
-                    +textEditor('editor', '', 'Escribe la descripción del mapa o los eventos que ocurrieron en este mapa aquí', 'description')
+                    textarea.js-ckeditor(name='description' data-ckeditor='default' placeholder='Escribe la descripción del mapa o los eventos que ocurrieron en este mapa aquí.')
                 
                 //- New map button
+                .l-margin--2
                 button.c-button--large.m-clickable(type='submit') Crear Mapa
     
     //- Edit map section
@@ -90,8 +90,9 @@ block content
                     .l-margin--1
 
                     label(for='description') Descripción del Mapa (opcional):
-                    +textEditor('editor', map.description, 'Escribe la descripción del mapa o los eventos que ocurrieron en este mapa aquí', 'description')
+                    textarea.js-ckeditor(name='description' data-ckeditor='default' placeholder='Escribe la descripción del mapa o los eventos que ocurrieron en este mapa aquí.')= map.description || ''
 
                 //- Save map changes and delete map buttons
+                .l-margin--2
                 button.c-button--large.m-clickable.l-margin-right--1(type='submit' name='deletemap' value='false') Guardar Cambios
                 button.c-button--large.m-background-red.m-clickable(type='submit' name='deletemap' value='true') Borrar Mapa

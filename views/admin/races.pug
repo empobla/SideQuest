@@ -1,5 +1,4 @@
 extends ../layout
-include ../mixins/_text_editor
 
 block content
 
@@ -66,7 +65,7 @@ block content
                 //- Description
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='description') Description:
-                    textarea(name='description' placeholder='Write race description here.')
+                    textarea.js-ckeditor(name='description' data-ckeditor='herodesc' placeholder='Write race description here.')
                 
                 //- Ability increase
                 .l-margin--2
@@ -102,8 +101,7 @@ block content
                 //- Traits
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='traits') Traits:
-                    //- textarea(name='traits' placeholder='Write race traits here.')
-                    +textEditor('editor', '', 'Write race traits here.', 'traits')
+                    textarea.js-ckeditor(name='traits' data-ckeditor='herodesc' placeholder='Write racial traits here.')
                 
                 //- Create race button
                 .l-margin--3
@@ -121,7 +119,7 @@ block content
                 //- Description
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='description') Description:
-                    textarea(name='description' placeholder='Write race description here.')=(race.description || null)
+                    textarea.js-ckeditor(name='description' data-ckeditor='herodesc' placeholder='Write race description here.')=(race.description || null)
                 
                 //- Ability increase
                 .l-margin--2
@@ -165,8 +163,7 @@ block content
                 //- Traits
                 .c-edithero-form__input.c-edithero-form__input--stack
                     label(for='traits') Traits:
-                    //- textarea(name='traits' placeholder='Write race traits here.')=(race.traits || null)
-                    +textEditor('editor', race.traits, 'Write race traits here.', 'traits')
+                    textarea.js-ckeditor(name='traits' data-ckeditor='herodesc' placeholder='Write racial traits here.')= race.traits || ''
                 
                 //- Update race and delete race buttons
                 .l-margin--3
