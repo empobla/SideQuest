@@ -234,7 +234,7 @@ main {
     background-color: #fff;
 
     display: grid;
-    grid-template-columns: 10% 1fr;
+    grid-template-columns: 10% 90%;
 
     padding: 1em 2em;
 }
@@ -561,6 +561,7 @@ main {
 .c-search__input:nth-child(3) input, .c-search__input:nth-child(4) input {
     width: 13em;
 }
+
 /*****************************************/
 /***************** Login *****************/
 /*****************************************/
@@ -1528,10 +1529,28 @@ blockquote{
     }
 
     /*****************************************/
+    /******* Section divider Styling *********/
+    /*****************************************/
+    .c-divider__left h1 {
+        /* font-size: 1.75rem; */
+        font-size: 1.2em;
+    }
+
+    /*****************************************/
     /******** Content Box Styling ************/
     /*****************************************/
+    .l-content-box {
+        margin: 2em 1em;
+        width: auto;
+    }
+
+    .c-content-box {
+        display: block;
+    }
+
     .c-content-box__image {
         width: 100%;
+        display: none;
     }
 
     .c-content-box__title {
@@ -1641,7 +1660,7 @@ blockquote{
     /*********** Edit Character **************/
     /*****************************************/
     .l-editchar-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 100%;
         grid-template-rows: repeat(2);
     }
 
@@ -1710,6 +1729,29 @@ blockquote{
     /* Cards Styling */
     .c-card {
         height: 380px;
+    }
+
+    /*****************************************/
+    /******* Section divider Styling *********/
+    /*****************************************/
+    .c-divider__left h1 {
+        font-size: 1.75rem;
+    }
+
+    /*****************************************/
+    /******** Content Box Styling ************/
+    /*****************************************/
+    .l-content-box {
+        margin: 2em 10%;
+        width: 80%;
+    }
+
+    .c-content-box {
+        display: grid;
+    }
+
+    .c-content-box__image {
+        display: block;
     }
 
     /*****************************************/
@@ -1807,8 +1849,9 @@ blockquote{
     /*********** Edit Character **************/
     /*****************************************/
     .l-editchar-grid {
-        grid-template-columns: 40% 1fr;
+        grid-template-columns: 40% 50%;
         grid-template-rows: repeat(1);
+        grid-gap: 10%;
     }
 
     /*****************************************/
@@ -1929,6 +1972,14 @@ blockquote{
 
     #m-spells_selectbuttons {
         grid-template-columns: auto repeat(2, 10%);
+    }
+
+    /*****************************************/
+    /*********** Edit Character **************/
+    /*****************************************/
+    .l-editchar-grid {
+        grid-template-columns: 40% 1fr;
+        grid-gap: 0;
     }
 
     /*****************************************/
