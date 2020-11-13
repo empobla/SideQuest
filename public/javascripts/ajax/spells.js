@@ -54,6 +54,7 @@ function searchSpellsDM(username, route) {
         
         document.getElementById('js-spellsearch').innerHTML = rowData.join('\r');
         setupSpellTables();
+        // setupLoadedResult();
     }
 
     ajax.onerror = () => {

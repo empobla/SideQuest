@@ -14,6 +14,7 @@ mixin spellRow(spell, options={ edit: false, dm: false, type: '' })
             rowClass = `c-spell m-clickable js-spell-loaded js-spellidx_${options.index}`;
             rowId = `js-racial_${spell._id}`;
         }
+        //- if(options.dm) rowClass = 'c-spell c-spell--display m-clickable js-loadedresult';
     
     //- Spell row
     tr(class=rowClass id=rowId)
@@ -42,10 +43,18 @@ mixin spellRow(spell, options={ edit: false, dm: false, type: '' })
         
         //- If options.edit == true, add js class to dropdown button
         - let dropdownButtonClass = !options.edit ? 'c-dropdown-button' : 'c-dropdown-button js-dropdown-button-loaded';
+        //- -
+            let dropdownButtonClass = 'c-dropdown-button';
+            if(options.edit) dropdownButtonClass = 'c-dropdown-button js-dropdown-button-loaded';
+            if(options.dm) dropdownButtonClass = 'c-dropdown-button js-loadedresult--button'
         td(class=dropdownButtonClass) &nabla;
 
     //- If options.edit == true, load spell dropdown with js class
     - let dropdownRowClass = !options.edit ? '' : `js-spellidx_${options.index}`;
+    //- -
+        let dropdownRowClass = '';
+        if(options.edit) dropdownRowClass = `js-spellidx_${options.index}`;
+        if(options.dm) dropdownRowClass = 'js-loadedresult--description';
     tr(class=dropdownRowClass)
         
         //- If options.edit == true, add js classes to dropdown class and make colspan 6 instead of 7

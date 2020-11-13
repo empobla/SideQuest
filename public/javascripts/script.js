@@ -262,3 +262,37 @@ function loadSpell(spells) {
     const description = document.getElementById('description');
     description.value = spell.description;
 };
+
+/******************** DM Notes ********************/
+// Sets up loaded results table dropdowns
+/*
+function setupLoadedResult() {
+    const spellBar = document.querySelectorAll('.js-loadedresult'); // Get all spell bars
+    const dropdownButton = document.querySelectorAll('.js-loadedresult--button'); // Get all dropdown buttons
+    const spellDescriptionWrapper = document.querySelectorAll('.js-loadedresult--description'); // Get all spell dropdowns
+    const spellDescription = [];
+    spellDescriptionWrapper.forEach(wrapper => spellDescription.push(wrapper.children[0]));
+    
+    // For all spellBars in document, add an on-click event listener to show/hide spell dropdown
+    spellBar.forEach((element, index) => {
+        element.addEventListener('click', () => {
+            
+            // If spell dropdown is hidden, show it. Else, hide it.
+            spellDescription[index].style.display === '' || spellDescription[index].style.display === 'none'
+                ? spellDescription[index].style.display = 'table-cell'
+                : spellDescription[index].style.display = 'none';
+            
+            
+            // If dropdown button points downwards, make it point upwards. Else, make it point downwards
+            dropdownButton[index].innerHTML === '∇'
+                ? dropdownButton[index].innerHTML = '&Delta;'
+                : dropdownButton[index].innerHTML = '&nabla;';
+        });
+        
+        // element.classList.remove('js-loadedresult');
+    });
+
+    // dropdownButton.forEach(element => element.classList.remove('js-loadedresult--button'));
+    // spellDescriptionWrapper.forEach(element => element.classList.remove('js-loadedresult--description'));
+};
+*/

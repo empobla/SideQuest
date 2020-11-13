@@ -70,7 +70,7 @@ function buildCharRows(characters, dropdowns) {
         const character = characters[i];
         const dropdown = dropdowns[i];
 
-        output.push('<tr class="c-spell c-spell--display m-clickable">');
+        output.push('<tr class="c-spell c-spell--display m-clickable js-loadedresult">');
         output.push('<td>');
         character.image != '' && character.image != undefined
             ? output.push(`<img class="c-spell__image c-spell__herotableimage" src="http://res.cloudinary.com/duezou4td/image/upload/${character.image}.png" alt="${character.name}'s Image">`)
@@ -81,10 +81,10 @@ function buildCharRows(characters, dropdowns) {
         <td>${character.race || '???'} ${character.class || '???'}<p class="m-color-lightgray">Size: ${character.size || '???'}</p></td>
         <td class="m-responsive-display--table">Met in ${character.place || '???'}</td>
         <td>Age: ${character.age || '???'}</td>
-        <td class="c-dropdown-button">&nabla;</td>
+        <td class="c-dropdown-button js-loadedresult--button">&nabla;</td>
         `);
         output.push('</tr>');
-        output.push('<tr>');
+        output.push('<tr class="js-loadedresult--description">');
         output.push(dropdown);
         output.push('</tr>');
     }
@@ -111,6 +111,7 @@ function searchCharsDM(username, route) {
         
         const output = buildCharRows(characterData, dropdownData);
         document.getElementById('js-charsearch').innerHTML = output.join('\r');
+        // setupLoadedResult();
         setupSpellTables();
     }
 
