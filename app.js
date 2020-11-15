@@ -142,7 +142,9 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  req.app.get('env') == 'development'
+    ? res.render('error')   // Renders dev error display
+    : res.render('errorprod');  // Renders production error display
 });
 
 module.exports = app;
