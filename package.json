@@ -1,7 +1,17 @@
 {
   "name": "p-sidequest",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
+  "author": "Emilio Popovits Blake",
+  "description": "SideQuest D&D Website",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/A01027265/sidequestdnd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/A01027265/sidequestdnd/issues"
+  },
+  "homepage": "http://sidequestdnd.herokuapp.com",
   "scripts": {
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",

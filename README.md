@@ -196,6 +196,11 @@ At the end (when exporting to production):
 - **compression**: For compressesing files and optimizing website for user use
 - **helmet**: For securing website data
 
+### Security dependencies:
+- **body-parser**: For limiting the request body payload the user can submit
+- **express-rate-limit**: For limiting the amount of requests per window of time a user can make
+- **express-mongo-sanitize**: For replacing '$' and '.' from user inputs to prevent NoSQL injection attacks
+
 ### User dependencies:
 - **express-session**: For handling sessions
 - **express-validator**: For validating and sanitizing user inputs
@@ -207,6 +212,13 @@ At the end (when exporting to production):
 
 ### Flash messages:
 - **connect-flash**: Provides methods for flash messages
+
+### PDF Dependencies:
+- **pdflib**: For editing and rendering pdfs programatically
+
+### WYSIWYG Editors:
+- **webpack**: For compiling ckeditor5 javascript files into client-side usable javascript modules
+- **ckeditor5**: For the WYSIWYG editor
 
 ## CKEditor5
 ---
@@ -231,12 +243,12 @@ npm rn wpbuild
 To export to production, in `webpack.config.js` change `mode: 'development'` to `mode: 'production'`.
 
 Useful Links:
-- [Quick Start](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/quick-start.html)
-- [Advanced Setup](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html)
-- [Configuration](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/configuration.html)
-- [Config Class](https://ckeditor.com/docs/ckeditor5/latest/api/module_utils_config-Config.html)
-- [Getting and Saving Data](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/saving-data.html)
-- [WebPack](https://ui.dev/webpack/)
+- [[CKEditor5] Quick Start](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/quick-start.html)
+- [[CKEditor5] Advanced Setup](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/advanced-setup.html)
+- [[CKEditor5] Configuration](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/configuration.html)
+- [[CKEditor5] Config Class](https://ckeditor.com/docs/ckeditor5/latest/api/module_utils_config-Config.html)
+- [[CKEditor5] Getting and Saving Data](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/saving-data.html)
+- [[ui.dev] WebPack](https://ui.dev/webpack/)
 
 ## Useful Git Commands
 ---
@@ -446,8 +458,13 @@ This release offered the following functionalities:
     - Comment section
     - Search bar for stories, characters, maps, spells, races, classes, and notes
     - Dedicated DM and Admin Sections
+    - WYSIWYG Text Editors (CKEditor5)
 - Improved security:
- - Validation and sanitization of all input fields
+    - Validation and sanitization of all input fields (Prevent XSS attacks)
+    - Body-parsing to limit user input payloads (prevent DoS attacks)
+    - Rate-limiting to limit amount of user requests in a time window (prevent DoS and Brute Force attacks)
+    - Further sanitization of strings starting with '$' and '.' to prevent NoSQL injection attacks
+    - Default production render page as to not show actual errors to users
 - Re-designed hero schema
 - More intutive character creation, many things were made automatic
 - Dedicated spell page for spell creation, lookup, and editing
@@ -456,4 +473,154 @@ This release offered the following functionalities:
 - Templatable code
 - GitHub deployment
 
-**Fun Fact**: This project is composed of 10,532 lines of code.
+<details>
+
+<summary markdown='span'>Images</summary>
+
+#### **Home Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/home.png'>
+</p>
+
+#### **Hero Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/heroes.png'>
+</p>
+
+#### **Hero View**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/heroview.png'>
+</p>
+
+#### **Character Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/characters.png'>
+</p>
+
+#### **Character View**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/characterview.png'>
+</p>
+
+#### **Story Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/stories.png'>
+</p>
+
+#### **Story View**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/storyview.png'>
+</p>
+
+#### **Map Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/maps.png'>
+</p>
+
+#### **Map View**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/mapsview.png'>
+</p>
+
+#### **Login Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/login.png'>
+</p>
+
+#### **Signup Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/signup.png'>
+</p>
+
+#### **User Account Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/useraccountview.png'>
+</p>
+
+#### **Edit Hero**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/useredithero0.png'>
+<img src='public/images/readme/versions/1.0.0/useredithero1.png'>
+<img src='public/images/readme/versions/1.0.0/useredithero2.png'>
+<img src='public/images/readme/versions/1.0.0/useredithero3.png'>
+<img src='public/images/readme/versions/1.0.0/useredithero4.png'>
+</p>
+
+#### **Spells Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/spells.png'>
+<img src='public/images/readme/versions/1.0.0/spellcreator.png'>
+</p>
+
+#### **Edit Character Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/usereditcharacters.png'>
+</p>
+
+#### **Edit Story Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/usereditstory.png'>
+</p>
+
+#### **Edit Map Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/usereditmaps.png'>
+</p>
+
+#### **Admin Account Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/adminview.png'>
+</p>
+
+#### **Admin Users Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/adminusers.png'>
+</p>
+
+#### **Admin User Edit**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/adminuseredit.png'>
+</p>
+
+#### **Admin and DM Announcement Edit**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/adminannouncements.png'>
+</p>
+
+#### **Admin Races Edit**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/admineditrace.png'>
+</p>
+
+#### **Admin Classes Edit**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/admineditclass.png'>
+</p>
+
+#### **DM Account Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/dmview.png'>
+</p>
+
+#### **DM Note Page**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/dmnotes.png'>
+</p>
+
+#### **DM Note Creator**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/dmnotecreate.png'>
+</p>
+
+#### **DM Note Viewer**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/dmnoteview.png'>
+</p>
+
+#### **DM Note Editor**
+<p align='center'>
+<img src='public/images/readme/versions/1.0.0/dmnoteedit.png'>
+</p>
+</details>
+
+**Fun Fact**: This project is composed of 11,271 lines of code.
