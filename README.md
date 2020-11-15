@@ -437,7 +437,7 @@ SideQuest D&D Alpha can no longer be found in this repository.
 
 </details>
 
-### SideQuest D&D Release 1.0
+### SideQuest D&D Release v1.0.0
 ---
 ([Back to top](#index))
 
