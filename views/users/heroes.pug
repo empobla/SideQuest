@@ -58,13 +58,13 @@ block content
         .l-margin-start
         //- Admin header
         if url.includes('/admin/')
-            a.l-divider(href=`/admin/${user.username}/heroes`)
+            a.l-divider(href=`/admin/heroes`)
                 .c-divider__left
                     h1 &#10525; Editar Héroe
                 .c-divider__right
         //- User new hero and edit hero headers
         else
-            a.l-divider(href=`/users/${user.username}/heroes`)
+            a.l-divider(href=`/users/heroes`)
                 .c-divider__left
                     //- New hero header
                     if url.endsWith('/newHero')
@@ -109,9 +109,9 @@ block content
             //- Form actions for new hero and edit hero
             - let formAction = '';
             if url.endsWith('/newHero')
-                - formAction = `/users/${username}/heroes/newHero`;
+                - formAction = `/users/heroes/newHero`;
             else
-                - formAction = `/users/${username}/heroes/${hero._id}`;
+                - formAction = `/users/heroes/${hero._id}`;
             
             //- Main form
             form.c-edithero-form(action=`${formAction}` method='post' enctype='multipart/form-data' autocomplete='off')

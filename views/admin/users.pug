@@ -6,13 +6,13 @@ block content
     .l-margin-start
     //- Main manage users header
     if url.endsWith('/users')
-        a.l-divider(href=`/admin/${user.username}`)
+        a.l-divider(href=`/admin`)
             .c-divider__left
                 h1 &#10525; Manage Users
             .c-divider__right
     //- Edit users header
     else
-        a.l-divider(href=`/admin/${user.username}/users`)
+        a.l-divider(href=`/admin/users`)
             .c-divider__left
                 h1 &#10525; Edit #{userEdit.username}
             .c-divider__right
@@ -30,7 +30,7 @@ block content
                         each user in users
                             if user.isAdmin
                                 li
-                                    a.c-button(href=`/admin/${username}/users/${user._id}`)= user.username
+                                    a.c-button(href=`/admin/users/${user._id}`)= user.username
                 //- DM user list
                 div
                     h2.m-align-center DMs
@@ -40,7 +40,7 @@ block content
                         each user in users
                             if user.isDM
                                 li
-                                    a.c-button(href=`/admin/${username}/users/${user._id}`)= user.username
+                                    a.c-button(href=`/admin/users/${user._id}`)= user.username
                 //- Default user list
                 div
                     h2.m-align-center Users
@@ -50,7 +50,7 @@ block content
                         each user in users
                             if !user.isAdmin && !user.isDM
                                 li
-                                    a.c-button(href=`/admin/${username}/users/${user._id}`)= user.username
+                                    a.c-button(href=`/admin/users/${user._id}`)= user.username
     
     //- Edit user section
     else
@@ -68,7 +68,7 @@ block content
                         h2.m-align-center Account level
                         hr
                         .l-margin--2
-                        //- form.c-adminuser-form(action=`/admin/${username}/users/${user._id}/editPrivilege` method='post')
+                        //- form.c-adminuser-form(action=`/admin/users/${user._id}/editPrivilege` method='post')
                         .c-adminuser-form
                             .c-adminuser-checkboxes
                                 .c-checkbox

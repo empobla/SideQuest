@@ -9,43 +9,43 @@ const validatorController = require('../controllers/validatorController');
 /* GET admin listing */
 router.get('/', function(req, res, next) {
     req.isAuthenticated()
-      ? res.redirect(`/admin/${req.user.username}`)
-      : res.redirect('/users/login');
+      ? res.redirect(`/admin/account`)
+      : res.redirect('/users');
 });
 router.get('/*',  userController.isAdmin);
-router.get('/:username', adminController.adminView);
+router.get('/account', adminController.adminView);
 
 // Users Edit and Delete
-router.get('/:username/users', adminController.users);
-router.get('/:username/users/:userId', adminController.editUserGet);
-router.post('/:username/users/:userId', adminController.editUserPost);
+router.get('/users', adminController.users);
+router.get('/users/:userId', adminController.editUserGet);
+router.post('/users/:userId', adminController.editUserPost);
 
 // Announcements
-router.get('/:username/announcements', adminController.announcements);
-router.post('/:username/announcements/search', validatorController.searchVS, adminController.announcementsSearch);
-router.get('/:username/announcements/newannouncement', adminController.announcements);
-router.post('/:username/announcements/newannouncement', validatorController.nameSanitizer, adminController.newAnnouncementPost);
-router.get('/:username/announcements/edit/:announcementId', adminController.editAnnouncementGet);
-router.post('/:username/announcements/edit/:announcementId', validatorController.nameSanitizer, adminController.editAnnouncementPost);
+router.get('/announcements', adminController.announcements);
+router.post('/announcements/search', validatorController.searchVS, adminController.announcementsSearch);
+router.get('/announcements/newannouncement', adminController.announcements);
+router.post('/announcements/newannouncement', validatorController.nameSanitizer, adminController.newAnnouncementPost);
+router.get('/announcements/edit/:announcementId', adminController.editAnnouncementGet);
+router.post('/announcements/edit/:announcementId', validatorController.nameSanitizer, adminController.editAnnouncementPost);
 
 // Heroes Edit and Delete
-router.get('/:username/heroes', adminController.heroes);
-router.get('/:username/heroes/:heroId', userController.newHeroGet);
+router.get('/heroes', adminController.heroes);
+router.get('/heroes/:heroId', userController.newHeroGet);
 
 // Races CURD
-router.get('/:username/races', adminController.races);
-router.post('/:username/races/search', validatorController.searchVS, adminController.racesSearch);
-router.get('/:username/races/newrace', adminController.races);
-router.post('/:username/races/newrace', validatorController.raceVS, adminController.newRacePost);
-router.get('/:username/races/edit/:raceId', adminController.editRaceGet);
-router.post('/:username/races/edit/:raceId', validatorController.raceVS, adminController.editRacePost);
+router.get('/races', adminController.races);
+router.post('/races/search', validatorController.searchVS, adminController.racesSearch);
+router.get('/races/newrace', adminController.races);
+router.post('/races/newrace', validatorController.raceVS, adminController.newRacePost);
+router.get('/races/edit/:raceId', adminController.editRaceGet);
+router.post('/races/edit/:raceId', validatorController.raceVS, adminController.editRacePost);
 
 // Classes CURD
-router.get('/:username/classes', adminController.classes);
-router.post('/:username/classes/search', validatorController.searchVS, adminController.classesSearch);
-router.get('/:username/classes/newclass', adminController.classes);
-router.post('/:username/classes/newclass', validatorController.classVS, adminController.newClassPost);
-router.get('/:username/classes/edit/:classId', adminController.editClassGet);
-router.post('/:username/classes/edit/:classId', validatorController.classVS, adminController.editClassPost);
+router.get('/classes', adminController.classes);
+router.post('/classes/search', validatorController.searchVS, adminController.classesSearch);
+router.get('/classes/newclass', adminController.classes);
+router.post('/classes/newclass', validatorController.classVS, adminController.newClassPost);
+router.get('/classes/edit/:classId', adminController.editClassGet);
+router.post('/classes/edit/:classId', validatorController.classVS, adminController.editClassPost);
 
 module.exports = router;

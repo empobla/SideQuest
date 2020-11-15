@@ -8,13 +8,13 @@ block content
     .l-margin-start
     //- Main notes header
     if url.endsWith('/notes')
-        a.l-divider(href=`/dm/${user.username}`)
+        a.l-divider(href=`/dm`)
             .c-divider__left
                 h1 &#10525; Notas
             .c-divider__right
     //- New, edit, view, and search note headers
     else
-        a.l-divider(href=`/dm/${user.username}/notes`)
+        a.l-divider(href=`/dm/notes`)
             .c-divider__left
                 //- New note header
                 if url.endsWith('/newnote')
@@ -39,7 +39,7 @@ block content
                         
             //- Note search bar
             .l-search
-                form.c-search(action=`/dm/${username}/notes/search` method='post' autocomplete='off')
+                form.c-search(action=`/dm/notes/search` method='post' autocomplete='off')
                     .c-search__input
                         label(for='name') Nombre de la nota
                         input(type='text' name='name' id='name' placeholder='Buscar nota por nombre')
@@ -50,7 +50,7 @@ block content
             .l-margin--2
             .l-ability-points-grid.grid--3
                 div
-                a.c-button--large.m-clickable(href=`/dm/${username}/notes/newnote`) Nota Nueva
+                a.c-button--large.m-clickable(href=`/dm/notes/newnote`) Nota Nueva
                 div
         
         //- Note table display
@@ -65,10 +65,10 @@ block content
                         td.m-align-left
                             p #{note.name}
                         td
-                            a(href=`/dm/${username}/notes/view/${note._id}`)
+                            a(href=`/dm/notes/view/${note._id}`)
                                 img.c-table__image(src='/images/icons/eye.svg' alt='Eye icon')
                         td
-                            a(href=`/dm/${username}/notes/edit/${note._id}`)
+                            a(href=`/dm/notes/edit/${note._id}`)
                                 img.c-table__image(src='/images/icons/edit.svg' alt='Edit icon')
     
     //- New note section
@@ -147,7 +147,7 @@ block content
                                     label(for='name') Nombre del Personaje
                                     input(type='text' name='name' id='search-charname' placeholder='Buscar personaje por nombre')
 
-                                    button.c-button.m-clickable#js-charbutton(type='button' onclick=`searchCharsDM('${user.username}', '/dm/${username}/notes/charactersearch')`) Search
+                                    button.c-button.m-clickable#js-charbutton(type='button' onclick=`searchCharsDM('/dm/notes/charactersearch')`) Search
                                     //- Search loading animation
                                     .m-inactive#js-char-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
@@ -182,7 +182,7 @@ block content
                                     label(for='name') Spell name
                                     input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
 
-                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/spellsearch')`) Search
+                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('/dm/notes/spellsearch')`) Search
                                     //- Search loading animation
                                     .m-inactive#js-spell-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
@@ -262,7 +262,7 @@ block content
                                     label(for='name') Nombre del Personaje
                                     input(type='text' name='name' id='search-charname' placeholder='Buscar personaje por nombre')
 
-                                    button.c-button.m-clickable#js-charbutton(type='button' onclick=`searchCharsDM('${user.username}', '/dm/${username}/notes/charactersearch')`) Search
+                                    button.c-button.m-clickable#js-charbutton(type='button' onclick=`searchCharsDM('/dm/notes/charactersearch')`) Search
                                     //- Search loading animation
                                     .m-inactive#js-char-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
@@ -297,7 +297,7 @@ block content
                                     label(for='name') Spell name
                                     input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
 
-                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/spellsearch')`) Search
+                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('/dm/notes/spellsearch')`) Search
                                     //- Search loading animation
                                     .m-inactive#js-spell-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
@@ -385,7 +385,7 @@ block content
                                     label(for='name') Nombre del Personaje
                                     input(type='text' name='name' id='search-charname' placeholder='Buscar personaje por nombre')
 
-                                    button.c-button.m-clickable#js-charbutton(type='button' onclick=`searchCharsDM('${user.username}', '/dm/${username}/notes/charactersearch')`) Search
+                                    button.c-button.m-clickable#js-charbutton(type='button' onclick=`searchCharsDM('/dm/notes/charactersearch')`) Search
                                     //- Search loading animation
                                     .m-inactive#js-char-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small
@@ -420,7 +420,7 @@ block content
                                     label(for='name') Spell name
                                     input(type='text' name='name' id='search-name' placeholder='Buscar spell por nombre')
 
-                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('${user.username}', '/dm/${username}/notes/spellsearch')`) Search
+                                    button.c-button.m-clickable#js-spellbutton(type='button' onclick=`searchSpellsDM('/dm/notes/spellsearch')`) Search
                                     //- Search loading animation
                                     .m-inactive#js-spell-loading
                                         .c-loadingbg__animation.c-loadingbg__animation--small

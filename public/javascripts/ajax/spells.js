@@ -10,12 +10,12 @@ function setEleDisplay(selector, display) {
 function showEle(selector) { setEleDisplay(selector, 'flex'); };
 function hideEle(selector) { setEleDisplay(selector, 'none'); };
 
-function searchSpells(username) {
+function searchSpells() {
     const searchName = document.getElementById('search-name');
     const searchLevel = document.getElementById('search-level');
     const searchSchool = document.getElementById('search-school');
 
-    const url = `/users/${username}/spells/search?name=${searchName.value || ''}&level=${searchLevel.value || ''}&school=${searchSchool.value || ''}`;
+    const url = `/users/spells/search?name=${searchName.value || ''}&level=${searchLevel.value || ''}&school=${searchSchool.value || ''}`;
 
     const ajax = new XMLHttpRequest();
 
@@ -38,7 +38,7 @@ function searchSpells(username) {
     showEle('.c-loadingbg')
 };
 
-function searchSpellsDM(username, route) {
+function searchSpellsDM(route) {
     const searchName = document.getElementById('search-name');
 
     const url = `${route}?name=${searchName.value || ''}`;

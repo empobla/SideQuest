@@ -12,7 +12,7 @@ block content
             .c-divider__right
     //- New, edit and character search headers
     else
-        a.l-divider(href=`/users/${user.username}/characters`)
+        a.l-divider(href=`/users/characters`)
             .c-divider__left
                 //- New character header
                 if url.endsWith('/newcharacter')
@@ -37,7 +37,7 @@ block content
                         
             //- Edit character search bar
             .l-search
-                form.c-search(action=`/users/${username}/characters/search` method='post' autocomplete='off')
+                form.c-search(action=`/users/characters/search` method='post' autocomplete='off')
                     .c-search__input
                         label(for='name') Nombre
                         input(type='text' name='name' id='name' placeholder='Buscar personaje por nombre')
@@ -57,14 +57,14 @@ block content
             .l-margin--2
             .l-ability-points-grid.grid--3
                 div
-                a.c-button--large.m-clickable(href=`/users/${username}/characters/newcharacter`) Nuevo Personaje
+                a.c-button--large.m-clickable(href=`/users/characters/newcharacter`) Nuevo Personaje
                 div
             
             //- Character display cards
             .l-margin--3
             .l-cards--4
                 each character in characters
-                    a.c-card(href=`/users/${username}/characters/edit/${character._id}`)
+                    a.c-card(href=`/users/characters/edit/${character._id}`)
                         .c-card__header
                             .c-card__header-left
                                 h2 #{character.name}

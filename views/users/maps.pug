@@ -12,7 +12,7 @@ block content
             .c-divider__right
     //- New, edit, and search map headers
     else
-        a.l-divider(href=`/users/${user.username}/maps`)
+        a.l-divider(href=`/users/maps`)
             .c-divider__left
                 //- New map header
                 if url.endsWith('/newmap')
@@ -37,7 +37,7 @@ block content
                         
             //- Edit map search bar
             .l-search
-                form.c-search(action=`/users/${username}/maps/search` method='post' autocomplete='off')
+                form.c-search(action=`/users/maps/search` method='post' autocomplete='off')
                     .c-search__input
                         label(for='name') Nombre
                         input(type='text' name='name' id='name' placeholder='Buscar mapa por nombre')
@@ -48,14 +48,14 @@ block content
             .l-margin--2
             .l-ability-points-grid.grid--3
                 div
-                a.c-button--large.m-clickable(href=`/users/${username}/maps/newmap`) Nuevo Mapa
+                a.c-button--large.m-clickable(href=`/users/maps/newmap`) Nuevo Mapa
                 div
             
             //- Map display cards
             .l-margin--3
             .l-cards--4
                 each map in maps
-                    a.c-card(href=`/users/${username}/maps/edit/${map._id}`)
+                    a.c-card(href=`/users/maps/edit/${map._id}`)
                         .c-card__header
                             .c-card__header-left
                                 h2 #{map.name}

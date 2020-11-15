@@ -22,7 +22,7 @@ exports.adminView = async (req, res, next) => {
 // Users edit and delete
 exports.users = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const users = await User.find();
         res.render('admin/users', { title: `${res.locals.siteAlias} Admin - Manage Users`, username, users });
     } catch(error) {
@@ -32,7 +32,7 @@ exports.users = async (req, res, next) => {
 
 exports.editUserGet = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const usersQuery = User.find();
         const userQuery = User.findOne({ _id: req.params.userId });
         const [users, userEdit] = await Promise.all([usersQuery, userQuery]);
@@ -89,7 +89,7 @@ exports.editUserPost = [
                     } }
                 ]).then(result => result[0].characters);
                 const [users, userHeroes] = await Promise.all([usersQuery, userHeroesQuery]);
-                res.render('admin/users', { title: `${res.locals.siteAlias} Admin - Edit User`, errors: errors.array(), username: req.params.username, users, userEdit: user, userHeroes });
+                res.render('admin/users', { title: `${res.locals.siteAlias} Admin - Edit User`, errors: errors.array(), username: req.user.username, users, userEdit: user, userHeroes });
                 return;
             } else {
                 // No errors
@@ -131,7 +131,7 @@ exports.editUserPost = [
                 await User.findByIdAndUpdate(updatedUser._id, updatedUser, { new: true });
             }
 
-            res.redirect(`/admin/${req.params.username}/users`);
+            res.redirect(`/admin/users`);
         } catch(error) {
             next(error);
         }
@@ -140,7 +140,7 @@ exports.editUserPost = [
 // Announcements
 exports.announcements = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const announcements = await Announcement.aggregate([ { $sort: { date: -1 } } ]);
 
         if(res.locals.url.includes('/admin/')){
@@ -160,7 +160,7 @@ exports.announcements = async (req, res, next) => {
 exports.announcementsSearch = async (validationErrors, req, res, next) => {
     try {
         if(validationErrors.length > 0) {
-            const username = req.params.username;
+            const username = req.user.username;
             const announcements = await Announcement.aggregate([ { $sort: { date: -1 } } ]);
             if(res.locals.url.includes('/admin/')){
                 res.render('admin/announcements', { title: `${res.locals.siteAlias} Admin - Anuncios`, username, announcements, errors: validationErrors });
@@ -170,7 +170,7 @@ exports.announcementsSearch = async (validationErrors, req, res, next) => {
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const searchQuery = req.body;
         const announcements = await Announcement.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
         
@@ -184,14 +184,14 @@ exports.announcementsSearch = async (validationErrors, req, res, next) => {
 
 exports.newAnnouncementPost = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const announcement = new Announcement(req.body);
         announcement.user = username;
         
         await announcement.save();
         res.locals.url.includes('/admin/')
-            ? res.redirect(`/admin/${username}/announcements/edit/${announcement._id}`)
-            : res.redirect(`/dm/${username}/announcements/edit/${announcement._id}`)
+            ? res.redirect(`/admin/announcements/edit/${announcement._id}`)
+            : res.redirect(`/dm/announcements/edit/${announcement._id}`)
     } catch(error) {
         next(error);
     }
@@ -199,7 +199,7 @@ exports.newAnnouncementPost = async (req, res, next) => {
 
 exports.editAnnouncementGet = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const announcement = await Announcement.findOne({ _id: req.params.announcementId });
 
         res.locals.url.includes('/admin/')
@@ -212,19 +212,19 @@ exports.editAnnouncementGet = async (req, res, next) => {
 
 exports.editAnnouncementPost = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const announcementId = req.params.announcementId;
 
         if(req.body.deleteannouncement != 'true') {
             await Announcement.findByIdAndUpdate(announcementId, req.body, { new: true });
             res.locals.url.includes('/admin/')
-                ? res.redirect(`/admin/${username}/announcements/edit/${announcementId}`)
-                : res.redirect(`/dm/${username}/announcements/edit/${announcementId}`)
+                ? res.redirect(`/admin/announcements/edit/${announcementId}`)
+                : res.redirect(`/dm/announcements/edit/${announcementId}`)
         } else {
             await Announcement.findByIdAndRemove(announcementId);
             res.locals.url.includes('/admin/')
-                ? res.redirect(`/admin/${username}/announcements`)
-                : res.redirect(`/dm/${username}/announcements`);
+                ? res.redirect(`/admin/announcements`)
+                : res.redirect(`/dm/announcements`);
         }
     } catch(error) {
         next(error);
@@ -234,7 +234,7 @@ exports.editAnnouncementPost = async (req, res, next) => {
 // Heroes edit and delete
 exports.heroes = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const heroes = await Hero.aggregate([ { $sort: { name: 1 } } ]);
 
         res.render('admin/heroes', { title: `${res.locals.siteAlias} Admin - Manage Heroes`, username, heroes });
@@ -246,7 +246,7 @@ exports.heroes = async (req, res, next) => {
 // Races CURD
 exports.races = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const races = await Race.aggregate([ { $sort: { name: 1 } } ]);
         
         res.locals.url.endsWith('/newrace')
@@ -260,13 +260,13 @@ exports.races = async (req, res, next) => {
 exports.racesSearch = async (validationErrors, req, res, next) => {
     try {
         if(validationErrors.length > 0){
-            const username = req.params.username;
+            const username = req.user.username;
             const races = await Race.aggregate([ { $sort: { name: 1 } } ]);
             res.render('admin/races', { title: `${res.locals.siteAlias} Admin - Manage Races`, username, races, errors: validationErrors });
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const searchQuery = req.body;
         const races = await Race.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
         
@@ -283,7 +283,7 @@ exports.newRacePost = async (validationErrors, req, res, next) => {
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const race = new Race(req.body);
 
         const abilities = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
@@ -307,7 +307,7 @@ exports.newRacePost = async (validationErrors, req, res, next) => {
         }
 
         await race.save();
-        res.redirect(`/admin/${username}/races/edit/${race._id}`);
+        res.redirect(`/admin/races/edit/${race._id}`);
     } catch(error) {
         next(error);
     }
@@ -331,7 +331,7 @@ exports.editRacePost = async (validationErrors, req, res, next) => {
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const raceId = req.params.raceId;
         const race = new Race(req.body);
         
@@ -358,10 +358,10 @@ exports.editRacePost = async (validationErrors, req, res, next) => {
 
         if(req.body.deleterace != 'true') {
             await Race.findByIdAndUpdate(raceId, race, { new: true });
-            res.redirect(`/admin/${username}/races/edit/${raceId}`);
+            res.redirect(`/admin/races/edit/${raceId}`);
         } else {
             await Race.findByIdAndRemove(raceId);
-            res.redirect(`/admin/${username}/races`);
+            res.redirect(`/admin/races`);
         }
     } catch(error) {
         next(error);
@@ -370,7 +370,7 @@ exports.editRacePost = async (validationErrors, req, res, next) => {
 
 exports.classes = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const classes = await Class.aggregate([ { $sort: { name: 1 } } ]);
         
         res.locals.url.endsWith('/newclass')
@@ -384,13 +384,13 @@ exports.classes = async (req, res, next) => {
 exports.classesSearch = async (validationErrors, req, res, next) => {
     try {
         if(validationErrors.length > 0) {
-            const username = req.params.username;
+            const username = req.user.username;
             const classes = await Class.aggregate([ { $sort: { name: 1 } } ]);
             res.render('admin/classes', { title: `${res.locals.siteAlias} Admin - Manage Classes`, username, classes, errors: validationErrors });
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const searchQuery = req.body;
         const classes = await Class.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
         
@@ -407,11 +407,11 @@ exports.newClassPost = async (validationErrors, req, res, next) => {
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const newClass = new Class(req.body);
 
         await newClass.save();
-        res.redirect(`/admin/${username}/classes`)
+        res.redirect(`/admin/classes`)
     } catch(error) {
         next(error);
     }
@@ -437,7 +437,7 @@ exports.editClassPost = async (validationErrors, req, res, next) => {
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const classId = req.params.classId;
         const editedClass = new Class(req.body);
 
@@ -446,10 +446,10 @@ exports.editClassPost = async (validationErrors, req, res, next) => {
 
         if(req.body.deleteclass != 'true') {
             await Class.findByIdAndUpdate(classId, editedClass, { new: true });
-            res.redirect(`/admin/${username}/classes/edit/${classId}`);
+            res.redirect(`/admin/classes/edit/${classId}`);
         } else {
             await Class.findByIdAndRemove(classId);
-            res.redirect(`/admin/${username}/classes`);
+            res.redirect(`/admin/classes`);
         }
     } catch(error) {
         next(error);

@@ -10,8 +10,12 @@ var logger = require('morgan');
 // Require dependencies
 const mongoose = require('mongoose');
 const compression = require('compression');
+
+// Security dependencies
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
 
 // Dependencies for sessions
 const session = require('express-session');
@@ -64,6 +68,23 @@ app.use(compression());
 
 // Set up body-parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '100kb' })); // Body limit is 100kb
+
+// Set up express-rate-limit middleware
+// Reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
+app.set('trust proxy', 1);
+
+const limiter = rateLimit({
+  windowMS: 1000 * 60 * 15,  // 15 min in ms
+  max: 100, // Max requests per 15 min window
+  message: 'You have exceeded the 100 requests in 15 minutes limit!',
+  headers: true // Send the appropriate headers to the response (X-RateLimit-Limit, X-RateLimit-Remaining, Retry-After)
+});
+
+// Set up express-mongo-sanitize to protect against NoSQL Injection Attacks
+app.use(mongoSanitize({ replaceWith: '_' }));
+
+app.use(limiter);
 
 app.use(logger('dev'));
 app.use(express.json());

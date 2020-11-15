@@ -40,7 +40,7 @@ router.post('/maps/search', validatorController.searchVS, indexController.mapsSe
 
 /* Login */
 router.get('/login', userController.loginGet);
-router.post('/login', userController.loginPost);
+router.post('/login', validatorController.sanitize, userController.loginPost);
 
 /* Signup */
 router.get('/signup', userController.signUpGet);

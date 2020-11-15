@@ -8,13 +8,13 @@ block content
     .l-margin-start
     //- Main announcement section header
     if url.endsWith('/announcements')
-        a.l-divider(href=`/${route}/${user.username}`)
+        a.l-divider(href=`/${route}`)
             .c-divider__left
                 h1 &#10525; Anuncios
             .c-divider__right
     //- New, edit, and search announcement headers
     else
-        a.l-divider(href=`/${route}/${user.username}/announcements`)
+        a.l-divider(href=`/${route}/announcements`)
             .c-divider__left
                 //- New announcement
                 if url.endsWith('/newannouncement')
@@ -38,7 +38,7 @@ block content
                         li= error.msg
             //- Announcement search bar
             .l-search
-                form.c-search(action=`/${route}/${username}/announcements/search` method='post' autocomplete='off')
+                form.c-search(action=`/${route}/announcements/search` method='post' autocomplete='off')
                     .c-search__input
                         label(for='name') Nombre del anuncio
                         input(type='text' name='name' id='name' placeholder='Buscar anuncio por nombre')
@@ -49,7 +49,7 @@ block content
             .l-margin--2
             .l-ability-points-grid.grid--3
                 div
-                a.c-button--large.m-clickable(href=`/${route}/${username}/announcements/newannouncement`) Anuncio Nuevo
+                a.c-button--large.m-clickable(href=`/${route}/announcements/newannouncement`) Anuncio Nuevo
                 div
         
         //- Anouncement table display
@@ -59,10 +59,10 @@ block content
                 each announcement in announcements
                     tr.c-spell 
                         td.m-align-left
-                            a.m-color-black(href=`/${route}/${username}/announcements/edit/${announcement._id}`) #{announcement.name}
+                            a.m-color-black(href=`/${route}/announcements/edit/${announcement._id}`) #{announcement.name}
                         td.m-align-left
                             - const date = new Date(announcement.date)
-                            a.m-color-black(href=`/${route}/${username}/announcements/edit/${announcement._id}`)= `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()}`
+                            a.m-color-black(href=`/${route}/announcements/edit/${announcement._id}`)= `${String(date.getDate()).padStart(2,'0')}/${String(date.getMonth() + 1).padStart(2,'0')}/${date.getFullYear()}`
 
     //- New announcement section                       
     else if url.endsWith('/newannouncement')

@@ -9,27 +9,27 @@ const validatorController = require('../controllers/validatorController');
 router.get('/', function(req, res, next) {
   req.isAuthenticated()
     // ? res.send('respond with a resource - '+req.user.username)
-    ? res.redirect(`/users/${req.user.username}`)
+    ? res.redirect(`/users/account`)
     : res.redirect('/login');
 });
 
 /* Account View Routes */
 router.get('/*', userController.isAuth);
-router.get('/:username', userController.accountView);
-router.post('/:username', userController.accountViewPost);
+router.get('/account', userController.accountView);
+router.post('/account', userController.accountViewPost);
 
 // Hero
-router.get('/:username/heroes', userController.heroes);
-router.get('/:username/heroes/newHero', userController.newHeroGet);
-router.post('/:username/heroes/newHero', 
+router.get('/heroes', userController.heroes);
+router.get('/heroes/newHero', userController.newHeroGet);
+router.post('/heroes/newHero', 
   userController.upload,
   userController.pushToCloudinary,
   validatorController.heroVS,
   userController.newHeroPost
 );
 
-router.get('/:username/heroes/:heroId', userController.newHeroGet);
-router.post('/:username/heroes/:heroId', 
+router.get('/heroes/:heroId', userController.newHeroGet);
+router.post('/heroes/:heroId', 
   userController.upload,
   userController.pushToCloudinary,
   validatorController.heroVS,
@@ -37,31 +37,31 @@ router.post('/:username/heroes/:heroId',
 );
 
 // Spells
-router.get('/:username/spells', userController.spells);
-router.post('/:username/savespell', validatorController.sanitize, userController.saveSpellPost);
-router.post('/:username/editSpell', validatorController.sanitize, userController.editSpellPost);
-router.get('/:username/spells/search', validatorController.searchVS, userController.spellsSearch);
+router.get('/spells', userController.spells);
+router.post('/savespell', validatorController.sanitize, userController.saveSpellPost);
+router.post('/editSpell', validatorController.sanitize, userController.editSpellPost);
+router.get('/spells/search', validatorController.searchVS, userController.spellsSearch);
 
 // Story
-router.get('/:username/story', userController.story);
-router.post('/:username/story/search', validatorController.searchVS, userController.storySearch);
-router.get('/:username/story/newstory', userController.newStoryGet);
-router.post('/:username/story/newstory', validatorController.nameSanitizer, userController.newStoryPost);
-router.get('/:username/story/edit/:storyId', userController.editStoryGet);
-router.post('/:username/story/edit/:storyId', validatorController.nameSanitizer, userController.editStoryPost);
+router.get('/story', userController.story);
+router.post('/story/search', validatorController.searchVS, userController.storySearch);
+router.get('/story/newstory', userController.newStoryGet);
+router.post('/story/newstory', validatorController.nameSanitizer, userController.newStoryPost);
+router.get('/story/edit/:storyId', userController.editStoryGet);
+router.post('/story/edit/:storyId', validatorController.nameSanitizer, userController.editStoryPost);
 
 // Characters
-router.get('/:username/characters', userController.characters);
-router.post('/:username/characters/search', validatorController.searchVS, userController.charactersSearch);
-router.get('/:username/characters/newcharacter', userController.newCharacterGet);
-router.post('/:username/characters/newcharacter',
+router.get('/characters', userController.characters);
+router.post('/characters/search', validatorController.searchVS, userController.charactersSearch);
+router.get('/characters/newcharacter', userController.newCharacterGet);
+router.post('/characters/newcharacter',
   userController.upload,
   userController.pushToCloudinary,
   validatorController.characterVS,
   userController.newCharacterPost
 );
-router.get('/:username/characters/edit/:characterId', userController.editCharacterGet);
-router.post('/:username/characters/edit/:characterId',
+router.get('/characters/edit/:characterId', userController.editCharacterGet);
+router.post('/characters/edit/:characterId',
   userController.upload,
   userController.pushToCloudinary,
   validatorController.characterVS,
@@ -69,16 +69,16 @@ router.post('/:username/characters/edit/:characterId',
 );
 
 // Maps
-router.get('/:username/maps', userController.maps);
-router.post('/:username/maps/search', validatorController.searchVS, userController.mapsSearch);
-router.get('/:username/maps/newmap', userController.newMapGet);
-router.post('/:username/maps/newmap', 
+router.get('/maps', userController.maps);
+router.post('/maps/search', validatorController.searchVS, userController.mapsSearch);
+router.get('/maps/newmap', userController.newMapGet);
+router.post('/maps/newmap', 
   userController.upload,
   userController.pushToCloudinary,
   validatorController.nameSanitizer,
   userController.newMapPost);
-router.get('/:username/maps/edit/:mapId', userController.editMapGet);
-router.post('/:username/maps/edit/:mapId', 
+router.get('/maps/edit/:mapId', userController.editMapGet);
+router.post('/maps/edit/:mapId', 
   userController.upload,
   userController.pushToCloudinary,
   validatorController.nameSanitizer,
@@ -87,7 +87,7 @@ router.post('/:username/maps/edit/:mapId',
 // FETCH DnD5eAPI Spells
 // const fetch = require('node-fetch');
 // const Spell = require('../models/spell');
-// router.get('/:username/importspells', async (req, res, next) => {
+// router.get('/importspells', async (req, res, next) => {
 //   try {
 //     const data = await fetch('https://www.dnd5eapi.co/api/spells')
 //       .then(resp => resp.json())

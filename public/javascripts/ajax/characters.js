@@ -92,7 +92,7 @@ function buildCharRows(characters, dropdowns) {
     return output;
 };
 
-function searchCharsDM(username, route) {
+function searchCharsDM(route) {
     const searchName = document.getElementById('search-charname');
 
     const url = `${route}?name=${searchName.value || ''}`;

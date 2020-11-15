@@ -13,7 +13,7 @@ exports.dmView = (req, res) => {
 // Notes
 exports.notes = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
 
         if(res.locals.url.endsWith('/notes')) {
             const notes = await Note.aggregate([ { $sort: { date: -1 } } ]);
@@ -158,13 +158,13 @@ exports.notesCharsSearch = async (validationErrors, req, res, next) => {
 exports.notesSearch = async (validationErrors, req, res, next) => {
     try {
         if(validationErrors.length > 0) {
-            const username = req.params.username;
+            const username = req.user.username;
             const notes = await Note.aggregate([ { $sort: { date: -1 } } ]);
             res.render('dm/notes', { title: `${res.locals.siteAlias} DM - Notas`, username, notes, errors: validationErrors });
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const searchQuery = req.body;
         const notes = await Note.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
         
@@ -176,11 +176,11 @@ exports.notesSearch = async (validationErrors, req, res, next) => {
 
 exports.newNotePost = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const note = new Note(req.body);
         
         await note.save();
-        res.redirect(`/dm/${username}/notes`);
+        res.redirect(`/dm/notes`);
     } catch(error) {
         next(error);
     }
@@ -188,7 +188,7 @@ exports.newNotePost = async (req, res, next) => {
 
 exports.editNoteGet = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const noteId = req.params.noteId;
 
         const tmpHeroes = await Hero.find();
@@ -227,15 +227,15 @@ exports.editNoteGet = async (req, res, next) => {
 
 exports.editNotePost = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const noteId = req.params.noteId;
 
         if(req.body.deletenote != 'true') {
             await Note.findByIdAndUpdate(noteId, req.body, { new: true });
-            res.redirect(`/dm/${username}/notes/edit/${noteId}`);
+            res.redirect(`/dm/notes/edit/${noteId}`);
         } else {
             await Note.findByIdAndRemove(noteId);
-            res.redirect(`/dm/${username}/notes`);
+            res.redirect(`/dm/notes`);
         }
     } catch(error) {
         next(error);

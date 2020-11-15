@@ -7,13 +7,13 @@ block content
     .l-margin-start
     //- Main classes header
     if url.endsWith('/classes')
-        a.l-divider(href=`/admin/${user.username}`)
+        a.l-divider(href=`/admin`)
             .c-divider__left
                 h1 &#10525; Classes
             .c-divider__right
     //- New, edit, and search classes header
     else
-        a.l-divider(href=`/admin/${user.username}/classes`)
+        a.l-divider(href=`/admin/classes`)
             .c-divider__left
                 //- New class header
                 if url.endsWith('/newclass')
@@ -38,7 +38,7 @@ block content
 
             //- Class search bar
             .l-search
-                form.c-search(action=`/admin/${username}/classes/search` method='post' autocomplete='off')
+                form.c-search(action=`/admin/classes/search` method='post' autocomplete='off')
                     .c-search__input
                         label(for='name') Class name
                         input(type='text' name='name' id='name' placeholder='Search for class by name')
@@ -49,7 +49,7 @@ block content
             .l-margin--2
             .l-ability-points-grid.grid--3
                 div
-                a.c-button--large.m-clickable(href=`/admin/${username}/classes/newclass`) New Class
+                a.c-button--large.m-clickable(href=`/admin/classes/newclass`) New Class
                 div
         
         //- Class table display 
@@ -59,7 +59,7 @@ block content
                 each heroClass in classes
                     tr.c-spell 
                         td.m-align-left
-                            a.m-color-black(href=`/admin/${username}/classes/edit/${heroClass._id}`) #{heroClass.name}
+                            a.m-color-black(href=`/admin/classes/edit/${heroClass._id}`) #{heroClass.name}
 
     //- New class section
     else if url.endsWith('/newclass')

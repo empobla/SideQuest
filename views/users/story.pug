@@ -12,7 +12,7 @@ block content
             .c-divider__right
     //- New, edit and search edit story headers
     else
-        a.l-divider(href=`/users/${user.username}/story`)
+        a.l-divider(href=`/users/story`)
             .c-divider__left
                 //- New story header
                 if url.endsWith('/newstory')
@@ -37,7 +37,7 @@ block content
                         
             //- Edit story search bar
             .l-search
-                form.c-search(action=`/users/${username}/story/search` method='post' autocomplete='off')
+                form.c-search(action=`/users/story/search` method='post' autocomplete='off')
                     .c-search__input
                         label(for='name') Nombre de la sesión
                         input(type='text' name='name' id='name' placeholder='Buscar sesión por nombre')
@@ -48,7 +48,7 @@ block content
             .l-margin--2
             .l-ability-points-grid.grid--3
                 div
-                a.c-button--large.m-clickable(href=`/users/${username}/story/newstory`) Nueva Historia
+                a.c-button--large.m-clickable(href=`/users/story/newstory`) Nueva Historia
                 div
         
         //- Story table display
@@ -58,7 +58,7 @@ block content
                 each story in stories
                     tr.c-spell
                         td.m-align-left
-                            a.m-color-black(href=`/users/${username}/story/edit/${story._id}`) #{story.name}
+                            a.m-color-black(href=`/users/story/edit/${story._id}`) #{story.name}
 
     //- New story section
     else if url.endsWith('/newstory')

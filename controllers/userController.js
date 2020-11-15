@@ -46,11 +46,11 @@ exports.pushToCloudinary = async (req, res, next) => {
                 })
                 .catch(() => {
                     // req.flash('error', 'Sorry, there was a problem uploading your image. Please try again');
-                    const username = req.params.username;
+                    const username = req.user.username;
                     const heroId = req.params.heroId;
                     res.locals.url.endsWith('/heroes/newHero')
-                        ? res.redirect(`/users/${username}/heroes/newHero`)
-                        : res.redirect(`/users/${username}/heroes/${heroId}`);
+                        ? res.redirect(`/users/heroes/newHero`)
+                        : res.redirect(`/users/heroes/${heroId}`);
                     console.log('Error: Hero Image');
                 });
             }
@@ -65,11 +65,11 @@ exports.pushToCloudinary = async (req, res, next) => {
                 })
                 .catch(() => {
                     // req.flash('error', 'Sorry, there was a problem uploading your image. Please try again');
-                    const username = req.params.username;
+                    const username = req.user.username;
                     const heroId = req.params.heroId;
                     res.locals.url.endsWith('/heroes/newHero')
-                        ? res.redirect(`/users/${username}/heroes/newHero`)
-                        : res.redirect(`/users/${username}/heroes/${heroId}`);
+                        ? res.redirect(`/users/heroes/newHero`)
+                        : res.redirect(`/users/heroes/${heroId}`);
                     console.log('Error: Emblem Image');
                 });
             }
@@ -87,11 +87,11 @@ exports.pushToCloudinary = async (req, res, next) => {
             })
             .catch(() => {
                 // req.flash('error', 'Sorry, there was a problem uploading your image. Please try again');
-                const username = req.params.username;
+                const username = req.user.username;
                 const characterId = req.params.characterId;
                 (characterId != undefined && characterId != '')
-                    ? res.redirect(`/users/${username}/characters/edit/${characterId}`)
-                    : res.redirect(`/users/${username}/characters/newcharacter`);
+                    ? res.redirect(`/users/characters/edit/${characterId}`)
+                    : res.redirect(`/users/characters/newcharacter`);
             });
         } else if(res.locals.url.includes('/maps/')) {
             if(req.files.image == undefined) next();
@@ -103,11 +103,11 @@ exports.pushToCloudinary = async (req, res, next) => {
                 next();
             })
             .catch(() => {
-                const username = req.params.username;
+                const username = req.user.username;
                 const mapId = req.params.mapId;
                 (mapId != undefined && mapId != '')
-                    ? res.redirect(`/users/${username}/maps/edit/${mapId}`)
-                    : res.redirect(`/users/${username}/maps/newmap`);
+                    ? res.redirect(`/users/maps/edit/${mapId}`)
+                    : res.redirect(`/users/maps/newmap`);
             })
         } else {
             Cloudinary.v2.uploader.upload(req.file.path, {
@@ -119,8 +119,8 @@ exports.pushToCloudinary = async (req, res, next) => {
             })
             .catch(() => {
                 // req.flash('error', 'Sorry, there was a problem uploading your image. Please try again');
-                const username = req.params.username;
-                res.redirect(`/users/user/${username}`);
+                const username = req.user.username;
+                res.redirect(`/users`);
             });
         }
     } else {
@@ -281,7 +281,7 @@ exports.accountViewPost = [
 // Heroes
 exports.heroes = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const user = await User.findOne({ username: username });
 
         const userHeroes = await User.aggregate([
@@ -304,12 +304,23 @@ exports.heroes = async (req, res, next) => {
 /* SECURITY: Must check if owner user or admin user is editing. Else, deny access. */
 exports.newHeroGet = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const heroId = req.params.heroId;
 
+        const user = await User.findOne({ username: username });
+        let userOwnsHero = false;
+        user.characters.forEach(characterid => {
+            if(characterid.toString() == heroId) userOwnsHero = true;
+        });
+
+        if(!userOwnsHero && !user.isAdmin) {
+            res.redirect('/users/heroes');
+            return;
+        }
+
         const heroQuery = Hero.findOne({ _id: heroId });
-        const racesQuery = Race.find();
-        const classesQuery = Class.find();
+        const racesQuery = Race.aggregate([ { $sort: { name: 1 } } ]);
+        const classesQuery = Class.aggregate([ { $sort: { name: 1 } } ]);
 
         const spellsQuery = [];
 
@@ -384,7 +395,7 @@ exports.newHeroGet = async (req, res, next) => {
 exports.newHeroPost = async (req, res, next) => {
     try {
         const hero = new Hero(req.body);
-        const userQuery = User.findOne({ username: req.params.username });
+        const userQuery = User.findOne({ username: req.user.username });
         const heroClassQuery = Class.findOne({ _id: req.body.class.split(',')[1] });
         const [user, heroClass] = await Promise.all([userQuery, heroClassQuery]);
         
@@ -407,7 +418,7 @@ exports.newHeroPost = async (req, res, next) => {
         // res.json(hero)
         await hero.save();
         await User.findByIdAndUpdate(user._id, user, { new: true });
-        res.redirect(`/users/${user.username}/heroes`);
+        res.redirect(`/users/heroes`);
     } catch(error) {
         next(error);
     }
@@ -415,7 +426,7 @@ exports.newHeroPost = async (req, res, next) => {
 
 exports.editHeroPost = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const heroId = req.params.heroId;
         const oldHeroQuery = Hero.findOne({ _id: heroId });
         const hero = new Hero(req.body);
@@ -453,13 +464,13 @@ exports.editHeroPost = async (req, res, next) => {
             });
             await Promise.all([User.findByIdAndUpdate(user._id, user, { new: true }), Hero.findByIdAndRemove(heroId)]);
             req.body.admin != 'true'
-                ? res.redirect(`/users/${username}/heroes`)
-                : res.redirect(`/admin/${username}/heroes`);
+                ? res.redirect(`/users/heroes`)
+                : res.redirect(`/admin/heroes`);
         } else {
             await Hero.findByIdAndUpdate(oldHero._id, hero, { new: true });
             req.body.admin != 'true'
-                ? res.redirect(`/users/${username}/heroes`)
-                : res.redirect(`/admin/${username}/heroes`);
+                ? res.redirect(`/users/heroes`)
+                : res.redirect(`/admin/heroes`);
         }
     } catch(error) {
         next(error);
@@ -494,7 +505,7 @@ exports.saveSpellPost = async (req, res, next) => {
         const username = req.user.username;
         const spell = new Spell(req.body);
         await spell.save();
-        res.redirect(`/users/${username}/spells`);
+        res.redirect(`/users/spells`);
     } catch(error) {
         next(error);
     }
@@ -505,7 +516,7 @@ exports.editSpellPost = async (req, res, next) => {
         const username = req.user.username;
         const spell = await Spell.findOne({ _id: req.body.spell_id });
         await Spell.findByIdAndUpdate(spell._id, req.body, { new: true });
-        res.redirect(`/users/${username}/spells`);
+        res.redirect(`/users/spells`);
     } catch(error) {
         next(error);
     }
@@ -588,7 +599,7 @@ exports.spellsSearch = async (validationErrors, req, res, next) => {
 // Edit Story
 exports.story = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const stories = await Story.aggregate([ { $sort: { name: -1 } } ]);
         res.render('users/story', { title: `${res.locals.siteAlias} - Editar Historia`, username, stories });
     } catch(error) {
@@ -599,13 +610,13 @@ exports.story = async (req, res, next) => {
 exports.storySearch = async (validationErrors, req, res, next) => {
     try {
         if(validationErrors.length > 0) {
-            const username = req.params.username;
+            const username = req.user.username;
             const stories = await Story.aggregate([ { $sort: { name: -1 } } ]);
             res.render('users/story', { title: `${res.locals.siteAlias} - Editar Historia`, username, stories, errors: validationErrors });
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const searchQuery = req.body;
         const stories = await Story.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
         
@@ -617,7 +628,7 @@ exports.storySearch = async (validationErrors, req, res, next) => {
 
 exports.newStoryGet = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         res.render('users/story', { title: `${res.locals.siteAlias}: Nueva Historia`, username });
     } catch(error) {
         next(error);
@@ -626,11 +637,11 @@ exports.newStoryGet = async (req, res, next) => {
 
 exports.newStoryPost = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const story = new Story(req.body);
 
         await story.save();
-        res.redirect(`/users/${username}/story`);
+        res.redirect(`/users/story`);
     } catch(error) {
         next(error);
     }
@@ -638,7 +649,7 @@ exports.newStoryPost = async (req, res, next) => {
 
 exports.editStoryGet = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const story = await Story.findOne({ _id: req.params.storyId });
 
         res.render('users/story', { title: `${res.locals.siteAlias} - Editar Historia`, username, story });
@@ -649,15 +660,15 @@ exports.editStoryGet = async (req, res, next) => {
 
 exports.editStoryPost = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const storyId = req.params.storyId;
 
         if(req.body.deletestory != 'true') {
             await Story.findByIdAndUpdate(storyId, req.body, { new: true });
-            res.redirect(`/users/${username}/story/edit/${storyId}`);
+            res.redirect(`/users/story/edit/${storyId}`);
         } else {
             await Story.findByIdAndRemove(storyId);
-            res.redirect(`/users/${username}/story`);
+            res.redirect(`/users/story`);
         }
     } catch(error) {
         next(error);
@@ -667,7 +678,7 @@ exports.editStoryPost = async (req, res, next) => {
 // Edit Characters
 exports.characters = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const characters = await Character.aggregate([ { $sort: { name: 1 } } ]);
 
         res.render('users/characters', { title: `${res.locals.siteAlias} - Editar Personajes`, username, characters });
@@ -679,13 +690,13 @@ exports.characters = async (req, res, next) => {
 exports.charactersSearch = async (validationErrors, req, res, next) => {
     try {
         if(validationErrors.length > 0) {
-            const username = req.params.username;
+            const username = req.user.username;
             const characters = await Character.aggregate([ { $sort: { name: 1 } } ]);
             res.render('users/characters', { title: `${res.locals.siteAlias} - Editar Personajes`, username, characters, errors: validationErrors });
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const searchQuery = req.body;
         let searchData = await Promise.all([
             Character.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]),
@@ -721,11 +732,11 @@ exports.newCharacterPost = async (validationErrors, req, res, next) => {
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const character = new Character(req.body);
 
         await character.save();
-        res.redirect(`/users/${username}/characters`);
+        res.redirect(`/users/characters`);
     } catch(error) {
         next(error);
     }
@@ -751,15 +762,15 @@ exports.editCharacterPost = async (validationErrors, req, res, next) => {
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const characterId = req.params.characterId;
 
         if(req.body.deletecharacter == 'true') {
             await Character.findByIdAndRemove(characterId);
-            res.redirect(`/users/${username}/characters`);
+            res.redirect(`/users/characters`);
         } else {
             await Character.findByIdAndUpdate(characterId, req.body, { new: true });
-            res.redirect(`/users/${username}/characters/edit/${characterId}`);
+            res.redirect(`/users/characters/edit/${characterId}`);
         }
     } catch(error) {
         next(error);
@@ -769,7 +780,7 @@ exports.editCharacterPost = async (validationErrors, req, res, next) => {
 // Edit Maps
 exports.maps = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const maps = await Map.aggregate([{ $sort: { name: 1 } }]);
 
         res.render('users/maps', { title: `${res.locals.siteAlias} - Editar Mapas`, username, maps });
@@ -781,13 +792,13 @@ exports.maps = async (req, res, next) => {
 exports.mapsSearch = async (validationErrors, req, res, next) => {
     try {
         if(validationErrors.length > 0) {
-            const username = req.params.username;
+            const username = req.user.username;
             const maps = await Map.aggregate([ { $sort: { name: 1 } } ]);
             res.render('users/maps', { title: `${res.locals.siteAlias} - Editar Mapas`, username, maps, errors: validationErrors });
             return;
         }
 
-        const username = req.params.username;
+        const username = req.user.username;
         const searchQuery = req.body;
         const maps = await Map.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
 
@@ -799,7 +810,7 @@ exports.mapsSearch = async (validationErrors, req, res, next) => {
 
 exports.newMapGet = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         res.render('users/maps', { title: `${res.locals.siteAlias} - Mapa Nuevo` });
     } catch(error) {
         next(error);
@@ -808,11 +819,11 @@ exports.newMapGet = async (req, res, next) => {
 
 exports.newMapPost = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const map = new Map(req.body);
         
         await map.save();
-        res.redirect(`/users/${username}/maps`);
+        res.redirect(`/users/maps`);
     } catch(error) {
         next(error);
     }
@@ -820,7 +831,7 @@ exports.newMapPost = async (req, res, next) => {
 
 exports.editMapGet = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const mapId = req.params.mapId;
         const map = await Map.findOne({ _id: mapId });
 
@@ -832,15 +843,15 @@ exports.editMapGet = async (req, res, next) => {
 
 exports.editMapPost = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const mapId = req.params.mapId;
 
         if(req.body.deletemap == 'true') {
             await Map.findByIdAndRemove(mapId);
-            res.redirect(`/users/${username}/maps`);
+            res.redirect(`/users/maps`);
         } else {
             await Map.findByIdAndUpdate(mapId, req.body, { new: true });
-            res.redirect(`/users/${username}/maps/edit/${mapId}`);
+            res.redirect(`/users/maps/edit/${mapId}`);
         }
     } catch(error) {
         next(error);

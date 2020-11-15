@@ -10,29 +10,29 @@ const validatorController = require('../controllers/validatorController');
 /* GET admin listing */
 router.get('/', function(req, res, next) {
     req.isAuthenticated()
-      ? res.redirect(`/dm/${req.user.username}`)
-      : res.redirect('/users/login');
+      ? res.redirect(`/dm/account`)
+      : res.redirect('/users');
 });
 router.get('/*',  userController.isDM);
-router.get('/:username', dmController.dmView);
+router.get('/account', dmController.dmView);
 
 // Announcements
-router.get('/:username/announcements', adminController.announcements);
-router.post('/:username/announcements/search', validatorController.searchVS, adminController.announcementsSearch);
-router.get('/:username/announcements/newannouncement', adminController.announcements);
-router.post('/:username/announcements/newannouncement', validatorController.nameSanitizer, adminController.newAnnouncementPost);
-router.get('/:username/announcements/edit/:announcementId', adminController.editAnnouncementGet);
-router.post('/:username/announcements/edit/:announcementId', validatorController.nameSanitizer, adminController.editAnnouncementPost);
+router.get('/announcements', adminController.announcements);
+router.post('/announcements/search', validatorController.searchVS, adminController.announcementsSearch);
+router.get('/announcements/newannouncement', adminController.announcements);
+router.post('/announcements/newannouncement', validatorController.nameSanitizer, adminController.newAnnouncementPost);
+router.get('/announcements/edit/:announcementId', adminController.editAnnouncementGet);
+router.post('/announcements/edit/:announcementId', validatorController.nameSanitizer, adminController.editAnnouncementPost);
 
 // Notes
-router.get('/:username/notes', dmController.notes);
-router.post('/:username/notes/search', validatorController.searchVS, dmController.notesSearch);
-router.get('/:username/notes/newnote', dmController.notes);
-router.get('/:username/notes/spellsearch', validatorController.searchVS, dmController.notesSpellSearch);
-router.get('/:username/notes/charactersearch', validatorController.searchVS, dmController.notesCharsSearch);
-router.post('/:username/notes/newnote', validatorController.nameSanitizer, dmController.newNotePost);
-router.get('/:username/notes/view/:noteId', dmController.notes);
-router.get('/:username/notes/edit/:noteId', dmController.editNoteGet);
-router.post('/:username/notes/edit/:noteId', validatorController.nameSanitizer, dmController.editNotePost);
+router.get('/notes', dmController.notes);
+router.post('/notes/search', validatorController.searchVS, dmController.notesSearch);
+router.get('/notes/newnote', dmController.notes);
+router.get('/notes/spellsearch', validatorController.searchVS, dmController.notesSpellSearch);
+router.get('/notes/charactersearch', validatorController.searchVS, dmController.notesCharsSearch);
+router.post('/notes/newnote', validatorController.nameSanitizer, dmController.newNotePost);
+router.get('/notes/view/:noteId', dmController.notes);
+router.get('/notes/edit/:noteId', dmController.editNoteGet);
+router.post('/notes/edit/:noteId', validatorController.nameSanitizer, dmController.editNotePost);
 
 module.exports = router;
