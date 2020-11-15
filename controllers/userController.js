@@ -415,7 +415,6 @@ exports.newHeroPost = async (req, res, next) => {
 
 exports.editHeroPost = async (req, res, next) => {
     try {
-        console.log(req.body.admin)
         const username = req.params.username;
         const heroId = req.params.heroId;
         const oldHeroQuery = Hero.findOne({ _id: heroId });
@@ -492,7 +491,7 @@ exports.spells = async (req, res, next) => {
 
 exports.saveSpellPost = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const spell = new Spell(req.body);
         await spell.save();
         res.redirect(`/users/${username}/spells`);
@@ -503,7 +502,7 @@ exports.saveSpellPost = async (req, res, next) => {
 
 exports.editSpellPost = async (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.user.username;
         const spell = await Spell.findOne({ _id: req.body.spell_id });
         await Spell.findByIdAndUpdate(spell._id, req.body, { new: true });
         res.redirect(`/users/${username}/spells`);
@@ -512,8 +511,19 @@ exports.editSpellPost = async (req, res, next) => {
     }
 };
 
-exports.spellsSearch = async (req, res, next) => {
+exports.spellsSearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            htmlText = `
+            <h2>Please fix the following errors:</h2>
+            <ul>
+                <li>Search queries must be at most 250 characters long.</li>
+            </ul>
+            `;
+            res.send([htmlText])
+            return;
+        }
+
         const searchQuery = req.query;
         
         const pug = require('pug');
@@ -586,8 +596,15 @@ exports.story = async (req, res, next) => {
     }
 };
 
-exports.storySearch = async (req, res, next) => {
+exports.storySearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            const username = req.params.username;
+            const stories = await Story.aggregate([ { $sort: { name: -1 } } ]);
+            res.render('users/story', { title: `${res.locals.siteAlias} - Editar Historia`, username, stories, errors: validationErrors });
+            return;
+        }
+
         const username = req.params.username;
         const searchQuery = req.body;
         const stories = await Story.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
@@ -659,8 +676,15 @@ exports.characters = async (req, res, next) => {
     }
 };
 
-exports.charactersSearch = async (req, res, next) => {
+exports.charactersSearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            const username = req.params.username;
+            const characters = await Character.aggregate([ { $sort: { name: 1 } } ]);
+            res.render('users/characters', { title: `${res.locals.siteAlias} - Editar Personajes`, username, characters, errors: validationErrors });
+            return;
+        }
+
         const username = req.params.username;
         const searchQuery = req.body;
         let searchData = await Promise.all([
@@ -690,8 +714,13 @@ exports.newCharacterGet = async (req, res, next) => {
     }
 };
 
-exports.newCharacterPost = async (req, res, next) => {
+exports.newCharacterPost = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            res.render('users/characters', { title: `${res.locals.siteAlias} - Personaje Nuevo`, errors: validationErrors })
+            return;
+        }
+
         const username = req.params.username;
         const character = new Character(req.body);
 
@@ -713,8 +742,15 @@ exports.editCharacterGet = async (req, res, next) => {
     }
 };
 
-exports.editCharacterPost = async (req, res, next) => {
+exports.editCharacterPost = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            const characterId = req.params.characterId;
+            const character = await Character.findOne({ _id: characterId });
+            res.render('users/characters', { title: `${res.locals.siteAlias} - Editar a ${character.name}`, character, errors: validationErrors });
+            return;
+        }
+
         const username = req.params.username;
         const characterId = req.params.characterId;
 
@@ -742,8 +778,15 @@ exports.maps = async (req, res, next) => {
     }
 };
 
-exports.mapsSearch = async (req, res, next) => {
+exports.mapsSearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            const username = req.params.username;
+            const maps = await Map.aggregate([ { $sort: { name: 1 } } ]);
+            res.render('users/maps', { title: `${res.locals.siteAlias} - Editar Mapas`, username, maps, errors: validationErrors });
+            return;
+        }
+
         const username = req.params.username;
         const searchQuery = req.body;
         const maps = await Map.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);

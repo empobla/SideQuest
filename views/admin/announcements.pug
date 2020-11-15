@@ -30,6 +30,12 @@ block content
     //- Main and search announcements section
     if url.endsWith('/announcements') || url.endsWith('/search')
         .l-main-content
+            //- Validation Errors
+            if errors
+                h2 Please fix the following errors:
+                ul
+                    each error in errors
+                        li= error.msg
             //- Announcement search bar
             .l-search
                 form.c-search(action=`/${route}/${username}/announcements/search` method='post' autocomplete='off')

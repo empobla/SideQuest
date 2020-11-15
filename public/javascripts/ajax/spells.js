@@ -50,6 +50,7 @@ function searchSpellsDM(username, route) {
     ajax.onload = () => {
         hideEle('#js-spell-loading');
         showEle('#js-spellbutton');
+
         const rowData = JSON.parse(ajax.responseText);
         
         document.getElementById('js-spellsearch').innerHTML = rowData.join('\r');

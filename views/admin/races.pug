@@ -28,6 +28,13 @@ block content
     //- Main and search races section
     if url.endsWith('/races') || url.endsWith('/search')
         .l-main-content
+            //- Validation Errors
+            if errors
+                h2 Please fix the following errors:
+                ul
+                    each error in errors
+                        li= error.msg
+
             //- Race search bar
             .l-search
                 form.c-search(action=`/admin/${username}/races/search` method='post' autocomplete='off')
@@ -55,6 +62,14 @@ block content
 
     //- New race section
     else if url.endsWith('/newrace')
+        .l-main-content
+            //- Validation Errors
+            if errors
+                h2 Please fix the following errors:
+                ul
+                    each error in errors
+                        li= error.msg
+
         .l-main-content
             form.c-edithero-form(action='' method='post' autocomplete='off')
                 //- Name
@@ -109,6 +124,14 @@ block content
     
     //- Edit race section
     else
+        .l-main-content
+            //- Validation Errors
+            if errors
+                h2 Please fix the following errors:
+                ul
+                    each error in errors
+                        li= error.msg
+                        
         .l-main-content
             form.c-edithero-form(action='' method='post' autocomplete='off')
                 //- Name

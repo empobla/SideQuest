@@ -21,6 +21,13 @@ block content
                 .c-divider__right
 
         .l-main-content
+            //- Validation Errors
+            if errors
+                h2 Please fix the following errors:
+                ul
+                    each error in errors
+                        li= error.msg
+
             //- Character search bar
             .l-search
                 form.c-search(action='/characters/search' method='post' autocomplete='off')

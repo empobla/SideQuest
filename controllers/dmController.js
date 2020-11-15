@@ -59,8 +59,19 @@ exports.notes = async (req, res, next) => {
     }
 };
 
-exports.notesSpellSearch = async (req, res, next) => {
+exports.notesSpellSearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            htmlText = `
+            <h2>Please fix the following errors:</h2>
+            <ul>
+                <li>Search queries must be at most 250 characters long.</li>
+            </ul>
+            `;
+            res.send([htmlText])
+            return;
+        }
+
         const searchQuery = req.query;
         
         const pug = require('pug');
@@ -96,8 +107,19 @@ exports.notesSpellSearch = async (req, res, next) => {
     }
 };
 
-exports.notesCharsSearch = async (req, res, next) => {
+exports.notesCharsSearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            htmlText = `
+            <h2>Please fix the following errors:</h2>
+            <ul>
+                <li>Search queries must be at most 250 characters long.</li>
+            </ul>
+            `;
+            res.send({errors: htmlText})
+            return;
+        }
+
         const searchQuery = req.query;
         
         const pug = require('pug');
@@ -133,8 +155,15 @@ exports.notesCharsSearch = async (req, res, next) => {
     }
 };
 
-exports.notesSearch = async (req, res, next) => {
+exports.notesSearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            const username = req.params.username;
+            const notes = await Note.aggregate([ { $sort: { date: -1 } } ]);
+            res.render('dm/notes', { title: `${res.locals.siteAlias} DM - Notas`, username, notes, errors: validationErrors });
+            return;
+        }
+
         const username = req.params.username;
         const searchQuery = req.body;
         const notes = await Note.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);

@@ -28,32 +28,39 @@ block content
     //- Main edit map display and searh map display section
     if url.endsWith('/maps') || url.endsWith('/search')
         .l-main-content
-                //- Edit map search bar
-                .l-search
-                    form.c-search(action=`/users/${username}/maps/search` method='post' autocomplete='off')
-                        .c-search__input
-                            label(for='name') Nombre
-                            input(type='text' name='name' id='name' placeholder='Buscar mapa por nombre')
-                        .c-search__input--button
-                            button.c-button--large.m-clickable(type='submit') Buscar
+            //- Validation Errors
+            if errors
+                h2 Please fix the following errors:
+                ul
+                    each error in errors
+                        li= error.msg
+                        
+            //- Edit map search bar
+            .l-search
+                form.c-search(action=`/users/${username}/maps/search` method='post' autocomplete='off')
+                    .c-search__input
+                        label(for='name') Nombre
+                        input(type='text' name='name' id='name' placeholder='Buscar mapa por nombre')
+                    .c-search__input--button
+                        button.c-button--large.m-clickable(type='submit') Buscar
 
-                //- New map button
-                .l-margin--2
-                .l-ability-points-grid.grid--3
-                    div
-                    a.c-button--large.m-clickable(href=`/users/${username}/maps/newmap`) Nuevo Mapa
-                    div
-                
-                //- Map display cards
-                .l-margin--3
-                .l-cards--4
-                    each map in maps
-                        a.c-card(href=`/users/${username}/maps/edit/${map._id}`)
-                            .c-card__header
-                                .c-card__header-left
-                                    h2 #{map.name}
-                                .c-card__header-right
-                            img.c-card__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${map.image}.png` alt=`${map.name} Image`)
+            //- New map button
+            .l-margin--2
+            .l-ability-points-grid.grid--3
+                div
+                a.c-button--large.m-clickable(href=`/users/${username}/maps/newmap`) Nuevo Mapa
+                div
+            
+            //- Map display cards
+            .l-margin--3
+            .l-cards--4
+                each map in maps
+                    a.c-card(href=`/users/${username}/maps/edit/${map._id}`)
+                        .c-card__header
+                            .c-card__header-left
+                                h2 #{map.name}
+                            .c-card__header-right
+                        img.c-card__image(src=`http://res.cloudinary.com/duezou4td/image/upload/${map.image}.png` alt=`${map.name} Image`)
     
     //- New map section
     else if url.endsWith('/newmap')

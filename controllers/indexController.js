@@ -125,8 +125,14 @@ exports.story = async (req, res, next) => {
     }
 };
 
-exports.storySearch = async (req, res, next) => {
+exports.storySearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            const stories = await Story.aggregate([ { $sort: { name: -1 } } ]);
+            res.render('story', { title: `${res.locals.siteAlias} - Historia`, stories, errors: validationErrors });
+            return;
+        }
+
         const searchQuery = req.body;
         const stories = await Story.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
         
@@ -217,8 +223,14 @@ exports.deleteCommentPost = async (req, res, next) => {
     }
 };
 
-exports.charactersSearch = async (req, res, next) => {
+exports.charactersSearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            const characters = await Character.aggregate([ { $sort: { name: 1 } } ]);
+            res.render('characters', { title: `${res.locals.siteAlias} - Personajes`, characters, errors: validationErrors });
+            return;
+        }
+
         const searchQuery = req.body;
         let searchData = await Promise.all([
             Character.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]),
@@ -246,19 +258,25 @@ exports.maps = async (req, res, next) => {
         const mapQuery = await Map.findOne({ _id: req.params.mapId });
         const [maps, map] = await Promise.all([mapsQuery, mapQuery]);
 
-        const title = res.locals.url.endsWith('/maps') ? 'Mapas' : `Mapa: ${map.name}`
+        const title = res.locals.url.endsWith('/maps') ? 'Lugares' : `Lugares: ${map.name}`
         res.render('maps', { title: `${res.locals.siteAlias} - ${title}`, maps, map });
     } catch(error) {
         next(error);
     }
 };
 
-exports.mapsSearch = async (req, res, next) => {
+exports.mapsSearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            const maps = await Map.aggregate([ { $sort: { name: 1 } } ]);
+            res.render('maps', { title: `${res.locals.siteAlias} - Lugares`, maps, errors: validationErrors });
+            return;
+        }
+
         const searchQuery = req.body;
         const maps = await Map.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
 
-        res.render('maps', { title: `${res.locals.siteAlias} - Mapas: Búsqueda`, maps });
+        res.render('maps', { title: `${res.locals.siteAlias} - Lugares: Búsqueda`, maps });
     } catch(error) {
         next(error);
     }

@@ -29,6 +29,13 @@ block content
     //- Main and search class section
     if url.endsWith('/classes') || url.endsWith('/search')
         .l-main-content
+            //- Validation Errors
+            if errors
+                h2 Please fix the following errors:
+                ul
+                    each error in errors
+                        li= error.msg
+
             //- Class search bar
             .l-search
                 form.c-search(action=`/admin/${username}/classes/search` method='post' autocomplete='off')
@@ -56,6 +63,14 @@ block content
 
     //- New class section
     else if url.endsWith('/newclass')
+        .l-main-content
+            //- Validation Errors
+            if errors
+                h2 Please fix the following errors:
+                ul
+                    each error in errors
+                        li= error.msg
+
         .l-main-content
             form.c-edithero-form(action='' method='post' autocomplete='off')
                 //- Class name
@@ -154,6 +169,14 @@ block content
     
     //- Edit class section
     else
+        .l-main-content
+            //- Validation Errors
+            if errors
+                h2 Please fix the following errors:
+                ul
+                    each error in errors
+                        li= error.msg
+                        
         .l-main-content
             form.c-edithero-form(action='' method='post' autocomplete='off')
                 //- Class name

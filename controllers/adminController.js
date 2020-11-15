@@ -78,7 +78,6 @@ exports.editUserPost = [
             const errors = validationResult(req);
             if(!errors.isEmpty()) {
                 // There are errors
-                console.log('gothere')
                 const usersQuery = User.find();
                 const userHeroesQuery = User.aggregate([
                     { $match: { _id: user._id } },
@@ -158,8 +157,19 @@ exports.announcements = async (req, res, next) => {
     }
 };
 
-exports.announcementsSearch = async (req, res, next) => {
+exports.announcementsSearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            const username = req.params.username;
+            const announcements = await Announcement.aggregate([ { $sort: { date: -1 } } ]);
+            if(res.locals.url.includes('/admin/')){
+                res.render('admin/announcements', { title: `${res.locals.siteAlias} Admin - Anuncios`, username, announcements, errors: validationErrors });
+            } else {
+                res.render('admin/announcements', { title: `${res.locals.siteAlias} DM - Anuncios`, username, announcements, errors: validationErrors });
+            }
+            return;
+        }
+
         const username = req.params.username;
         const searchQuery = req.body;
         const announcements = await Announcement.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
@@ -225,7 +235,7 @@ exports.editAnnouncementPost = async (req, res, next) => {
 exports.heroes = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const heroes = await Hero.find();
+        const heroes = await Hero.aggregate([ { $sort: { name: 1 } } ]);
 
         res.render('admin/heroes', { title: `${res.locals.siteAlias} Admin - Manage Heroes`, username, heroes });
     } catch(error) {
@@ -237,7 +247,7 @@ exports.heroes = async (req, res, next) => {
 exports.races = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const races = await Race.find();
+        const races = await Race.aggregate([ { $sort: { name: 1 } } ]);
         
         res.locals.url.endsWith('/newrace')
             ? res.render('admin/races', { title: `${res.locals.siteAlias} Admin - New Race` })
@@ -247,8 +257,15 @@ exports.races = async (req, res, next) => {
     }
 };
 
-exports.racesSearch = async (req, res, next) => {
+exports.racesSearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0){
+            const username = req.params.username;
+            const races = await Race.aggregate([ { $sort: { name: 1 } } ]);
+            res.render('admin/races', { title: `${res.locals.siteAlias} Admin - Manage Races`, username, races, errors: validationErrors });
+            return;
+        }
+
         const username = req.params.username;
         const searchQuery = req.body;
         const races = await Race.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
@@ -259,8 +276,13 @@ exports.racesSearch = async (req, res, next) => {
     }
 };
 
-exports.newRacePost = async (req, res, next) => {
+exports.newRacePost = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0){
+            res.render('admin/races', { title: `${res.locals.siteAlias} Admin - New Race`, errors: validationErrors });
+            return;
+        }
+
         const username = req.params.username;
         const race = new Race(req.body);
 
@@ -301,8 +323,14 @@ exports.editRaceGet = async (req, res, next) => {
     }
 };
 
-exports.editRacePost = async (req, res, next) => {
+exports.editRacePost = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            const race = await Race.findOne({ _id: req.params.raceId });
+            res.render('admin/races', { title: `${res.locals.siteAlias} Admin - Edit Race`, race, errors: validationErrors });
+            return;
+        }
+
         const username = req.params.username;
         const raceId = req.params.raceId;
         const race = new Race(req.body);
@@ -343,7 +371,7 @@ exports.editRacePost = async (req, res, next) => {
 exports.classes = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const classes = await Class.find();
+        const classes = await Class.aggregate([ { $sort: { name: 1 } } ]);
         
         res.locals.url.endsWith('/newclass')
             ? res.render('admin/classes', { title: `${res.locals.siteAlias} Admin - New Class` })
@@ -353,8 +381,15 @@ exports.classes = async (req, res, next) => {
     }
 };
 
-exports.classesSearch = async (req, res, next) => {
+exports.classesSearch = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            const username = req.params.username;
+            const classes = await Class.aggregate([ { $sort: { name: 1 } } ]);
+            res.render('admin/classes', { title: `${res.locals.siteAlias} Admin - Manage Classes`, username, classes, errors: validationErrors });
+            return;
+        }
+
         const username = req.params.username;
         const searchQuery = req.body;
         const classes = await Class.aggregate([ { $match: { $text: { $search: searchQuery.name } } } ]);
@@ -365,8 +400,13 @@ exports.classesSearch = async (req, res, next) => {
     }
 };
 
-exports.newClassPost = async (req, res, next) => {
+exports.newClassPost = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            res.render('admin/classes', { title: `${res.locals.siteAlias} Admin - New Class`, errors: validationErrors });
+            return;
+        }
+
         const username = req.params.username;
         const newClass = new Class(req.body);
 
@@ -388,8 +428,15 @@ exports.editClassGet = async (req, res, next) => {
     }
 };
 
-exports.editClassPost = async (req, res, next) => {
+exports.editClassPost = async (validationErrors, req, res, next) => {
     try {
+        if(validationErrors.length > 0) {
+            const classId = req.params.classId;
+            const heroClass = await Class.findOne({ _id: classId });
+            res.render('admin/classes', { title: `${res.locals.siteAlias} Admin - Edit Class`, heroClass, errors: validationErrors });
+            return;
+        }
+
         const username = req.params.username;
         const classId = req.params.classId;
         const editedClass = new Class(req.body);

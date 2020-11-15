@@ -95,9 +95,8 @@ mixin spellRow(spell, options={ edit: false, dm: false, type: '' })
             //- Spell description
             .l-margin--2
             if spell.description != '' && spell.description != undefined
-                - let spellDescLines = spell.description.split(/(\r\n|\r|\n)/g);
-                each line in spellDescLines
-                    p= `${line}`
+                - let spellDescLines = spell.description.replace(/(\r\n|\r|\n)/g, '<br>');
+                p !{spellDescLines}
             
             //- If options.edit == true, add hidden input at bottom with a value of the current spell id and add a remove spell button
             if options.edit

@@ -28,6 +28,13 @@ block content
     //- Edit story and search story main section
     if url.endsWith('/story') || url.endsWith('/search')
         .l-main-content
+            //- Validation Errors
+            if errors
+                h2 Please fix the following errors:
+                ul
+                    each error in errors
+                        li= error.msg
+                        
             //- Edit story search bar
             .l-search
                 form.c-search(action=`/users/${username}/story/search` method='post' autocomplete='off')

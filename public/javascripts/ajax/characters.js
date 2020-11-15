@@ -106,6 +106,12 @@ function searchCharsDM(username, route) {
         showEle('#js-charbutton');
 
         const responseData = JSON.parse(ajax.responseText);
+
+        if(responseData.errors) {
+            document.getElementById('js-charsearch').innerHTML = responseData.errors;
+            return;
+        }
+
         const characterData = responseData.characters;
         const dropdownData = responseData.dropdowns;
         

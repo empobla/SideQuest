@@ -20,6 +20,13 @@ block content
                 .c-divider__right
 
         .l-main-content
+            //- Validation Errors
+            if errors
+                h2 Please fix the following errors:
+                ul
+                    each error in errors
+                        li= error.msg
+                        
             //- Story search
             .l-search
                 form.c-search(action='/story/search' method='post' autocomplete='off')
