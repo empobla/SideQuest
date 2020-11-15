@@ -76,7 +76,7 @@ app.set('trust proxy', 1);
 
 const limiter = rateLimit({
   windowMS: 1000 * 60 * 15,  // 15 min in ms
-  max: 100, // Max requests per 15 min window
+  max: 200, // Max requests per 15 min window
   message: 'You have exceeded the 100 requests in 15 minutes limit!',
   headers: true // Send the appropriate headers to the response (X-RateLimit-Limit, X-RateLimit-Remaining, Retry-After)
 });

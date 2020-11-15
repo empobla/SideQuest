@@ -709,20 +709,20 @@ block content
                             button.c-button--large.m-clickable(type='submit') Save
                             button.c-button--large.m-background-red.m-clickable(type='submit' name='deletecharacter' value='true') Delete Character
 
-    script(src="/javascripts/script.js")
-    script(src="/javascripts/edithero.js")
-    script.
-        // Sets up tabs when DOM loads
-        document.addEventListener('DOMContentLoaded', () => {
-            setupTabs();    // Setup tabs
-            raceUpdate(JSON.parse(document.querySelector('#js-racejson').value), 'load');   // Display race info from loaded hero race
-            const heroSkills = document.querySelector('#js-heroClassSkillsjson') || null;   // Get loaded hero selected class skills
-            // If loaded hero selected class skills exists, display class info and update skill proficiencies tab
-            if(heroSkills != null) {
-                displayClass(JSON.parse(document.querySelector('#js-classjson').value), JSON.parse(document.querySelector('#js-heroClassSkillsjson').value));
-                updateSkillProfs();
-            }
+        script(src="/javascripts/script.js")
+        script(src="/javascripts/edithero.js")
+        script.
+            // Sets up tabs when DOM loads
+            document.addEventListener('DOMContentLoaded', () => {
+                setupTabs();    // Setup tabs
+                raceUpdate(JSON.parse(document.querySelector('#js-racejson').value), 'load');   // Display race info from loaded hero race
+                const heroSkills = document.querySelector('#js-heroClassSkillsjson') || null;   // Get loaded hero selected class skills
+                // If loaded hero selected class skills exists, display class info and update skill proficiencies tab
+                if(heroSkills != null) {
+                    displayClass(JSON.parse(document.querySelector('#js-classjson').value), JSON.parse(document.querySelector('#js-heroClassSkillsjson').value));
+                    updateSkillProfs();
+                }
 
-            updateBaseAll();    // Update all base scores in ability tables
-            loadedSpellsListeners();    // Load all spell dropdown functionality
-        });
+                updateBaseAll();    // Update all base scores in ability tables
+                loadedSpellsListeners();    // Load all spell dropdown functionality
+            });

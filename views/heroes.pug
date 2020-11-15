@@ -350,18 +350,18 @@ block content
                 a.c-button(href=urlDetails target='_blank') See Details Sheet
                 a.c-button(href=urlSpell target='_blank') See Spell Sheet
 
-    script(src="/javascripts/script.js")
-    script.
-        document.addEventListener('DOMContentLoaded', () => {
-            setupSpellTables();
-            setupSpellTypeTabs();
+        script(src="/javascripts/script.js")
+        script.
+            document.addEventListener('DOMContentLoaded', () => {
+                setupSpellTables();
+                setupSpellTypeTabs();
 
-            // Load race traits
-            const racejson = document.querySelector('#js-racejson').value;
-            if(racejson != 'false') {
-                const race = JSON.parse(racejson);
-                const raceTraits = document.querySelector('#js-racetraits');
-                //- raceTraits.innerHTML = race.traits.replace(/(\r\n|\r|\n)/g, '<br>');
-                raceTraits.innerHTML = race.traits;
-            }
-        });
+                // Load race traits
+                const racejson = document.querySelector('#js-racejson').value;
+                if(racejson != 'false') {
+                    const race = JSON.parse(racejson);
+                    const raceTraits = document.querySelector('#js-racetraits');
+                    //- raceTraits.innerHTML = race.traits.replace(/(\r\n|\r|\n)/g, '<br>');
+                    raceTraits.innerHTML = race.traits;
+                }
+            });
