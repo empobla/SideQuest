@@ -520,6 +520,7 @@ This release offered the following functionalities:
 #### **Map View**
 <p align='center'>
 <img src='public/images/readme/versions/1.0.0/mapsview.png'>
+<img src='public/images/readme/versions/1.0.0/templateview.png'>
 </p>
 
 #### **Login Page**
