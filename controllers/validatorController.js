@@ -59,11 +59,9 @@ exports.characterVS = [
     .trim().blacklist('<|>'),
     
     body('race').if(value => value != '').isLength({ max: 50 }).withMessage('Raza del personaje no puede ser más largo de 50 caracteres.')
-    .isAlphanumeric().withMessage('Raza del personaje sólo puede contener números y letras.')
     .trim().blacklist('<|>|\/'),
     
     body('class').if(value => value != '').isLength({ max: 50 }).withMessage('Clase del personaje no puede ser más largo de 50 caracteres.')
-    .isAlphanumeric().withMessage('Clase del personaje sólo puede contener números y letras.')
     .trim().blacklist('<|>|\/'),
     
     body('size').isLength({ max: 50 }).withMessage('Tamaño del personaje no puede ser más largo de 50 caracteres.')
@@ -72,7 +70,6 @@ exports.characterVS = [
     body('appearance').trim().blacklist('<|>'),
 
     body('name').isLength({ max: 50 }).withMessage('Nombre del personaje no puede ser más largo de 50 caracteres.')
-    .isAlphanumeric().withMessage('Nombre del personaje sólo puede contener números y letras.')
     .trim().blacklist('<|>'),
 
     (req, res, next) => {
@@ -89,19 +86,15 @@ exports.nameSanitizer = [
 
 exports.raceVS = [
     body('name').if(value => value != '').isLength({ max: 50 }).withMessage('Race name can be at most 50 characters long.')
-    .isAlphanumeric().withMessage('Race name must be alphanumeric.')
     .trim().blacklist('<|>'),
 
     body('alignment').if(value => value != '').isLength({ max: 50 }).withMessage('Race alignment can be at most 50 characters long.')
-    .isAlphanumeric().withMessage('Race alignment must be alphanumeric.')
     .trim().blacklist('<|>'),
 
     body('size').if(value => value != '').isLength({ max: 50 }).withMessage('Race size can be at most 50 characters long.')
-    .isAlphanumeric().withMessage('Race size must be alphanumeric.')
     .trim().blacklist('<|>'),
 
     body('languages').if(value => value != '').isLength({ max: 50 }).withMessage('Race languages can be at most 50 characters long.')
-    .isAlphanumeric().withMessage('Race languages must be alphanumeric.')
     .trim().blacklist('<|>'),
 
     (req, res, next) => {
@@ -112,7 +105,6 @@ exports.raceVS = [
 
 exports.classVS = [
     body('name').if(value => value != '').isLength({ max: 50 }).withMessage('Class name can be at most 50 characters long.')
-    .isAlphanumeric().withMessage('Class name must be alphanumeric.')
     .trim().blacklist('<|>'),
 
     body('hit_die').isLength({ max: 50 }).withMessage('Class hit die can be at most 50 characters long.')

@@ -313,7 +313,7 @@ exports.newHeroGet = async (req, res, next) => {
             if(characterid.toString() == heroId) userOwnsHero = true;
         });
 
-        if(!userOwnsHero && !user.isAdmin) {
+        if(!userOwnsHero && !user.isAdmin && !res.locals.url.includes('/newHero')) {
             res.redirect('/users/heroes');
             return;
         }
