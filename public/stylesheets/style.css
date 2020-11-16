@@ -15,6 +15,7 @@
     --nav-border-color: #d00000;
     --nav-dropdown: #242527;
     --checkbox-background: #555;
+    --checkbox-checked: #a50000;
     --button-color: #000000;
 }
 /*****************************************/
@@ -821,7 +822,7 @@ main {
 }
 
 .c-ability-points input[type='checkbox']:checked {
-    background: var(--secondary-color);
+    background: var(--checkbox-checked);
 }
 
 .c-ability-points input[type='checkbox']:focus {
@@ -839,7 +840,7 @@ main {
 }
 
 .c-ability-points input[type='radio']:checked {
-    background: var(--secondary-color);
+    background: var(--checkbox-checked);
 }
 
 .c-ability-points input[type='radio']:focus {
@@ -1111,7 +1112,7 @@ main {
 }
 
 .c-checkbox input[type='checkbox']:checked {
-    background: var(--secondary-color);
+    background: var(--checkbox-checked);
 }
 
 .c-checkbox input[type='checkbox']:focus {
